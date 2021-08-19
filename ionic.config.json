@@ -1,0 +1,7 @@
+{
+  "name": "Qualitec",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
