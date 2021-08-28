@@ -93,6 +93,19 @@ async function addGroup(Group) {
     console.log(err);
   }
 }
+
+async function getGroupsCourseSP(CourseId) {
+  try {
+    let  pool = await  sql.connect(config);
+    let  group = await  pool.request()
+      .input('idC', sql.VarChar, CourseId)
+      .query("EXEC obtenerGruposCurso @idCourse = @idC");
+    return  group.recordsets;
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
   
 module.exports = {
   getCourses:  getCourses,
@@ -101,5 +114,6 @@ module.exports = {
   getGroups:  getGroups,
   getGroup:  getGroup,
   addGroup:  addGroup,
-  getGroupsCourse: getGroupsCourse
+  getGroupsCourse: getGroupsCourse,
+  getGroupsCourseSP: getGroupsCourseSP
 }

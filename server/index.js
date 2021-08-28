@@ -1,4 +1,4 @@
-var  Db = require('./dboperations');
+var  Db = require('./database/dboperations');
 
 var  express = require('express');
 var  bodyParser = require('body-parser');
@@ -47,8 +47,14 @@ router.route('/groups/:idCourse/:id').get((request, response) => {
   })
 })
 
-router.route('/groups/:idCourse').get((request, response) => {
+/*router.route('/groups/:idCourse').get((request, response) => {
   Db.getGroupsCourse(request.params.idCourse).then((data) => {
+    response.json(data[0]);
+  })
+})*/
+
+router.route('/groups/:idCourse').get((request, response) => {
+  Db.getGroupsCourseSP(request.params.idCourse).then((data) => {
     response.json(data[0]);
   })
 })
