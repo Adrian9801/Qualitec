@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Enrollment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-list>
+      <ion-item *ngFor="let curso of cursos" class="submenu">
+        <ion-label>
+          <span class="text courseTitle">{{curso.id}} {{curso.name}}</span>
+          <ion-icon class="iconList" name="chevron-down-outline" *ngIf="!curso.mostrarGrupo" (click)="curso.mostrarGrupo=!curso.mostrarGrupo"></ion-icon>
+          <ion-icon class="iconList" name="chevron-up-outline" *ngIf="curso.mostrarGrupo" (click)="curso.mostrarGrupo=!curso.mostrarGrupo"></ion-icon>
+          <span class="text state">Sin Matricular</span><br>
+          <span class="text courseItem">Créditos: {{curso.creditos}}</span>
+
+        <ion-list class="children" *ngIf="curso.mostrarGrupo">
+          <ion-radio-group>
+            <ion-item *ngFor="let grupo of curso.grupos">
+              <ion-label>
+                <ion-label class="text campusText">
+                  Sede Cartago
+                </ion-label>
+                <ion-radio class="radio" value={{grupo.id}}></ion-radio> <span class="text iconList">Matricular</span><br>
+                <span class="text courseTitle">Prof. {{grupo.teacher}}</span><br>
+                <span class="text courseItem">Grupo: {{grupo.id}}</span> <span class="text courseItem iconList">{{grupo.cupos}} Cupos restantes</span>
+              </ion-label>
+            </ion-item>
+        </ion-radio-group>
+        </ion-list>
+      </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+</ion-content>
