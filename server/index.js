@@ -16,21 +16,46 @@ router.use((request, response, next) => {
 });
  
  
-router.route('/students').get((request, response) => {
-  Db.getStudents().then((data) => {
+router.route('/courses').get((request, response) => {
+  Db.getCourses().then((data) => {
     response.json(data);
   })
 })
 
-router.route('/students/:nombre').get((request, response) => {
-  Db.getStudent(request.params.id).then((data) => {
+router.route('/courses/:id').get((request, response) => {
+  Db.getCourse(request.params.id).then((data) => {
     response.json(data[0]);
   })
 })
 
-router.route('/students').post((request, response) => {
+router.route('/courses').post((request, response) => {
   let  order = { ...request.body }
-  Db.addStudent(order).then(data  => {
+  Db.addCourse(order).then(data  => {
+    response.status(201).json(data);
+  })
+})
+
+router.route('/groups').get((request, response) => {
+  Db.getGroups().then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/:idCourse/:id').get((request, response) => {
+  Db.getGroup(request.params.idCourse, request.params.id).then((data) => {
+    response.json(data[0]);
+  })
+})
+
+router.route('/groups/:idCourse').get((request, response) => {
+  Db.getGroupsCourse(request.params.idCourse).then((data) => {
+    response.json(data[0]);
+  })
+})
+
+router.route('/groups').post((request, response) => {
+  let  order = { ...request.body }
+  Db.addGroup(order).then(data  => {
     response.status(201).json(data);
   })
 })

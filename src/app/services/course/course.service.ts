@@ -9,11 +9,11 @@ export class CourseService {
 
   readonly URL_API = 'http://localhost:8090/api/courses';
 
-  selectedCourse: Course;
+  courses: Course[] = [];
 
   constructor(private http: HttpClient) { }
 
-  getCourses(){
+  getCourses(){ 
     return this.http.get(this.URL_API);
   }
 
