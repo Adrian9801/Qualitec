@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'enrollment',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
@@ -19,6 +19,35 @@ const routes: Routes = [
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
+  {
+    path: 'about-us',
+    loadChildren: () => import('./pages/about-us/about-us.module').then( m => m.AboutUsPageModule)
+  },
+  {
+    path: 'account-details',
+    loadChildren: () => import('./pages/account-details/account-details.module').then( m => m.AccountDetailsPageModule)
+  },
+  {
+    path: 'add-course',
+    loadChildren: () => import('./pages/add-course/add-course.module').then( m => m.AddCoursePageModule)
+  },
+  {
+    path: 'data-verification',
+    loadChildren: () => import('./pages/data-verification/data-verification.module').then( m => m.DataVerificationPageModule)
+  },
+  {
+    path: 'schedule',
+    loadChildren: () => import('./pages/schedule/schedule.module').then( m => m.SchedulePageModule)
+  },
+  {
+    path: 'enrollment-control',
+    loadChildren: () => import('./pages/enrollment-control/enrollment-control.module').then( m => m.EnrollmentControlPageModule)
+  },
+  {
+    path: 'group-settings',
+    loadChildren: () => import('./pages/group-settings/group-settings.module').then( m => m.GroupSettingsPageModule)
+  },
+
 
 ];
 
