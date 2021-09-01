@@ -1,5 +1,9 @@
 var  config = require('./dbconfig');
 const  sql = require('mssql');
+var jwt = require('jsonwebtoken');
+const bcryptjs = require('bcryptjs');
+var token = '';
+var secret = '';
 
 async  function  getCourses() {
   try {
@@ -40,7 +44,7 @@ async function addCourse(Course) {
   }
 }
 
-async  function  getGroups() {
+async function getGroups() {
   try {
     let  pool = await  sql.connect(config);
     let  groups = await  pool.request().query("SELECT * from groups");
@@ -75,6 +79,32 @@ async function getGroupsCourse(CourseId) {
   }
   catch (error) {
     console.log(error);
+  }
+}
+
+async function loginUser(userData) {
+  try {
+    let  pool = await  sql.connect(config);
+    let  userLogin = (await  pool.request()
+      .input('user', sql.VarChar, userData.user)
+      .query("SELECT * from users where users.[user] = @user")).recordsets;
+    if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.password,userLogin[0][0].pass))){
+      secret = (await bcryptjs.hashSync(Date.now()+'',8));
+      token = jwt.sign({  user: userLogin[0][0].id }, secret, { expiresIn: '1h' });
+    }
+    return checkLogIn();
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+async function checkLogIn() {
+  try {
+    jwt.verify(token, secret); // .user => id
+    return true;
+  } catch (error) {
+    return false;
   }
 }
  
@@ -115,5 +145,7 @@ module.exports = {
   getGroup:  getGroup,
   addGroup:  addGroup,
   getGroupsCourse: getGroupsCourse,
-  getGroupsCourseSP: getGroupsCourseSP
+  getGroupsCourseSP: getGroupsCourseSP,
+  loginUser: loginUser,
+  checkLogIn: checkLogIn
 }

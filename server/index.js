@@ -65,7 +65,18 @@ router.route('/groups').post((request, response) => {
     response.status(201).json(data);
   })
 })
-  
+
+router.route('/loginUser').post((request, response) => {
+  Db.loginUser(request.body).then(data  => {
+    response.send(data);
+  })
+})
+
+router.route('/checkLogIn').get((request, response) => {
+  Db.checkLogIn().then((data) => {
+    response.send(data);
+  })
+})
   
 var  port = process.env.PORT || 8090;
 app.listen(port);

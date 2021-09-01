@@ -3,20 +3,23 @@ import { Course } from 'src/app/models/course';
 import { Group } from 'src/app/models/group';
 import { CourseService } from 'src/app/services/course/course.service';
 import { GroupService } from 'src/app/services/group/group.service';
+import { LoginService } from 'src/app/services/login/login.service';
+import { Router } from  "@angular/router";
 
 @Component({
   selector: 'app-enrollment',
   templateUrl: './enrollment.page.html',
   styleUrls: ['./enrollment.page.scss'],
-  providers: [GroupService,CourseService]
+  providers: [GroupService,CourseService,LoginService]
 })
 export class EnrollmentPage implements OnInit {
 
   private courses: Course[];
 
-  constructor(private courseService: CourseService, private groupService: GroupService) { }
+  constructor(private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { }
 
   ngOnInit() {
+    this.checkLogIn();
     this.getCourses();
   }
 
@@ -51,4 +54,12 @@ export class EnrollmentPage implements OnInit {
     });
   }
 
+  checkLogIn(){
+    this.loginService.checkLogIn()
+    .subscribe(res => {
+      console.log(res);
+      if(!res)
+        this.router.navigateByUrl('login');
+    });
+  }
 }
