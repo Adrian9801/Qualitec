@@ -77,6 +77,12 @@ router.route('/checkLogIn').get((request, response) => {
     response.send(data);
   })
 })
+
+router.route('/logout').get((request, response) => {
+  Db.logout().then((data) => {
+    response.send(data);
+  })
+})
   
 var  port = process.env.PORT || 8090;
 app.listen(port);

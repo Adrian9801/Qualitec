@@ -21,7 +21,6 @@ export class GroupService {
   }
 
   getGroupsCourse(courseId: String){
-    console.log(this.URL_API + `/${courseId}`);
     return this.http.get(this.URL_API + `/${courseId}`);
   }
 

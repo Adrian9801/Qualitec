@@ -17,4 +17,8 @@ export class LoginService {
   checkLogIn() {
     return this.http.get(this.URL_API+'/checkLogIn');
   }
+
+  logout() {
+    return this.http.get(this.URL_API+'/logout');
+  }
 }

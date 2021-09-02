@@ -19,7 +19,6 @@ export class LoginPage implements OnInit {
   login(form){
     this.loginService.postLogin(form.value)
     .subscribe(res => {
-      console.log(res);
       if(res)
         this.router.navigateByUrl('enrollment');
     });
@@ -28,7 +27,6 @@ export class LoginPage implements OnInit {
   checkLogIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
-      console.log(res);
       if(res)
         this.router.navigateByUrl('enrollment');
     });

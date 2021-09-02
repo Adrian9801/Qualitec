@@ -57,7 +57,6 @@ export class EnrollmentPage implements OnInit {
   checkLogIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
-      console.log(res);
       if(!res)
         this.router.navigateByUrl('login');
     });

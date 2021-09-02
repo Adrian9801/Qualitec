@@ -90,7 +90,7 @@ async function loginUser(userData) {
       .query("SELECT * from users where users.[user] = @user")).recordsets;
     if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.password,userLogin[0][0].pass))){
       secret = (await bcryptjs.hashSync(Date.now()+'',8));
-      token = jwt.sign({  user: userLogin[0][0].id }, secret, { expiresIn: '1h' });
+      token = jwt.sign({  user: userLogin[0][0].id }, secret, { expiresIn: '5m' });
     }
     return checkLogIn();
   }
@@ -106,6 +106,12 @@ async function checkLogIn() {
   } catch (error) {
     return false;
   }
+}
+
+async function logout() {
+  token = '';
+  secret = '';
+  return true;
 }
  
 async function addGroup(Group) {
@@ -147,5 +153,6 @@ module.exports = {
   getGroupsCourse: getGroupsCourse,
   getGroupsCourseSP: getGroupsCourseSP,
   loginUser: loginUser,
-  checkLogIn: checkLogIn
+  checkLogIn: checkLogIn,
+  logout: logout
 }
