@@ -47,6 +47,16 @@ const routes: Routes = [
     path: 'group-settings',
     loadChildren: () => import('./pages/group-settings/group-settings.module').then( m => m.GroupSettingsPageModule)
   },
+  {
+    path: 'home-admin',
+    loadChildren: () => import('./pages/home-admin/home-admin.module').then( m => m.HomeAdminPageModule)
+  },
+  {
+    path: 'home-student',
+    loadChildren: () => import('./pages/home-student/home-student.module').then( m => m.HomeStudentPageModule)
+  },
+
+
 
 
 ];
