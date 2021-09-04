@@ -1,0 +1,41 @@
+.logo-image {
+    width: 10%;
+    height: auto;
+    margin: auto;
+    padding-bottom: 20px;
+}
+// Para dispositivos pequeños, hice el logo un poco mas grande. 
+@media (max-width: 479px) {
+    .logo-image {
+        width: 50%;
+        height: auto;
+        margin: auto;
+        padding-bottom: 20px;
+    }
+}
+
+h1{
+    color:black;
+
+}
+
+ion-content {
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    --background: #f0f0f0; // Replace this with color of your choice
+}
+
+  
+ion-card {
+    max-width: 500px;
+    margin: auto;
+}
+
+.top-margin {
+    margin-top: 30px;
+}
+
+.iconPadding {
+    padding-right: 5px;
+}
