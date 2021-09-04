@@ -28,8 +28,10 @@ export class LoginPage implements OnInit {
 
     this.loginService.postLogin(this.loginForm.value)
     .subscribe(res => {
-      if(res)
+      if(res){
         this.router.navigateByUrl('enrollment');
+        form.reset();
+      }
     });
   }
 

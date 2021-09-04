@@ -1,36 +1,181 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Enrollment</ion-title>
+  <ion-toolbar class="header" *ngIf="!opened && openRegister <= 1">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="auto">
+          <ion-icon class="iconHeader" (click)="openCustom()" name="reorder-three-outline"></ion-icon>
+        </ion-col>
+        <ion-col>
+          <br><br><br>
+          <ion-text class="text textHeader">{{title}}</ion-text>
+        </ion-col>
+        <ion-col *ngIf="openRegister == 1">
+          <ion-button id="Matricular" class="iconList buttonHeader" (click) = "enroll()">
+            <ion-text color="redColor">
+              {{textButton}}
+            </ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+  <ion-toolbar class="header" *ngIf="opened" (click) = "closeCustom()">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="auto">
+          <img class="imgRisizeMenu" src="../../../assets/qualiTec.svg">
+        </ion-col>
+        <ion-col>
+          <br><br><br>
+          <ion-text class="text textHeader">{{title}}</ion-text>
+        </ion-col>
+        <ion-col *ngIf="openRegister == 1">
+          <ion-button id="Matricular" class="iconList buttonHeader">
+            <ion-text color="redColor">
+              {{textButton}}
+            </ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <ion-toolbar class="header" *ngIf="openRegister == 2">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="auto">
+          <ion-icon class="iconHeader" name="arrow-back-outline" (click) = "back()"></ion-icon>
+        </ion-col>
+        <ion-col>
+          <br><br><br>
+          <ion-text class="text textHeader">{{title}}</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-button class="iconList buttonHeader">
+            <ion-text color="redColor">
+              {{textButton}}
+            </ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <ion-toolbar class="headerRed" color="{{colorSubtitle}}">
+    <div class="divHeader2">
+      <ion-title class="text textHeaderRe ion-text-center">
+        {{subTitle}}
+      </ion-title>
+    </div>
+    <div class="divHeader">
+      <ion-spinner class="spinner" name="lines-small" *ngIf="showSpinner"></ion-spinner>
+      <ion-icon name="reload-circle" *ngIf="!showSpinner" class="iconReload" (click) = "reload()"></ion-icon>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-card>
+<ion-menu side="start" menuId="menuCustom" contentId="menuMain" class="my-custom-menu menuMargin" (ionWillClose) = "closeCustom()" (ionWillOpen) = "openCustom()">
+  <ion-content class="menuColor">
     <ion-list>
-      <ion-item *ngFor="let course of courses" class="submenu">
-        <ion-label>
-          <span class="text courseTitle">{{course.id}} {{course.name}}</span>
-          <ion-icon class="iconList" name="chevron-down-outline" *ngIf="!course.showGroups" (click)="course.showGroups=!course.showGroups"></ion-icon>
-          <ion-icon class="iconList" name="chevron-up-outline" *ngIf="course.showGroups" (click)="course.showGroups=!course.showGroups"></ion-icon>
-          <span class="text state">Sin Matricular</span><br>
-          <span class="text courseItem">Créditos: {{course.credits}}</span>
-
-        <ion-list class="children" *ngIf="course.showGroups">
-          <ion-radio-group>
-            <ion-item *ngFor="let group of course.groups">
-              <ion-label>
-                <ion-label class="text campusText">
-                  Sede Cartago
-                </ion-label>
-                <ion-radio class="radio" value={{group.id}}></ion-radio> <span class="text iconList">Matricular</span><br>
-                <span class="text courseTitle">Prof. {{group.teacher}}</span><br>
-                <span class="text courseItem">Grupo: {{group.id}}</span> <span class="text courseItem iconList">{{group.places}} Cupos restantes</span>
-              </ion-label>
-            </ion-item>
-        </ion-radio-group>
-        </ion-list>
-      </ion-label>
+      <ion-item (click)="changePage('home')">
+        <ion-icon name="home"></ion-icon>
+        <ion-text class="menuText">Inicio</ion-text>
+      </ion-item>
+      <ion-item (click)="changePage('enrollment')">
+        <ion-icon name="list"></ion-icon>
+        <ion-text class="menuText">Lista de cursos</ion-text>
+      </ion-item>
+      <ion-item (click)="changePage('#')">
+        <ion-icon name="person"></ion-icon>
+        <ion-text class="menuText">Mi perfil</ion-text>
+      </ion-item>
+      <ion-item (click)="changePage('about-us')">
+        <ion-icon name="people"></ion-icon>
+        <ion-text class="menuText">Acerca de nosotros</ion-text>
+      </ion-item>
+      <ion-item (click)="logout()">
+        <ion-icon name="log-out" color="danger"></ion-icon>
+        <ion-text class="menuText" color="danger">Cerrar sesión</ion-text>
       </ion-item>
     </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-router-outlet id="menuMain"></ion-router-outlet>
+
+<ion-content>
+  <ion-card class="cardP">
+    <ion-card-content>
+      <ion-list class="colorWhite">
+        <ion-item *ngFor="let course of courses">
+          <ion-grid class="grid">
+            <ion-row class="grid">
+              <ion-col>
+                <ion-text class="text courseTitle">
+                  {{course.id}} {{course.name}}
+                </ion-text>
+                <br>
+                <ion-text class="text courseItem ">
+                  Créditos: {{course.credits}}
+                </ion-text>
+              </ion-col>
+              <ion-col class="grid">
+                <ion-icon class="iconList" name="chevron-down-outline" *ngIf="!course.showGroups" (click)="course.showGroups=!course.showGroups"></ion-icon>
+                <ion-icon class="iconList" name="chevron-up-outline" *ngIf="course.showGroups" (click)="course.showGroups=!course.showGroups"></ion-icon>
+                <ion-text color={{course.color}} class="text state">
+                  {{course.state}}
+                </ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-list class="children" *ngIf="course.showGroups">
+                  <ion-radio-group>
+                    <ion-item *ngFor="let group of course.groups">
+                      <ion-grid class="grid">
+                        <ion-row class="grid">
+                          <ion-col>
+                            <ion-text class="text campusText">
+                              Sede Cartago
+                            </ion-text><br>
+                            <ion-text class="text courseTitle">
+                              Prof. {{group.teacher}}
+                            </ion-text><br>
+                            <ion-text class="text courseItem">
+                              Grupo: {{group.id}}
+                            </ion-text><br>
+                            <ion-text class="text courseItem">
+                              Horario: M 7:30-9:20 V 7:30-9:20
+                            </ion-text> 
+                          </ion-col>
+                          <ion-col>
+                            <ion-text class="text iconList cupoItem">
+                              Cupo: {{group.places}}
+                            </ion-text><br>
+                            <ion-checkbox class="radio" value="course.id" [(ngModel)]="group.registered" disabled="{{register}}" (ionChange)="registeredGroup(group, course)" color="goldenColor"></ion-checkbox>
+                            <ion-text class="text stateRegitered" *ngIf="group.places > 0 && !group.registered">
+                              Matricular
+                            </ion-text>
+                            <ion-text class="text stateRegitered" *ngIf="group.places == 0  && !group.registered">
+                              Pedir inclusión
+                            </ion-text>
+                            <ion-text class="text stateRegitered" *ngIf="group.registered && !group.inclusion">
+                              Matriculado
+                            </ion-text>
+                            <ion-text class="text stateRegitered" *ngIf="group.inclusion">
+                              Inclusión
+                            </ion-text>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+                    </ion-item>
+                  </ion-radio-group>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
   </ion-card>
 </ion-content>

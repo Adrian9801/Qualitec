@@ -4,6 +4,7 @@ import { Group } from 'src/app/models/group';
 import { CourseService } from 'src/app/services/course/course.service';
 import { GroupService } from 'src/app/services/group/group.service';
 import { LoginService } from 'src/app/services/login/login.service';
+import { MenuController } from '@ionic/angular';
 import { Router } from  "@angular/router";
 
 @Component({
@@ -15,8 +16,16 @@ import { Router } from  "@angular/router";
 export class EnrollmentPage implements OnInit {
 
   private courses: Course[];
+  private title: string = "Lista de cursos";
+  private opened: boolean = false;
+  private openRegister: number  = 0;
+  private subTitle: string = "Matrícula cerrada";
+  private colorSubtitle: string = "danger";
+  private register: boolean = true;
+  private showSpinner: boolean = false;
+  private textButton: string = "Matricular";
 
-  constructor(private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { }
+  constructor(private menu: MenuController, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { }
 
   ngOnInit() {
     this.checkLogIn();
@@ -24,6 +33,8 @@ export class EnrollmentPage implements OnInit {
   }
 
   getCourses(){
+    this.groupService.groups = [];
+    this.courseService.courses = [];
     this.courseService.getCourses()
     .subscribe(res => {
       let coursesTemp: Course[] = res[0] as Course[];
@@ -39,6 +50,7 @@ export class EnrollmentPage implements OnInit {
           }
           this.courseService.courses.push(courseAux);
           this.courses = this.courseService.courses;
+          this.showSpinner = false;
         });
       }
     });
@@ -54,11 +66,98 @@ export class EnrollmentPage implements OnInit {
     });
   }
 
+  registeredGroup(group: Group, course: Course){
+    if(group.registered){
+      if(group.places > 0){
+        group.places--;
+        course.state = "Matriculado";
+      }
+      else{
+        group.inclusion = true;
+        course.state = "Inclusión";
+      }
+      course.color = "success";
+      for(let groupTemp of course.groups){
+        if(groupTemp != group && groupTemp.registered == true){
+          groupTemp.registered = false;
+          break;
+        }
+      }
+    }
+    else {
+      if(!group.inclusion){
+        group.places++;
+      }
+      group.inclusion = false;
+      for(let groupTemp of course.groups){
+        if(groupTemp.registered == true){
+          return;
+        }
+      }
+      course.state = "Sin matricular";
+      course.color = "danger";
+    }
+  }
+
+  openCustom() {
+    this.opened = true;
+    this.menu.enable(true, 'menuCustom');
+    this.menu.open('menuCustom');
+    this.title = "Menú";
+  }
+
+  closeCustom() {
+    if(this.opened){
+      this.opened = false;
+      this.title = "Lista de cursos";
+      this.menu.close('menuCustom');
+    }
+  }
+
+  changePage(page: string){
+    this.closeCustom();
+    if(page == 'enrollment')
+      window.location.reload();
+    this.router.navigateByUrl(page);
+  }
+
+  reload(){
+    this.showSpinner = true;
+    if(this.openRegister == 0){
+      this.openRegister = 1;
+      this.subTitle = "Matrícula abierta";
+      this.colorSubtitle = "success"
+    }
+    this.getCourses();
+  }
+
+  back(){
+    this.openRegister = 1;
+    this.register = true;
+    this.title = "Lista de cursos";
+    this.textButton = "Matricular";
+    this.getCourses();
+  }
+
+  enroll(){
+    this.openRegister = 2;
+    this.title = "Mi matrícula";
+    this.register = false;
+    this.textButton = "Siguente";
+    this.getCourses();
+  }
+
   checkLogIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
       if(!res)
         this.router.navigateByUrl('login');
+    });
+  }
+
+  logout(){
+    this.loginService.logout().subscribe(res => {
+      this.changePage('login');
     });
   }
 }
