@@ -9,3 +9,14 @@
   ion-toolbar {
     --background: #0C1433;
   }
+
+  .flag { 
+    position: relative;
+    height: 25px;
+  }
+
+  .text-flag{
+    position:relative;
+    top:-20px;
+    text-align:center;
+  }

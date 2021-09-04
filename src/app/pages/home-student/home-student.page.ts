@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {AppComponent} from '../../app.component';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home-student',
@@ -7,7 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeStudentPage implements OnInit {
 
-  constructor() { }
+  constructor(public menu:AppComponent, public alertController: AlertController) { 
+    menu.setStudent(true);
+  }
+  public async presentAlert() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'No esta en su periodo de matricula',
+      message: 'El administrador le notificará cuando se vaya a abrir la matrícula.',
+      buttons: ['Entendido']
+    });
+
+    await alert.present();
+  }
 
   ngOnInit() {
   }

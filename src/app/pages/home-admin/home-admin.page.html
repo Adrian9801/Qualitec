@@ -7,13 +7,13 @@
       <ion-title class="color-white">Control de Matricula</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-toolbar color="danger">
-    <ion-text color="dark">
-      <h5 style="text-align:center">Matricula cerrada</h5>
+  <ion-toolbar color="danger" class="flag">
+    <ion-text color="dark" class="text-flag">
+      <h5>Matricula cerrada</h5>
     </ion-text>
   </ion-toolbar>
   <ion-content class="ion-padding">
-    <ion-button expand="block" color="warning">Iniciar periodo de matricula</ion-button>
+    <ion-button expand="block" color="warning" (click)="presentAlert()">Iniciar periodo de matricula</ion-button>
     <ion-card>
       <ion-card-header>
         <ion-card-title>Lista de cursos</ion-card-title>
