@@ -15,7 +15,7 @@ export class HomeStudentPage implements OnInit {
   public async presentAlert() {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'No esta en su periodo de matricula',
+      header: 'No está en su periodo de matrícula',
       message: 'El administrador le notificará cuando se vaya a abrir la matrícula.',
       buttons: ['Entendido']
     });
