@@ -6,5 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+
+  public student = true;
+  constructor() { 
+  }
+
+  setStudent(valor:boolean){
+    this.student = valor;
+  }
 }

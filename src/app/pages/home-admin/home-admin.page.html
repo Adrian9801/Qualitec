@@ -1,0 +1,35 @@
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button class="color-white"></ion-menu-button>
+      </ion-buttons>
+      <ion-title class="color-white">Control de Matrícula</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-toolbar color="danger" class="flag">
+    <ion-text color="dark" class="text-flag">
+      <h5>Matrícula cerrada</h5>
+    </ion-text>
+  </ion-toolbar>
+  <ion-content class="ion-padding">
+    <ion-button expand="block" color="warning" (click)="presentAlert()">Iniciar periodo de matrícula</ion-button>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Lista de cursos</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <ion-item>
+          <ion-icon name="warning" class="color-red" slot="start"></ion-icon>
+          <ion-label>No hay cursos matriculados</ion-label>
+        </ion-item>
+      </ion-card-content>
+      <ion-item-divider></ion-item-divider>
+      <ion-card-header>
+        <ion-card-title style="text-align:center" color="primary">Agregar curso </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ion-content>
+</div>
+

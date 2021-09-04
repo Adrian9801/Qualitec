@@ -1,0 +1,28 @@
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button class="color-white"></ion-menu-button>
+      </ion-buttons>
+      <ion-title class="color-white">Inicio</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Resumen</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <ion-item>
+          <ion-icon name="warning" class="color-red" slot="start"></ion-icon>
+          <ion-label>Matrícula pendiente</ion-label>
+        </ion-item>
+      </ion-card-content>
+      <ion-item-divider></ion-item-divider>
+      <ion-card-header>
+        <ion-card-title style="text-align:center" color="primary" (click)="presentAlert()">Ver detalles </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ion-content>
+</div>
