@@ -4,7 +4,7 @@ import { Group } from 'src/app/models/group';
 import { CourseService } from 'src/app/services/course/course.service';
 import { GroupService } from 'src/app/services/group/group.service';
 import { LoginService } from 'src/app/services/login/login.service';
-import { MenuController } from '@ionic/angular';
+import {AppComponent} from '../../app.component';
 import { Router } from  "@angular/router";
 
 @Component({
@@ -25,10 +25,12 @@ export class EnrollmentPage implements OnInit {
   private showSpinner: boolean = false;
   private textButton: string = "Matricular";
 
-  constructor(private menu: MenuController, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { }
+  constructor(public menu:AppComponent, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { 
+    menu.setStudent(true);
+  }
 
   ngOnInit() {
-    this.checkLogIn();
+    //this.checkLogIn();
     this.getCourses();
   }
 
@@ -99,23 +101,7 @@ export class EnrollmentPage implements OnInit {
     }
   }
 
-  openCustom() {
-    this.opened = true;
-    this.menu.enable(true, 'menuCustom');
-    this.menu.open('menuCustom');
-    this.title = "Menú";
-  }
-
-  closeCustom() {
-    if(this.opened){
-      this.opened = false;
-      this.title = "Lista de cursos";
-      this.menu.close('menuCustom');
-    }
-  }
-
   changePage(page: string){
-    this.closeCustom();
     if(page == 'enrollment')
       window.location.reload();
     this.router.navigateByUrl(page);
