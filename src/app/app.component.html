@@ -10,11 +10,11 @@
     <div *ngIf="student; then isStudent; else isAdmin" ></div>
     <ng-template #isStudent>
       <ion-list>
-        <ion-item>
+        <ion-item (click)="changePage('home-student')">
           <ion-icon name="home" slot="start"></ion-icon>
           <ion-label>Inicio</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="changePage('enrollment')">
           <ion-icon name="list" slot="start"></ion-icon>
           <ion-label>Lista de cursos</ion-label>
         </ion-item>
@@ -22,11 +22,11 @@
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>Mi perfil</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="changePage('about-us')">
           <ion-icon name="people" slot="start"></ion-icon>
           <ion-label>Acerca de nosotros</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="logout()">
           <ion-icon name="log-out" slot="start" class="color-red"></ion-icon>
           <ion-label class="color-red">Cerrar sesión</ion-label>
         </ion-item>
@@ -34,7 +34,7 @@
     </ng-template>
     <ng-template #isAdmin>
       <ion-list>
-        <ion-item>
+        <ion-item (click)="changePage('home-admin')">
           <ion-icon name="school" slot="start"></ion-icon>
           <ion-label>Control de matricula</ion-label>
         </ion-item>
@@ -42,11 +42,11 @@
           <ion-icon name="ribbon" slot="start"></ion-icon>
           <ion-label>Levantamiento de requisitos</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="changePage('about-us')">
           <ion-icon name="people" slot="start"></ion-icon>
           <ion-label>Acerca de nosotros</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="logout()">
           <ion-icon name="log-out" slot="start" class="color-red"></ion-icon>
           <ion-label class="color-red">Cerrar sesión</ion-label>
         </ion-item>

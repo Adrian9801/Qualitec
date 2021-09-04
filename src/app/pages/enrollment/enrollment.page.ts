@@ -17,8 +17,7 @@ export class EnrollmentPage implements OnInit {
 
   private courses: Course[];
   private title: string = "Lista de cursos";
-  private opened: boolean = false;
-  private openRegister: number  = 0;
+  private openRegister: number = 0;
   private subTitle: string = "Matrícula cerrada";
   private colorSubtitle: string = "danger";
   private register: boolean = true;
@@ -101,12 +100,6 @@ export class EnrollmentPage implements OnInit {
     }
   }
 
-  changePage(page: string){
-    if(page == 'enrollment')
-      window.location.reload();
-    this.router.navigateByUrl(page);
-  }
-
   reload(){
     this.showSpinner = true;
     if(this.openRegister == 0){
@@ -138,12 +131,6 @@ export class EnrollmentPage implements OnInit {
     .subscribe(res => {
       if(!res)
         this.router.navigateByUrl('login');
-    });
-  }
-
-  logout(){
-    this.loginService.logout().subscribe(res => {
-      this.changePage('login');
     });
   }
 }

@@ -21,25 +21,11 @@ export class AboutUsPage implements OnInit {
     //this.checkLogIn();
   }
 
-
-
-  changePage(page: string){
-    if(page == 'about-us')
-      window.location.reload();
-    this.router.navigateByUrl(page);
-  }
-
   checkLogIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
       if(!res)
         this.router.navigateByUrl('login');
-    });
-  }
-
-  logout(){
-    this.loginService.logout().subscribe(res => {
-      this.changePage('login');
     });
   }
 }
