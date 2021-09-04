@@ -28,9 +28,11 @@ export class LoginPage implements OnInit {
 
     this.loginService.postLogin(this.loginForm.value)
     .subscribe(res => {
-      if(res){
-        this.router.navigateByUrl('enrollment');
+      let user = res as JSON[];
+      if(user.length > 0){
         this.loginForm.reset();
+        //if(user[0].type == "Student")
+          this.router.navigateByUrl('enrollment');
       }
     });
   }

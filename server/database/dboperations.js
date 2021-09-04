@@ -84,15 +84,17 @@ async function getGroupsCourse(CourseId) {
 
 async function loginUser(userData) {
   try {
+    console.log(await bcryptjs.hashSync(userData.pass,8));
     let  pool = await  sql.connect(config);
     let  userLogin = (await  pool.request()
-      .input('user', sql.VarChar, userData.user)
+      .input('user', sql.VarChar, userData.correo)
       .query("SELECT * from users where users.[user] = @user")).recordsets;
-    if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.password,userLogin[0][0].pass))){
+    if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.pass,userLogin[0][0].pass))){
       secret = (await bcryptjs.hashSync(Date.now()+'',8));
       token = jwt.sign({  user: userLogin[0][0].id }, secret, { expiresIn: '1h' });
+      return 
     }
-    return checkLogIn();
+    return userLogin[0];
   }
   catch (error) {
     console.log(error);
