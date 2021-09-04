@@ -6,6 +6,8 @@ export class Course {
     groups: Group[];
     credits: number;
     showGroups: boolean;
+    state: string;
+    color: string;
 
     constructor (_id: string, _name: string, _credits: number){
         this.id = _id;
@@ -13,6 +15,8 @@ export class Course {
         this.credits = _credits;
         this.groups = [];
         this.showGroups = false;
+        this.state = "Sin matricular";
+        this.color = "danger";
     }
 
     addGroup(_group: Group){
