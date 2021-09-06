@@ -24,13 +24,15 @@ export class LoginPage implements OnInit {
   }
 
   onClickLogin(){
-    console.log(this.loginForm.value);
-
     this.loginService.postLogin(this.loginForm.value)
     .subscribe(res => {
-      if(res){
-        this.router.navigateByUrl('enrollment');
+      let list = res as JSON[];
+      if(list.length > 0){
         this.loginForm.reset();
+        if(res[1].student)
+          this.router.navigateByUrl('home-student');
+        else
+          this.router.navigateByUrl('home-admin');
       }
     });
   }
@@ -38,8 +40,18 @@ export class LoginPage implements OnInit {
   checkIfLoggedIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
-      if(res)
-        this.router.navigateByUrl('enrollment');
+      if(res){
+        this.loginService.getUser()
+        .subscribe(result =>{
+          let list = result as JSON[];
+          if(list.length > 0){
+            if(result[1].student)
+              this.router.navigateByUrl('home-student');
+            else
+              this.router.navigateByUrl('home-admin');
+          }
+        });
+      }
     });
   }
 

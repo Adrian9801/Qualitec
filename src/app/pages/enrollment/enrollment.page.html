@@ -63,11 +63,11 @@
             <ion-row class="grid">
               <ion-col>
                 <ion-text class="text courseTitle">
-                  {{course.id}} {{course.name}}
+                  {{course.codigo}} {{course.nombre}}
                 </ion-text>
                 <br>
                 <ion-text class="text courseItem ">
-                  Créditos: {{course.credits}}
+                  Créditos: {{course.creditos}}
                 </ion-text>
               </ion-col>
               <ion-col class="grid">
@@ -87,13 +87,13 @@
                         <ion-row class="grid">
                           <ion-col>
                             <ion-text class="text campusText">
-                              Sede Cartago
+                              Sede {{group.sede}}
                             </ion-text><br>
                             <ion-text class="text courseTitle">
-                              Prof. {{group.teacher}}
+                              Prof. {{group.nombre}}
                             </ion-text><br>
                             <ion-text class="text courseItem">
-                              Grupo: {{group.id}}
+                              Grupo: {{group.codigo}}
                             </ion-text><br>
                             <ion-text class="text courseItem">
                               Horario: M 7:30-9:20 V 7:30-9:20
@@ -104,10 +104,10 @@
                               Cupo: {{group.places}}
                             </ion-text><br>
                             <ion-checkbox class="radio" value="course.id" [(ngModel)]="group.registered" disabled="{{register}}" (ionChange)="registeredGroup(group, course)" color="goldenColor"></ion-checkbox>
-                            <ion-text class="text stateRegitered" *ngIf="group.places > 0 && !group.registered">
+                            <ion-text class="text stateRegitered" *ngIf="group.cupos > 0 && !group.registered">
                               Matricular
                             </ion-text>
-                            <ion-text class="text stateRegitered" *ngIf="group.places == 0  && !group.registered">
+                            <ion-text class="text stateRegitered" *ngIf="group.cupos == 0  && !group.registered">
                               Pedir inclusión
                             </ion-text>
                             <ion-text class="text stateRegitered" *ngIf="group.registered && !group.inclusion">

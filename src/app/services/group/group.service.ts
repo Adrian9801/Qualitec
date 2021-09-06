@@ -29,7 +29,7 @@ export class GroupService {
   }
 
   putGroup(group: Group, courseId: String){
-    return this.http.put(this.URL_API + `/${courseId}` + `/${group.id}`, group);
+    return this.http.put(this.URL_API + `/${courseId}` + `/${group.numero}`, group);
   }
 
   deleteGroup(_id: string){

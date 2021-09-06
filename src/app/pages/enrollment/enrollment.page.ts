@@ -25,11 +25,10 @@ export class EnrollmentPage implements OnInit {
   private textButton: string = "Matricular";
 
   constructor(public menu:AppComponent, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { 
-    menu.setStudent(true);
   }
 
   ngOnInit() {
-    //this.checkLogIn();
+    this.checkIfLoggedIn();
     this.getCourses();
   }
 
@@ -38,14 +37,15 @@ export class EnrollmentPage implements OnInit {
     this.courseService.courses = [];
     this.courseService.getCourses()
     .subscribe(res => {
+      console.log(res[0]);
       let coursesTemp: Course[] = res[0] as Course[];
       for (let course of coursesTemp){
-        let courseAux: Course = new Course(course.id,course.name,course.credits);
-        this.groupService.getGroupsCourse(course.id)
+        let courseAux: Course = new Course(course.codigo,course.nombre,course.creditos);
+        this.groupService.getGroupsCourse(course.codigo)
         .subscribe(res => {
           let groupsTemp: Group[] = res as Group[];
           for (let group of groupsTemp){
-            let groupAux: Group = new Group(group.idCourse,group.id,group.teacher,group.places)
+            let groupAux: Group = new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre);
             this.groupService.groups.push(groupAux);
             courseAux.groups.push(groupAux);
           }
@@ -62,15 +62,15 @@ export class EnrollmentPage implements OnInit {
     .subscribe(res => {
       let groupsTemp: Group[] = res[0] as Group[];
       for (let group of groupsTemp){
-        this.groupService.groups.push(new Group(group.idCourse,group.id,group.teacher,group.places));
+        this.groupService.groups.push(new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre));
       }
     });
   }
 
   registeredGroup(group: Group, course: Course){
     if(group.registered){
-      if(group.places > 0){
-        group.places--;
+      if(group.cupos > 0){
+        group.cupos--;
         course.state = "Matriculado";
       }
       else{
@@ -87,7 +87,7 @@ export class EnrollmentPage implements OnInit {
     }
     else {
       if(!group.inclusion){
-        group.places++;
+        group.cupos++;
       }
       group.inclusion = false;
       for(let groupTemp of course.groups){
@@ -126,10 +126,22 @@ export class EnrollmentPage implements OnInit {
     this.getCourses();
   }
 
-  checkLogIn(){
+  checkIfLoggedIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
-      if(!res)
+      if(res){
+        this.loginService.getUser()
+        .subscribe(result =>{
+          let list = result as JSON[];
+          if(list.length > 0){
+            if(result[1].student)
+              this.menu.setStudent(true);
+            else
+              this.router.navigateByUrl('home-admin');
+          }
+        });
+      }
+      else
         this.router.navigateByUrl('login');
     });
   }

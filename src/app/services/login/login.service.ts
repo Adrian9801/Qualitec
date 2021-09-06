@@ -18,6 +18,10 @@ export class LoginService {
     return this.http.get(this.URL_API+'/checkLogIn');
   }
 
+  getUser() {
+    return this.http.get(this.URL_API+'/getUser');
+  }
+
   logout() {
     return this.http.get(this.URL_API+'/logout');
   }

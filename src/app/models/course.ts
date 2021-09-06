@@ -1,18 +1,18 @@
 import { Group } from "./group";
 
 export class Course {
-    id: string;
-    name: string;
+    codigo: string;
+    nombre: string;
     groups: Group[];
-    credits: number;
+    creditos: number;
     showGroups: boolean;
     state: string;
     color: string;
 
-    constructor (_id: string, _name: string, _credits: number){
-        this.id = _id;
-        this.name = _name;
-        this.credits = _credits;
+    constructor (_codigo: string, _nombre: string, _creditos: number){
+        this.codigo = _codigo;
+        this.nombre = _nombre;
+        this.creditos = _creditos;
         this.groups = [];
         this.showGroups = false;
         this.state = "Sin matricular";
