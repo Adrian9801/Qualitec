@@ -72,6 +72,12 @@ router.route('/loginUser').post((request, response) => {
   })
 })
 
+router.route('/getUser').get((request, response) => {
+  Db.getUser().then((data) => {
+    response.send(data);
+  })
+})
+
 router.route('/checkLogIn').get((request, response) => {
   Db.checkLogIn().then((data) => {
     response.send(data);
