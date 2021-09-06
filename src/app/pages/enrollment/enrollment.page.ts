@@ -37,7 +37,6 @@ export class EnrollmentPage implements OnInit {
     this.courseService.courses = [];
     this.courseService.getCourses()
     .subscribe(res => {
-      console.log(res[0]);
       let coursesTemp: Course[] = res[0] as Course[];
       for (let course of coursesTemp){
         let courseAux: Course = new Course(course.codigo,course.nombre,course.creditos);
@@ -45,7 +44,7 @@ export class EnrollmentPage implements OnInit {
         .subscribe(res => {
           let groupsTemp: Group[] = res as Group[];
           for (let group of groupsTemp){
-            let groupAux: Group = new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre);
+            let groupAux: Group = new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre, group.dias);
             this.groupService.groups.push(groupAux);
             courseAux.groups.push(groupAux);
           }
@@ -62,7 +61,7 @@ export class EnrollmentPage implements OnInit {
     .subscribe(res => {
       let groupsTemp: Group[] = res[0] as Group[];
       for (let group of groupsTemp){
-        this.groupService.groups.push(new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre));
+        this.groupService.groups.push(new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre, group.dias));
       }
     });
   }

@@ -31,12 +31,13 @@
 
 .state {
     float: right;
+    padding-right: 10px;
     vertical-align: Center;
 }
 
 .radio {
     float: right;
-    margin-left: 10px;
+    margin-left: 1px;
     margin-top: 3px;
 }
 
@@ -99,7 +100,8 @@
 }
 
 .stateRegitered {
-    padding-right: 50px;
+    float: right;
+    padding-right: 10px;
 }
 
 .divHeader {

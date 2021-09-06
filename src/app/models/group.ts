@@ -6,11 +6,12 @@ export class Group {
     sede: string;
     codigo_matricula: string;
     nombre: string;
+    dias: string;
     id_horario: number;
     registered: boolean;
     inclusion: boolean;
 
-    constructor(_codigo_curso:string, _codigo: number, _numero: number, _cupos: number, _sede: string, _codigo_matricula: string, _nombre: string){
+    constructor(_codigo_curso:string, _codigo: number, _numero: number, _cupos: number, _sede: string, _codigo_matricula: string, _nombre: string, _dias: string){
         this.codigo_curso = _codigo_curso;
         this.codigo = _codigo;
         this.numero = _numero;
@@ -18,6 +19,7 @@ export class Group {
         this.sede = _sede;
         this.codigo_matricula = _codigo_matricula;
         this.nombre = _nombre;
+        this.dias = _dias;
         this.registered = false;
         this.inclusion = false;
     }
