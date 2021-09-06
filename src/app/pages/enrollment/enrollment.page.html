@@ -93,15 +93,15 @@
                               Prof. {{group.nombre}}
                             </ion-text><br>
                             <ion-text class="text courseItem">
-                              Grupo: {{group.codigo}}
+                              Grupo: {{group.numero}}
                             </ion-text><br>
                             <ion-text class="text courseItem">
-                              Horario: M 7:30-9:20 V 7:30-9:20
+                              Horario: {{group.dias}}
                             </ion-text> 
                           </ion-col>
                           <ion-col>
                             <ion-text class="text iconList cupoItem">
-                              Cupo: {{group.places}}
+                              Cupo: {{group.cupos}}
                             </ion-text><br>
                             <ion-checkbox class="radio" value="course.id" [(ngModel)]="group.registered" disabled="{{register}}" (ionChange)="registeredGroup(group, course)" color="goldenColor"></ion-checkbox>
                             <ion-text class="text stateRegitered" *ngIf="group.cupos > 0 && !group.registered">

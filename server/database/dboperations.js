@@ -160,7 +160,7 @@ async function getGroupsCourseSP(CourseId) {
     let  pool = await  sql.connect(config);
     let  group = await  pool.request()
       .input('idC', sql.VarChar, CourseId)
-      .query("EXEC obtenerGruposCurso @idCourse = @idC");
+      .query("EXEC getGroupsCourseSP @curso_codigo = @idC");
     return  group.recordsets;
   }
   catch (error) {
