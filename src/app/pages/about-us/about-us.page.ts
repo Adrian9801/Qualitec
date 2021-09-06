@@ -18,13 +18,25 @@ export class AboutUsPage implements OnInit {
   }
 
   ngOnInit() {
-    //this.checkLogIn();
+    this.checkIfLoggedIn();
   }
 
-  checkLogIn(){
+  checkIfLoggedIn(){
     this.loginService.checkLogIn()
     .subscribe(res => {
-      if(!res)
+      if(res){
+        this.loginService.getUser()
+        .subscribe(result =>{
+          let list = result as JSON[];
+          if(list.length > 0){
+            if(result[1].student)
+              this.menu.setStudent(true);
+            else
+              this.router.navigateByUrl('home-admin');
+          }
+        });
+      }
+      else
         this.router.navigateByUrl('login');
     });
   }
