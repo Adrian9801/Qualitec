@@ -14,7 +14,6 @@ export class AboutUsPage implements OnInit {
   private opened: boolean = false;
 
   constructor(public menu:AppComponent, private router: Router, private loginService: LoginService) { 
-    menu.setStudent(true);
   }
 
   ngOnInit() {
@@ -32,7 +31,7 @@ export class AboutUsPage implements OnInit {
             if(result[1].student)
               this.menu.setStudent(true);
             else
-              this.router.navigateByUrl('home-admin');
+              this.menu.setStudent(false);
           }
         });
       }
