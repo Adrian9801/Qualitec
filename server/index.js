@@ -1,10 +1,10 @@
 var  Db = require('./database/dboperations');
-
 var  express = require('express');
 var  bodyParser = require('body-parser');
 var  cors = require('cors');
 var  app = express();
 var  router = express.Router();
+const configMensaje = require('./configMensaje');
 
 app.use(bodyParser.urlencoded({ extended:  true }));
 app.use(bodyParser.json());
@@ -72,6 +72,24 @@ router.route('/loginUser').post((request, response) => {
   })
 })
 
+router.route('/recovery/:mail').get((request, response) => {
+  Db.checkMail(request.params.mail).then(data  => {
+    response.send(data);
+  })
+})
+
+router.route('/checkCode/:code').get((request, response) => {
+  Db.checkCode(request.params.code).then(data  => {
+    response.send(data);
+  })
+})
+
+router.route('/updatePass/:password').get((request, response) => {
+  Db.updatePasswordSP(request.params.password).then(data  => {
+    response.send(data);
+  })
+})
+
 router.route('/getUser').get((request, response) => {
   Db.getUser().then((data) => {
     response.send(data);
@@ -82,6 +100,11 @@ router.route('/checkLogIn').get((request, response) => {
   Db.checkLogIn().then((data) => {
     response.send(data);
   })
+})
+
+router.route('/sendMail').post((request, response) => {
+  configMensaje(request.body);
+  response.send(true);
 })
 
 router.route('/logout').get((request, response) => {
