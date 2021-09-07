@@ -1,0 +1,87 @@
+
+<ion-content class="ion-padding">
+
+  <a routerLink="">
+    <ion-img class="logo-image" src="assets/Logo_QualiTec_Login.png"></ion-img>
+  </a>
+
+  <ion-card >
+    <ion-card-header lines="none">
+      <h1 class="ion-text-center" >{{title}}</h1>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="accountRecoverForm" *ngIf="step == 'first' || step == 'second'">
+        <ion-list>
+          <!-- Show Text-->
+          <ion-text>
+            <p>Ingrese la dirección de correo electrónico asociada con su cuenta. Si la cuenta existe en nuestro sistema, recibirá un correo con con un código de verificación.</p>
+          </ion-text>
+
+          <!-- Email input -->
+          <ion-item *ngIf="step == 'first'">
+            <ion-label position="floating"><ion-icon name="mail-outline"></ion-icon>Correo electrónico</ion-label>
+            <ion-input formControlName="correo" type="email" placeholder="Escriba su correo aquí"></ion-input>
+          </ion-item>
+          
+          <!-- Validation incorrect -->
+          <ion-text *ngIf="step == 'first' && !accountRecoverForm.get('correo').valid && accountRecoverForm.get('correo').touched" color="danger">
+            <p>Es necesario ingresar un correo válido. </p>
+          </ion-text>
+
+        <!--  Password input -->
+          <ion-item *ngIf="step == 'second'">
+            <ion-label position="floating"><ion-icon name="lock-closed-outline"></ion-icon>Escriba el código</ion-label>
+            <ion-input formControlName="token" type="text" placeholder="Escriba el código aquí"></ion-input>
+          </ion-item>
+
+                  <!-- Validation incorrect -->
+                  <ion-text *ngIf="step == 'second' && this.accountRecoverForm.value.token != '' && (accountRecoverForm.get('token').touched || showError)" color="danger">
+                    <p>Es necesario escribir el token recibido en el correo. </p>
+                  </ion-text>
+
+        </ion-list>
+
+    </form>
+
+    <form [formGroup]="changePasswordForm" *ngIf="step == 'third'">
+      <ion-list>
+
+        <!-- Password input -->
+        <ion-item>
+          <ion-label position="floating"><ion-icon name="lock-closed-outline"></ion-icon>Nueva contraseña</ion-label>
+          <ion-input formControlName="newPass" type="password" placeholder="Escriba su nueva contraseña aquí"></ion-input>
+        </ion-item>
+        
+        <!-- Validation incorrect -->
+        <ion-text *ngIf="!changePasswordForm.get('newPass').valid && changePasswordForm.get('newPass').touched" color="danger">
+          <p>Es necesario ingresar una contraseña de 8 o más caracteres.</p>
+        </ion-text>
+
+      <!--  Confirm password input -->
+        <ion-item>
+          <ion-label position="floating"><ion-icon name="lock-closed-outline"></ion-icon>Confirmar contraseña</ion-label>
+          <ion-input formControlName="confirmPass" type="password" placeholder="Confirme su contraseña aquí"></ion-input>
+        </ion-item>
+
+                <!-- Validation incorrect -->
+                <ion-text *ngIf="!changePasswordForm.valid && changePasswordForm.get('confirmPass').touched" color="danger">
+                  <p>Es necesario la contraseña coincida y contenga 8 o más caracteres. </p>
+                </ion-text>
+
+      </ion-list>
+
+  </form>
+      
+     <!--  Change button -->
+      <ion-button mode="ios" size="large" class="top-margin" expand="full" color="goldenColor" (click)="onUpdatePassword()">
+        {{textButton}}
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>
+
+
+

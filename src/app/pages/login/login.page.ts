@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
+  validUser: boolean = true;
 
   constructor(private router: Router, private loginService: LoginService, private fb: FormBuilder) { }
 
@@ -24,17 +25,28 @@ export class LoginPage implements OnInit {
   }
 
   onClickLogin(){
-    this.loginService.postLogin(this.loginForm.value)
-    .subscribe(res => {
-      let list = res as JSON[];
-      if(list.length > 0){
-        this.loginForm.reset();
-        if(res[1].student)
-          this.router.navigateByUrl('home-student');
-        else
-          this.router.navigateByUrl('home-admin');
-      }
-    });
+    this.validUser = true;
+    if(this.loginForm.valid) {
+      this.loginService.postLogin(this.loginForm.value)
+      .subscribe(res => {
+        let list = res as JSON[];
+        if(list.length > 0){
+          this.loginForm.reset();
+          if(res[1].student)
+            this.router.navigateByUrl('home-student');
+          else
+            this.router.navigateByUrl('home-admin');
+        }
+        else{
+          this.validUser = false;
+        }
+      });
+    }
+  }
+
+  onClickAccountRecovery() {
+    this.loginForm.reset();
+    this.router.navigateByUrl('account-recovery');
   }
 
   checkIfLoggedIn(){

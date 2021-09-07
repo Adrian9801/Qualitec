@@ -54,7 +54,11 @@ const routes: Routes = [
   {
     path: 'home-student',
     loadChildren: () => import('./pages/home-student/home-student.module').then( m => m.HomeStudentPageModule)
+  },  {
+    path: 'account-recovery',
+    loadChildren: () => import('./pages/account-recovery/account-recovery.module').then( m => m.AccountRecoveryPageModule)
   },
+
 
 
 

@@ -34,6 +34,11 @@
                     <p>Es necesario ingresar una contraseña de 8 o más caracteres. </p>
                   </ion-text>
 
+                  <!-- Validation incorrect -->
+                  <ion-text *ngIf="!validUser" color="danger">
+                    <p>El correo o contraseña son incorrectos. </p>
+                  </ion-text>
+
         </ion-list>
 
 
@@ -46,7 +51,7 @@
         Iniciar sesión
       </ion-button>
 
-      <ion-button fill="clear" expand="full" mode="ios">
+      <ion-button fill="clear" expand="full" mode="ios" (click)="onClickAccountRecovery()">
         <ion-label>Olvidé mi contraseña</ion-label>
       </ion-button> 
 
