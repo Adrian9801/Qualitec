@@ -4,20 +4,19 @@ module.exports = (formulario) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'qualitec.cr@gmail.com', // Cambialo por tu email
-            pass: 'admin258369' // Cambialo por tu password
+            user: 'qualitec.cr@gmail.com', 
+            pass: 'admin258369' 
         }
     });
     const mailOptions = {
         from: 'qualitec.cr@gmail.com',
-        to: formulario.Correo, // Cambia esta parte por el destinatario
+        to: formulario.Correo, 
         subject: 'Recuperación de cuenta',
         html: `
-        <strong>El código de verificación es: </strong>` + formulario.Code
+        Tu código de verificación de QualiTec es: <strong>${formulario.Code}</strong>`
     };
     transporter.sendMail(mailOptions, function (err, info) {
         if (err){
-            console.log(err);
             return false;
         }
         else{

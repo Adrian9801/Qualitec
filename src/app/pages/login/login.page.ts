@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from  "@angular/router";
 import { LoginService } from 'src/app/services/login/login.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -12,8 +13,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
   validUser: boolean = true;
+  loading: HTMLIonLoadingElement;
 
-  constructor(private router: Router, private loginService: LoginService, private fb: FormBuilder) { }
+  constructor(private router: Router, private loginService: LoginService, private fb: FormBuilder, public loadingController: LoadingController) { }
 
   ngOnInit() {
     this.checkIfLoggedIn();
@@ -24,14 +26,25 @@ export class LoginPage implements OnInit {
     });
   }
 
+  async presentLoading() {
+    let msg = 'Verificando datos...';
+    this.loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: msg
+    });
+    await this.loading.present();
+  }
+
   onClickLogin(){
     this.validUser = true;
     if(this.loginForm.valid) {
+      this.presentLoading();
       this.loginService.postLogin(this.loginForm.value)
       .subscribe(res => {
         let list = res as JSON[];
         if(list.length > 0){
           this.loginForm.reset();
+          this.loading.dismiss();
           if(res[1].student)
             this.router.navigateByUrl('home-student');
           else
@@ -39,6 +52,7 @@ export class LoginPage implements OnInit {
         }
         else{
           this.validUser = false;
+          this.loading.dismiss();
         }
       });
     }

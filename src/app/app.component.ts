@@ -21,8 +21,10 @@ export class AppComponent {
 
   changePage(page: string){
     this.menu.close('custom');
-    /*if(page == 'enrollment')
-      window.location.reload();*/
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    }
+    this.router.onSameUrlNavigation = 'reload';
     this.router.navigateByUrl(page);
   }
   

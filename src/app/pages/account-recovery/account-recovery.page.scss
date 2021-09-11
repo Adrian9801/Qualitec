@@ -40,3 +40,10 @@ ion-card {
 .iconPadding {
     padding-right: 5px;
 }
+
+.my-custom-class {
+    --background: #222;
+    --spinner-color: #fff;
+  
+    color: #fff;
+  }

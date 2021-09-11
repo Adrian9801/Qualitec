@@ -13,8 +13,13 @@
       <form [formGroup]="accountRecoverForm" *ngIf="step == 'first' || step == 'second'">
         <ion-list>
           <!-- Show Text-->
-          <ion-text>
+          <ion-text  *ngIf="step == 'first'">
             <p>Ingrese la dirección de correo electrónico asociada con su cuenta. Si la cuenta existe en nuestro sistema, recibirá un correo con con un código de verificación.</p>
+          </ion-text>
+
+          <!-- Show Text-->
+          <ion-text *ngIf="step == 'second'">
+            <p>Ingrese el código que recibió en el correo. El código expirar en 3 minutos.</p>
           </ion-text>
 
           <!-- Email input -->
@@ -76,6 +81,10 @@
       <ion-button mode="ios" size="large" class="top-margin" expand="full" color="goldenColor" (click)="onUpdatePassword()">
         {{textButton}}
       </ion-button>
+
+      <ion-button fill="clear" expand="full" mode="ios" (click)="onBack()">
+        <ion-label>Volver</ion-label>
+      </ion-button> 
 
     </ion-card-content>
 

@@ -25,7 +25,7 @@ export class HomeStudentPage implements OnInit {
       header: 'No está en su periodo de matrícula',
       message: 'El administrador le notificará cuando se vaya a abrir la matrícula.',
       buttons: ['Entendido']
-    });
+  });
 
     await alert.present();
   }

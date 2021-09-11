@@ -9,8 +9,9 @@ var secret = '';
 
 async  function  getCourses(){
   try {
+    token = jwt.sign({user: jwt.verify(token, secret).user }, secret, { expiresIn: '15m' });
     let  pool = await  sql.connect(config);
-    let  courses = await  pool.request().query("SELECT * from curso");
+    let  courses = await  pool.request().query("SELECT * from curso ORDER by nombre ASC");
     return  courses.recordsets;
   }
   catch (error) {
@@ -75,7 +76,7 @@ async function checkMail(mail) {
 async function checkCode(code) {
   try {
     if(code == jwt.verify(tokenRecovery, secret).code){
-      tokenRecovery = jwt.sign({user: jwt.verify(tokenRecovery, secret).user, code: code, type: jwt.verify(tokenRecovery, secret).type}, secret, { expiresIn: '3m' });
+      tokenRecovery = jwt.sign({user: jwt.verify(tokenRecovery, secret).user, code: code, type: jwt.verify(tokenRecovery, secret).type}, secret, { expiresIn: '10m' });
       return true;
     }
     return false;
@@ -212,12 +213,30 @@ async function addGroup(Group) {
   }
 }
 
-async function getGroupsCourseSP(CourseId) {
+async function getGroupsCourseSP(CourseId, userCarnet) {
   try {
+    token = jwt.sign({user: jwt.verify(token, secret).user }, secret, { expiresIn: '15m' });
     let  pool = await  sql.connect(config);
     let  group = await  pool.request()
       .input('idC', sql.VarChar, CourseId)
-      .query("EXEC getGroupsCourseSP @curso_codigo = @idC");
+      .input('userC', sql.Int, userCarnet)
+      .query("EXEC getGroupsCourseSP @curso_codigo = @idC, @carnet_estudiante = @userC");
+    return  group.recordsets;
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+async function updateGroup(groupId, cupoNum, userCarnet) {
+  try {
+    token = jwt.sign({user: jwt.verify(token, secret).user }, secret, { expiresIn: '15m' });
+    let  pool = await  sql.connect(config);
+    let  group = await  pool.request()
+      .input('idG', sql.Int, groupId)
+      .input('cuposG', sql.Int, cupoNum)
+      .input('userC', sql.Int, userCarnet)
+      .query("EXEC ActualizarEstadoGrupoEstudiante @grupo_codigo = @idG, @cupo = @cuposG, @carnet_estudiante = @userC");
     return  group.recordsets;
   }
   catch (error) {
@@ -253,12 +272,13 @@ module.exports = {
   getGroup:  getGroup,
   addGroup:  addGroup,
   getGroupsCourse: getGroupsCourse,
-  getGroupsCourseSP: getGroupsCourseSP,
   loginUser: loginUser,
   checkLogIn: checkLogIn,
   logout: logout,
   getUser: getUser,
   checkMail: checkMail,
   checkCode: checkCode,
-  updatePasswordSP: updatePasswordSP
+  updatePasswordSP: updatePasswordSP,
+  getGroupsCourseSP: getGroupsCourseSP,
+  updateGroup: updateGroup
 }

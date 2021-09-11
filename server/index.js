@@ -53,8 +53,14 @@ router.route('/groups/:idCourse/:id').get((request, response) => {
   })
 })*/
 
-router.route('/groups/:idCourse').get((request, response) => {
-  Db.getGroupsCourseSP(request.params.idCourse).then((data) => {
+router.route('/groups/course/:idCourse/:userCarnet').get((request, response) => {
+  Db.getGroupsCourseSP(request.params.idCourse, request.params.userCarnet).then((data) => {
+    response.json(data[0]);
+  })
+})
+
+router.route('/groups/:idGroup/:cupos/:userCarnet').get((request, response) => {
+  Db.updateGroup(request.params.idGroup, request.params.cupos, request.params.userCarnet).then((data) => {
     response.json(data[0]);
   })
 })

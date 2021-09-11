@@ -57,10 +57,10 @@
 <ion-content>
   <ion-card class="cardP">
     <ion-card-content>
-      <ion-list class="colorWhite">
+      <ion-list class="colorWhite" (click)="detectClick()">
         <ion-item *ngFor="let course of courses">
           <ion-grid class="grid">
-            <ion-row class="grid">
+            <ion-row class="grid" id='mia' (click)="showGroups(course)">
               <ion-col>
                 <ion-text class="text courseTitle">
                   {{course.codigo}} {{course.nombre}}
@@ -71,8 +71,8 @@
                 </ion-text>
               </ion-col>
               <ion-col class="grid">
-                <ion-icon class="iconList" name="chevron-down-outline" *ngIf="!course.showGroups" (click)="course.showGroups=!course.showGroups"></ion-icon>
-                <ion-icon class="iconList" name="chevron-up-outline" *ngIf="course.showGroups" (click)="course.showGroups=!course.showGroups"></ion-icon>
+                <ion-icon class="iconList" name="chevron-down-outline" *ngIf="!course.showGroups"></ion-icon>
+                <ion-icon class="iconList" name="chevron-up-outline" *ngIf="course.showGroups"></ion-icon>
                 <ion-text color={{course.color}} class="text state">
                   {{course.state}}
                 </ion-text>
@@ -81,7 +81,6 @@
             <ion-row>
               <ion-col>
                 <ion-list class="children" *ngIf="course.showGroups">
-                  <ion-radio-group>
                     <ion-item *ngFor="let group of course.groups">
                       <ion-grid class="grid">
                         <ion-row class="grid">
@@ -103,7 +102,7 @@
                             <ion-text class="text iconList cupoItem">
                               Cupo: {{group.cupos}}
                             </ion-text><br>
-                            <ion-checkbox class="radio" value="course.id" [(ngModel)]="group.registered" disabled="{{register}}" (ionChange)="registeredGroup(group, course)" color="goldenColor"></ion-checkbox>
+                            <ion-checkbox class="radio" value="group.codigo" [(ngModel)]="group.registered" disabled="{{register}}" (click)="registeredGroup(group, course, true)" color="goldenColor"></ion-checkbox>
                             <ion-text class="text stateRegitered" *ngIf="group.cupos > 0 && !group.registered">
                               Matricular
                             </ion-text>
@@ -120,7 +119,6 @@
                         </ion-row>
                       </ion-grid>
                     </ion-item>
-                  </ion-radio-group>
                 </ion-list>
               </ion-col>
             </ion-row>

@@ -20,8 +20,12 @@ export class GroupService {
     return this.http.get(this.URL_API + `/${courseId}` + `/${groupId}`);
   }
 
-  getGroupsCourse(courseId: String){
-    return this.http.get(this.URL_API + `/${courseId}`);
+  getGroupsCourse(courseId: String, userCarnet: number){
+    return this.http.get(this.URL_API + '/course' + `/${courseId}` + `/${userCarnet}`);
+  }
+
+  UpdateGroupCourse(groupId: number, cupo: number, userCarnet: number){
+    return this.http.get(this.URL_API + `/${groupId}` + `/${cupo}` + `/${userCarnet}`);
   }
 
   postGroup(group: Group) {
