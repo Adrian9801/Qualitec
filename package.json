@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "nodemon server/index.js",
-    "start": "ng serve",
+    "start": "node server/index.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
