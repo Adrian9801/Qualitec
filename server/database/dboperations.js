@@ -2,20 +2,21 @@ var  config = require('./dbconfig');
 const  sql = require('mssql');
 var jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
-var user = [];
-var token = '';
-var tokenRecovery = '';
-var secret = '';
 
-async  function  getCourses(){
+async  function  getCourses(req){
   try {
-    token = jwt.sign({user: jwt.verify(token, secret).user }, secret, { expiresIn: '15m' });
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '15m' }),
+                user: userLogin,
+                student: isStudent};
     let  pool = await  sql.connect(config);
     let  courses = await  pool.request().query("SELECT * from curso ORDER by nombre ASC");
-    return  courses.recordsets;
-  }
-  catch (error) {
-    console.log(error);
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
   }
 }
 
@@ -45,9 +46,7 @@ async function checkMail(mail) {
       for ( var i = 0; i < 8; i++ ) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
-      secret = (await bcryptjs.hashSync(Date.now()+'',8));
-      tokenRecovery = jwt.sign({user: userLogin[0][0].cedula, code: result, type: 0}, secret, { expiresIn: '5m' });
-      return [{code: result}];
+      return [{code: result}, {tokenRecovery: jwt.sign({user: userLogin[0][0].cedula, code: result, type: 0}, 'secret-Key', { expiresIn: '4m' })}];
     }
     else{
       userLogin = (await  pool.request()
@@ -60,28 +59,25 @@ async function checkMail(mail) {
         for ( var i = 0; i < 8; i++ ) {
           result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        secret = (await bcryptjs.hashSync(Date.now()+'',8));
-        tokenRecovery = jwt.sign({user: userLogin[0][0].carnet+'', code: result, type: 1}, secret, { expiresIn: '3m' });
-        return [{code: result}];
+        return [{code: result}, {tokenRecovery: jwt.sign({user: userLogin[0][0].carnet+'', code: result, type: 1}, 'secret-Key', { expiresIn: '4m' })}];
       }
     }
-    return false;
+    return [];
   }
   catch (error) {
-    return false
+    return []
   }
 }
 
 
-async function checkCode(code) {
+async function checkCode(req) {
   try {
-    if(code == jwt.verify(tokenRecovery, secret).code){
-      tokenRecovery = jwt.sign({user: jwt.verify(tokenRecovery, secret).user, code: code, type: jwt.verify(tokenRecovery, secret).type}, secret, { expiresIn: '10m' });
-      return true;
+    if(req.code == jwt.verify(req.token, 'secret-Key').code){
+      return [{tokenRecovery: jwt.sign({user: jwt.verify(req.token, 'secret-Key').user+'', code: req.code, type: jwt.verify(req.token, 'secret-Key').type}, 'secret-Key', { expiresIn: '4m' })}];
     }
-    return false;
+    return [];
   } catch (error) {
-    return false;
+    return [];
   }
 }
  
@@ -146,20 +142,16 @@ async function loginUser(userData) {
       .input('correo', sql.VarChar, userData.correo)
       .query("SELECT * from administrador where administrador.correo = @correo")).recordsets;
     if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
-      secret = (await bcryptjs.hashSync(Date.now()+'',8));
-      token = jwt.sign({  user: userLogin[0][0].cedula }, secret, { expiresIn: '1h' });
       userLogin[0].push({student:false});
-      user = userLogin[0];
+      userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: false}, 'secret-Key', { expiresIn: '16m' })});
     }
     else{
       userLogin = (await  pool.request()
       .input('correo', sql.VarChar, userData.correo)
       .query("SELECT * from estudiante where estudiante.correo = @correo")).recordsets;
       if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
-        secret = (await bcryptjs.hashSync(Date.now()+'',8));
-        token = jwt.sign({  user: userLogin[0][0].carnet }, secret, { expiresIn: '1h' });
         userLogin[0].push({student:true});
-        user = userLogin[0];
+        userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: true}, 'secret-Key', { expiresIn: '16m' })});
       }
       else{
         userLogin = [[]];
@@ -172,29 +164,17 @@ async function loginUser(userData) {
   }
 }
 
-async function checkLogIn() {
+async function checkLogIn(req) {
   try {
-    jwt.verify(token, secret);
-    return true;
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = [{token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent}];
+    return info;
   } catch (error) {
-    return false;
+    return [];
   }
-}
-
-async function getUser() {
-  try {
-    return user;
-  }
-  catch (error) {
-    console.log(error);
-  }
-}
-
-async function logout() {
-  token = '';
-  secret = '';
-  user = [];
-  return true;
 }
  
 async function addGroup(Group) {
@@ -213,42 +193,56 @@ async function addGroup(Group) {
   }
 }
 
-async function getGroupsCourseSP(CourseId, userCarnet) {
+async function getGroupsCourseSP(req) {
   try {
-    token = jwt.sign({user: jwt.verify(token, secret).user }, secret, { expiresIn: '15m' });
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
     let  pool = await  sql.connect(config);
     let  group = await  pool.request()
-      .input('idC', sql.VarChar, CourseId)
-      .input('userC', sql.Int, userCarnet)
+      .input('idC', sql.VarChar, req.codigo)
+      .input('userC', sql.Int, req.carnet)
       .query("EXEC getGroupsCourseSP @curso_codigo = @idC, @carnet_estudiante = @userC");
-    return  group.recordsets;
+      let list = group.recordsets;
+      list.push(info);
+      return list;
   }
   catch (error) {
     console.log(error);
+    return [];
   }
 }
 
-async function updateGroup(groupId, cupoNum, userCarnet) {
+async function updateGroup(req) {
   try {
-    token = jwt.sign({user: jwt.verify(token, secret).user }, secret, { expiresIn: '15m' });
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
     let  pool = await  sql.connect(config);
     let  group = await  pool.request()
-      .input('idG', sql.Int, groupId)
-      .input('cuposG', sql.Int, cupoNum)
-      .input('userC', sql.Int, userCarnet)
+      .input('idG', sql.Int, req.codigo)
+      .input('cuposG', sql.Int, req.cupos)
+      .input('userC', sql.Int, req.carnet)
       .query("EXEC ActualizarEstadoGrupoEstudiante @grupo_codigo = @idG, @cupo = @cuposG, @carnet_estudiante = @userC");
-    return  group.recordsets;
+    let list = group.recordsets;
+    list.push(info);
+    return list;
   }
   catch (error) {
     console.log(error);
+    return [];
   }
 }
 
-async function updatePasswordSP(password) {
+async function updatePasswordSP(req) {
   try {
-    let user = jwt.verify(tokenRecovery, secret).user;
-    let passwordHash = await bcryptjs.hashSync(password,8);
-    let type = jwt.verify(tokenRecovery, secret).type;
+    let user = jwt.verify(req.token, 'secret-Key').user;
+    let passwordHash = await bcryptjs.hashSync(req.pass,8);
+    let type = jwt.verify(req.token, 'secret-Key').type;
     let  pool = await  sql.connect(config);
     await  pool.request()
       .input('userIdent', sql.VarChar, user)
@@ -256,7 +250,6 @@ async function updatePasswordSP(password) {
       .input('typeUser', sql.VarChar, type)
       .query("EXEC updatePasswordSP @user = @userIdent, @newPassword = @pass, @type = @typeUser");
     tokenRecovery = '';
-    secret = '';
     return true;
   }
   catch (error) {
@@ -274,8 +267,6 @@ module.exports = {
   getGroupsCourse: getGroupsCourse,
   loginUser: loginUser,
   checkLogIn: checkLogIn,
-  logout: logout,
-  getUser: getUser,
   checkMail: checkMail,
   checkCode: checkCode,
   updatePasswordSP: updatePasswordSP,

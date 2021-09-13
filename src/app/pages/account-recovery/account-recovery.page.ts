@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from  "@angular/router";
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { LoginService } from 'src/app/services/login/login.service';
 import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service'; 
 
 @Component({
   selector: 'app-account-recovery',
@@ -20,11 +21,19 @@ export class AccountRecoveryPage implements OnInit {
   step: string = 'first';
   showError: boolean = false;
 
-  constructor(public alertController: AlertController, public loadingController: LoadingController, private router: Router, private loginService: LoginService, private fb: FormBuilder) { }
+  constructor(private cookieService: CookieService, public alertController: AlertController, public loadingController: LoadingController, private router: Router, private loginService: LoginService, private fb: FormBuilder) { 
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd && event.url == '/account-recovery') {
+        this.load();
+      }
+    });
+  }
 
   ngOnInit() {
-    this.checkIfLoggedIn();
+  }
 
+  load(){
+    this.checkIfLoggedIn();
     this.accountRecoverForm = this.fb.group({
       correo: [null, [Validators.required, Validators.email]],
       token: [null, []]});
@@ -34,6 +43,10 @@ export class AccountRecoveryPage implements OnInit {
       confirmPass: [null, [Validators.required, Validators.minLength(8)]]
     },
     {validator: this.matchPassword('newPass', 'confirmPass')});
+    this.textButton = "Enviar código";
+    this.title = "Recuperar cuenta";
+    this.step = 'first';
+    this.showError = false;
   }
 
   async presentLoading() {
@@ -68,6 +81,9 @@ export class AccountRecoveryPage implements OnInit {
         .subscribe(res => {
           let list = res as JSON[];
           if(list.length > 0){
+            const dateNow = new Date();
+            dateNow.setMinutes(dateNow.getMinutes() + 3);
+            this.cookieService.set('tokenRecovery', res[1].tokenRecovery, dateNow);
             this.loginService.sendToken({Correo: this.accountRecoverForm.value.correo, Code: res[0].code}).subscribe(result =>{
               this.loading.dismiss();
               this.step = 'second';
@@ -84,10 +100,14 @@ export class AccountRecoveryPage implements OnInit {
     }
     else if(this.step == 'second') {
       this.presentLoading();
-      if(this.accountRecoverForm.value.token != null) {
-        this.loginService.checkCode(this.accountRecoverForm.value.token)
+      if(this.accountRecoverForm.value.token != null && this.cookieService.check('tokenRecovery')) {
+        this.loginService.checkCode({code: this.accountRecoverForm.value.token, token: this.cookieService.get('tokenRecovery')})
         .subscribe(res => {
-          if(res){
+          let list = res as JSON[];
+          if(list.length > 0){
+            const dateNow = new Date();
+            dateNow.setMinutes(dateNow.getMinutes() + 3);
+            this.cookieService.set('tokenRecovery', res[0].tokenRecovery, dateNow);
             this.loading.dismiss();
             this.step = 'third';
             this.textButton = 'Cambiar contraseña';
@@ -104,11 +124,12 @@ export class AccountRecoveryPage implements OnInit {
       }
     }
     else {
-      if(this.changePasswordForm.valid) {
+      if(this.changePasswordForm.valid && this.cookieService.check('tokenRecovery')) {
         this.presentLoading();
-        this.loginService.updatePass(this.changePasswordForm.value.newPass)
+        this.loginService.updatePass({pass: this.changePasswordForm.value.newPass, token: this.cookieService.get('tokenRecovery')})
         .subscribe(res => {
           if(res){
+            this.cookieService.deleteAll();
             this.loading.dismiss();
             this.changePasswordForm.reset();
             this.router.navigateByUrl('login');
@@ -155,21 +176,23 @@ export class AccountRecoveryPage implements OnInit {
   }
 
   checkIfLoggedIn(){
-    this.loginService.checkLogIn()
-    .subscribe(res => {
-      if(res){
-        this.loginService.getUser()
-        .subscribe(result =>{
-          let list = result as JSON[];
-          if(list.length > 0){
-            if(result[1].student)
-              this.router.navigateByUrl('home-student');
-            else
-              this.router.navigateByUrl('home-admin');
-          }
-        });
-      }
-    });
+    if(this.cookieService.check('tokenAuth')){
+      this.loginService.checkLogIn({token: this.cookieService.get('tokenAuth')})
+      .subscribe(res => {
+        let list = res as JSON[];
+        if(list.length > 0){
+          const dateNow = new Date();
+          dateNow.setMinutes(dateNow.getMinutes() + 15);
+          this.cookieService.set('tokenAuth', res[0].token, dateNow);
+          if(res[0].student)
+            this.router.navigateByUrl('home-student');
+          else
+            this.router.navigateByUrl('home-admin');
+        }
+        else
+          this.router.navigateByUrl('login');
+      });
+    }
   }
 
 }

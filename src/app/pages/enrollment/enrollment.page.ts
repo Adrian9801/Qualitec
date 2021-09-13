@@ -7,6 +7,7 @@ import { LoginService } from 'src/app/services/login/login.service';
 import {AppComponent} from '../../app.component';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { Student } from 'src/app/models/student';
+import { CookieService } from 'ngx-cookie-service'; 
 
 @Component({
   selector: 'app-enrollment',
@@ -29,47 +30,67 @@ export class EnrollmentPage implements OnInit {
   private showSpinner: boolean = false;
   private textButton: string = "Matricular";
 
-  constructor(public menu:AppComponent, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { 
+  constructor(private cookieService: CookieService, public menu:AppComponent, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { 
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationStart) {
+      if (event instanceof NavigationEnd && event.url == '/enrollment') {
         this.checkIfLoggedIn();
+        this.load();
       }
-  });
+    });
   }
 
   ngOnInit() {
-    this.checkIfLoggedIn();
+  }
+
+  load(){
+    this.isClick = false;
+    this.waitOne = false;
+    this.waitTwo = false;
+    this.title = "Lista de cursos";
+    this.openRegister = 0;
+    this.subTitle = "Matrícula cerrada";
+    this.colorSubtitle = "danger";
+    this.register = true;
+    this.showSpinner = false;
+    this.textButton = "Matricular";
   }
   
   getCourses(){
-    this.groupService.groups = [];
-    this.courseService.courses = [];
-    this.courseService.getCourses()
-    .subscribe(res => {
-      let coursesTemp: Course[] = res[0] as Course[];
-      let pos = 0;
-      for (let course of coursesTemp){
-        let courseAux: Course = new Course(course.codigo,course.nombre,course.creditos, pos);
-        this.courseService.courses.push(courseAux);
-        pos++;
-        this.groupService.getGroupsCourse(course.codigo, this.user.carnet)
-        .subscribe(res => {
-          let groupsTemp: Group[] = res as Group[];
-          for (let group of groupsTemp){
-            if(group.estado != 'Matricular') {
-              courseAux.state = group.estado;
-              courseAux.color = "success";
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else{
+      this.groupService.groups = [];
+      this.courseService.courses = [];
+      this.courseService.getCourses({token: this.cookieService.get('tokenAuth')})
+      .subscribe(res => {
+        const dateNow = new Date();
+        dateNow.setMinutes(dateNow.getMinutes() + 15);
+        this.cookieService.set('tokenAuth', res[1].token, dateNow);
+        let coursesTemp: Course[] = res[0] as Course[];
+        let pos = 0;
+        for (let course of coursesTemp){
+          let courseAux: Course = new Course(course.codigo,course.nombre,course.creditos, pos);
+          this.courseService.courses.push(courseAux);
+          pos++;
+         this.groupService.getGroupsCourse({codigo: course.codigo, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
+          .subscribe(res => {
+            let groupsTemp: Group[] = res as Group[];
+            for (let group of groupsTemp){
+              if(group.estado != 'Matricular') {
+                courseAux.state = group.estado;
+                courseAux.color = "success";
+              }
+              let groupAux: Group = new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre, group.dias, group.estado);
+              groupAux.estado = 'Matricular';
+              this.groupService.groups.push(groupAux);
+              courseAux.addGroup(groupAux);
             }
-            let groupAux: Group = new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre, group.dias, group.estado);
-            groupAux.estado = 'Matricular';
-            this.groupService.groups.push(groupAux);
-            courseAux.addGroup(groupAux);
-          }
-          this.courses = this.courseService.courses;
-          this.showSpinner = false;
-        });
-      }
-    });
+            this.courses = this.courseService.courses;
+            this.showSpinner = false;
+          });
+        }
+      });
+    }
   }
   
   getGroups(){
@@ -99,9 +120,6 @@ export class EnrollmentPage implements OnInit {
           this.courses.splice(course.pos, 0, course);
           course.showGroups = false;
         }
-        /*this.courses = [];
-        await this.delay(0);
-        this.courses = this.courseService.courses;*/
       }
       this.isClick = false;
       this.waitOne = false;
@@ -137,50 +155,61 @@ export class EnrollmentPage implements OnInit {
   }
 
   registeredGroup(group: Group, course: Course, primary: boolean){
-    this.register = true;
-    if(!group.registered){
-      this.groupService.UpdateGroupCourse(group.codigo, -1, this.user.carnet)
-      .subscribe(res => {
-        let groupA = res[0] as Group;
-        group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado);
-        course.state = group.estado;
-        course.color = "success";
-        for(let groupTemp of course.groups){
-          if(groupTemp != group && groupTemp.registered == true){
-            this.registeredGroup(groupTemp, course, false);
-            groupTemp.registered = false;
+    if(this.cookieService.check('tokenAuth')){
+      this.register = true;
+      if(!group.registered){
+        this.groupService.UpdateGroupCourse({codigo: group.codigo, cupos: -1, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
+        .subscribe(res => {
+          const dateNow = new Date();
+          dateNow.setMinutes(dateNow.getMinutes() + 15);
+          this.cookieService.set('tokenAuth', res[1].token, dateNow);
+          let groupA = res[0][0] as Group;
+          group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado);
+          course.state = group.estado;
+          course.color = "success";
+          for(let groupTemp of course.groups){
+            if(groupTemp != group && groupTemp.registered == true){
+              this.registeredGroup(groupTemp, course, false);
+              groupTemp.registered = false;
+              return;
+            }
+          }
+          this.register = false;
+        });
+      }
+      else {
+        this.groupService.UpdateGroupCourse({codigo: group.codigo, cupos: 1, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
+        .subscribe(res => {
+          const dateNow = new Date();
+          dateNow.setMinutes(dateNow.getMinutes() + 15);
+          this.cookieService.set('tokenAuth', res[1].token, dateNow);
+          let groupA = res[0][0] as Group;
+          group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado);
+          this.register = false;
+          if(!primary){
             return;
           }
-        }
-        this.register = false;
-      });
+          course.state = "Sin matricular";
+          course.color = "danger";
+        });
+      }
     }
-    else {
-      this.groupService.UpdateGroupCourse(group.codigo, 1, this.user.carnet)
-      .subscribe(res => {
-        let groupA = res[0] as Group;
-        group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado);
-        this.register = false;
-        if(!primary){
-          return;
-        }
-        course.state = "Sin matricular";
-        course.color = "danger";
-      });
-    }
+    else
+      this.checkIfLoggedIn();
   }
 
   reload(){
-    this.showSpinner = true;
-    if(this.openRegister == 0){
-      this.openRegister = 1;
-      this.subTitle = "Matrícula abierta";
-      this.colorSubtitle = "success"
-    }
-    if(this.user == null)
-      this.checkIfLoggedIn();
-    else
+    if(this.cookieService.check('tokenAuth')){
+      this.showSpinner = true;
+      if(this.openRegister == 0){
+        this.openRegister = 1;
+        this.subTitle = "Matrícula abierta";
+        this.colorSubtitle = "success"
+      }
       this.getCourses();
+    }
+    else
+      this.router.navigateByUrl('login');
   }
 
   back(){
@@ -200,25 +229,27 @@ export class EnrollmentPage implements OnInit {
   }
 
   checkIfLoggedIn(){
-    this.loginService.checkLogIn()
-    .subscribe(res => {
-      if(res){
-        this.loginService.getUser()
-        .subscribe(result =>{
-          let list = result as JSON[];
-          if(list.length > 0){
-            if(result[1].student){
-              this.menu.setStudent(true);
-              this.user = result[0];
-              this.getCourses();
-            }
-            else
-              this.router.navigateByUrl('home-admin');
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else {
+      this.loginService.checkLogIn({token: this.cookieService.get('tokenAuth')})
+      .subscribe(res => {
+        let list = res as JSON[];
+        if(list.length > 0){
+          const dateNow = new Date();
+          dateNow.setMinutes(dateNow.getMinutes() + 15);
+          this.cookieService.set('tokenAuth', res[0].token, dateNow);
+          if(res[0].student){
+            this.menu.setStudent(true);
+            this.user = res[0].user;
+            this.getCourses();
           }
-        });
-      }
-      else
-        this.router.navigateByUrl('login');
-    });
+          else
+            this.router.navigateByUrl('home-admin');
+        }
+        else
+          this.router.navigateByUrl('login');
+      });
+    }
   }
 }

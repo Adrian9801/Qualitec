@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {AppComponent} from '../../app.component';
 import { AlertController } from '@ionic/angular';
-import { Router } from  "@angular/router";
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { LoginService } from 'src/app/services/login/login.service';
+import { CookieService } from 'ngx-cookie-service'; 
 
 @Component({
   selector: 'app-home-student',
@@ -12,11 +13,15 @@ import { LoginService } from 'src/app/services/login/login.service';
 })
 export class HomeStudentPage implements OnInit {
 
-  constructor(public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService) { 
+  constructor(private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService) { 
   }
 
   ngOnInit() {
-    this.checkIfLoggedIn();
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd && event.url == '/home-student') {
+        this.checkIfLoggedIn();
+      }
+    });
   }
 
   public async presentAlert() {
@@ -31,22 +36,24 @@ export class HomeStudentPage implements OnInit {
   }
 
   checkIfLoggedIn(){
-    this.loginService.checkLogIn()
-    .subscribe(res => {
-      if(res){
-        this.loginService.getUser()
-        .subscribe(result =>{
-          let list = result as JSON[];
-          if(list.length > 0){
-            if(result[1].student)
-              this.menu.setStudent(true);
-            else
-              this.router.navigateByUrl('home-admin');
-          }
-        });
-      }
-      else
-        this.router.navigateByUrl('login');
-    });
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else {
+      this.loginService.checkLogIn({token: this.cookieService.get('tokenAuth')})
+      .subscribe(res => {
+        let list = res as JSON[];
+        if(list.length > 0){
+          const dateNow = new Date();
+          dateNow.setMinutes(dateNow.getMinutes() + 15);
+          this.cookieService.set('tokenAuth', res[0].token, dateNow);
+          if(res[0].student)
+            this.menu.setStudent(true);
+          else
+            this.router.navigateByUrl('home-admin');
+        }
+        else
+          this.router.navigateByUrl('login');
+      });
+    }
   }
 }

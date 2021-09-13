@@ -14,16 +14,8 @@ export class LoginService {
     return this.http.post(this.URL_API+'/loginUser', user);
   }
 
-  checkLogIn() {
-    return this.http.get(this.URL_API+'/checkLogIn');
-  }
-
-  getUser() {
-    return this.http.get(this.URL_API+'/getUser');
-  }
-
-  logout() {
-    return this.http.get(this.URL_API+'/logout');
+  checkLogIn(token) {
+    return this.http.post(this.URL_API+'/checkLogIn', token);
   }
 
   sendToken(formulario) {
@@ -34,11 +26,11 @@ export class LoginService {
     return this.http.get(this.URL_API+'/recovery'+ `/${mail}`);
   }
 
-  checkCode(code: string) {
-    return this.http.get(this.URL_API+'/checkCode'+ `/${code}`);
+  checkCode(tokenVerify) {
+    return this.http.post(this.URL_API+'/checkCode', tokenVerify);
   }
 
-  updatePass(password: string) {
-    return this.http.get(this.URL_API+'/updatePass'+ `/${password}`);
+  updatePass(tokenNewPass) {
+    return this.http.post(this.URL_API+'/updatePass', tokenNewPass);
   }
 }

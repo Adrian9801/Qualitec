@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from  "@angular/router";
 import { LoginService } from 'src/app/services/login/login.service';
 import { MenuController } from '@ionic/angular';
+import { CookieService } from 'ngx-cookie-service'; 
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import { MenuController } from '@ionic/angular';
 export class AppComponent {
 
   public student = true;
-  constructor(private router: Router, private loginService: LoginService, private menu: MenuController) { 
+  constructor(private cookieService: CookieService, private router: Router, private loginService: LoginService, private menu: MenuController) { 
   }
 
   setStudent(valor:boolean){
@@ -21,16 +22,12 @@ export class AppComponent {
 
   changePage(page: string){
     this.menu.close('custom');
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
-      return false;
-    }
-    this.router.onSameUrlNavigation = 'reload';
     this.router.navigateByUrl(page);
   }
   
   logout(){
-    this.loginService.logout().subscribe(res => {
-      this.changePage('login');
-    });
+    this.menu.close('custom');
+    this.cookieService.delete('tokenAuth');
+    window.location.reload();
   }
 }
