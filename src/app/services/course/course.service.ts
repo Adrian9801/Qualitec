@@ -13,8 +13,8 @@ export class CourseService {
 
   constructor(private http: HttpClient) { }
 
-  getCourses(){ 
-    return this.http.get(this.URL_API);
+  getCourses(token){ 
+    return this.http.post(this.URL_API, token);
   }
 
 

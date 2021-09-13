@@ -16,8 +16,8 @@ router.use((request, response, next) => {
 });
  
  
-router.route('/courses').get((request, response) => {
-  Db.getCourses().then((data) => {
+router.route('/courses').post((request, response) => {
+  Db.getCourses(request.body).then((data) => {
     response.json(data);
   })
 })
@@ -25,13 +25,6 @@ router.route('/courses').get((request, response) => {
 router.route('/courses/:id').get((request, response) => {
   Db.getCourse(request.params.id).then((data) => {
     response.json(data[0]);
-  })
-})
-
-router.route('/courses').post((request, response) => {
-  let  order = { ...request.body }
-  Db.addCourse(order).then(data  => {
-    response.status(201).json(data);
   })
 })
 
@@ -53,22 +46,15 @@ router.route('/groups/:idCourse/:id').get((request, response) => {
   })
 })*/
 
-router.route('/groups/course/:idCourse/:userCarnet').get((request, response) => {
-  Db.getGroupsCourseSP(request.params.idCourse, request.params.userCarnet).then((data) => {
+router.route('/groups/course').post((request, response) => {
+  Db.getGroupsCourseSP(request.body).then((data) => {
     response.json(data[0]);
   })
 })
 
-router.route('/groups/:idGroup/:cupos/:userCarnet').get((request, response) => {
-  Db.updateGroup(request.params.idGroup, request.params.cupos, request.params.userCarnet).then((data) => {
-    response.json(data[0]);
-  })
-})
-
-router.route('/groups').post((request, response) => {
-  let  order = { ...request.body }
-  Db.addGroup(order).then(data  => {
-    response.status(201).json(data);
+router.route('/groups/update').post((request, response) => {
+  Db.updateGroup(request.body).then((data) => {
+    response.json(data);
   })
 })
 
@@ -84,26 +70,20 @@ router.route('/recovery/:mail').get((request, response) => {
   })
 })
 
-router.route('/checkCode/:code').get((request, response) => {
-  Db.checkCode(request.params.code).then(data  => {
+router.route('/checkCode').post((request, response) => {
+  Db.checkCode(request.body).then(data  => {
     response.send(data);
   })
 })
 
-router.route('/updatePass/:password').get((request, response) => {
-  Db.updatePasswordSP(request.params.password).then(data  => {
+router.route('/updatePass').post((request, response) => {
+  Db.updatePasswordSP(request.body).then(data  => {
     response.send(data);
   })
 })
 
-router.route('/getUser').get((request, response) => {
-  Db.getUser().then((data) => {
-    response.send(data);
-  })
-})
-
-router.route('/checkLogIn').get((request, response) => {
-  Db.checkLogIn().then((data) => {
+router.route('/checkLogIn').post((request, response) => {
+  Db.checkLogIn(request.body).then((data) => {
     response.send(data);
   })
 })
@@ -111,12 +91,6 @@ router.route('/checkLogIn').get((request, response) => {
 router.route('/sendMail').post((request, response) => {
   configMensaje(request.body);
   response.send(true);
-})
-
-router.route('/logout').get((request, response) => {
-  Db.logout().then((data) => {
-    response.send(data);
-  })
 })
   
 var  port = process.env.PORT || 8090;
