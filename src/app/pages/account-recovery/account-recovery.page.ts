@@ -27,13 +27,6 @@ export class AccountRecoveryPage implements OnInit {
         this.load();
       }
     });
-  }
-
-  ngOnInit() {
-  }
-
-  load(){
-    this.checkIfLoggedIn();
     this.accountRecoverForm = this.fb.group({
       correo: [null, [Validators.required, Validators.email]],
       token: [null, []]});
@@ -43,6 +36,13 @@ export class AccountRecoveryPage implements OnInit {
       confirmPass: [null, [Validators.required, Validators.minLength(8)]]
     },
     {validator: this.matchPassword('newPass', 'confirmPass')});
+  }
+
+  ngOnInit() {
+  }
+
+  load(){
+    this.checkIfLoggedIn();
     this.textButton = "Enviar código";
     this.title = "Recuperar cuenta";
     this.step = 'first';
@@ -79,6 +79,7 @@ export class AccountRecoveryPage implements OnInit {
       if(this.accountRecoverForm.valid) {
         this.loginService.verifyMail(this.accountRecoverForm.value.correo)
         .subscribe(res => {
+          console.log(res)
           let list = res as JSON[];
           if(list.length > 0){
             const dateNow = new Date();
