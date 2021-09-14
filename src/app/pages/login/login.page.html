@@ -1,0 +1,65 @@
+
+<ion-content class="ion-padding">
+
+  <a routerLink="">
+    <ion-img class="logo-image" src="assets/Logo_QualiTec_Login.png"></ion-img>
+  </a>
+
+  <ion-card >
+    <ion-card-header lines="none">
+      <h1 class="ion-text-center" >Iniciar sesión</h1>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="loginForm">
+        <ion-list>
+          <!-- Email input -->
+          <ion-item>
+            <ion-label position="floating"><ion-icon name="mail-outline"></ion-icon>Correo electrónico</ion-label>
+            <ion-input formControlName="correo" type="email" placeholder="Escriba su correo aquí"></ion-input>
+          </ion-item>
+          
+          <!-- Validation incorrect -->
+          <ion-text *ngIf="!loginForm.get('correo').valid && loginForm.get('correo').touched" color="danger">
+            <p>Es necesario ingresar un correo válido. </p>
+          </ion-text>
+
+        <!--  Password input -->
+          <ion-item>
+            <ion-label position="floating"><ion-icon name="lock-closed-outline"></ion-icon>Contraseña </ion-label>
+            <ion-input formControlName="pass" type="password" placeholder="Escriba su contraseña aquí"></ion-input>
+          </ion-item>
+
+                  <!-- Validation incorrect -->
+                  <ion-text *ngIf="!loginForm.get('pass').valid && loginForm.get('pass').touched" color="danger">
+                    <p>Es necesario ingresar una contraseña de 8 o más caracteres. </p>
+                  </ion-text>
+
+                  <!-- Validation incorrect -->
+                  <ion-text *ngIf="!validUser" color="danger">
+                    <p>El correo o contraseña son incorrectos. </p>
+                  </ion-text>
+
+        </ion-list>
+
+
+
+
+    </form>
+      
+     <!--  Login button -->
+      <ion-button mode="ios" size="large" class="top-margin" expand="full" color="goldenColor" (click)="onClickLogin()">
+        Iniciar sesión
+      </ion-button>
+
+      <ion-button fill="clear" expand="full" mode="ios" (click)="onClickAccountRecovery()">
+        <ion-label>Olvidé mi contraseña</ion-label>
+      </ion-button> 
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>
+
+
+

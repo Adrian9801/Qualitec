@@ -1,0 +1,149 @@
+.iconList {
+    float: right;
+}
+
+.text {
+    white-space: normal;
+    font-family: 'Roboto', sans-serif;
+    font-style: 'Regular';
+    fill: solid;
+}
+
+.courseTitle {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.campusText {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.courseItem {
+    font-size: 14px;
+    color: #666666;
+}
+
+.cupoItem {
+    font-size: 15px;
+    color: #000000;
+}
+
+.state {
+    float: right;
+    padding-right: 10px;
+    vertical-align: Center;
+}
+
+.radio {
+    float: right;
+    margin-left: 1px;
+    margin-top: 3px;
+}
+
+.cardP {
+    margin: 20px auto;
+    width: 90%;
+    min-width: 300px;
+    background-color: white
+}
+
+.colorWhite {
+    background-color: white;
+    --ion-background-color: white;
+}
+
+.grid {
+    width: 100%;
+    grid-template-columns: 80px 500px;
+}
+
+.header {
+    --ion-background-color: #0C1433;
+    min-height: 100px;
+    width: 100%;
+}
+
+.headerRed {
+    height: 30px;
+    width: 100%;
+}
+
+.textHeaderRe {
+    float: right;
+    color: black;
+    font-size: 15px;
+    margin-top: -5px;
+}
+
+.textHeader {
+    color: white;
+    font-size: 20px;
+}
+
+.iconHeader {
+    color: white;
+    font-size: 25px;
+    margin-top: 55px;
+    margin-left: 10px;
+}
+
+.buttonHeader {
+    margin-top: 45px;
+    margin-right: 20px;
+    --background: linear-gradient(#ffffff, #fcc859, #FFB81C);
+}
+
+.spinner {
+    color: black;
+    margin-top: -40px;
+}
+
+.stateRegitered {
+    float: right;
+    padding-right: 10px;
+}
+
+.divHeader {
+    height: 30px;
+    margin-top: 0%;
+    float: left;
+    width: 40%;
+}
+
+.divHeader2 {
+    height: 30px;
+    margin-top: 0%;
+    float: left;
+    width: 60%;
+}
+
+.iconReload {
+    margin-top: -40px;
+    font-size: 25px;
+    color: black;
+}
+
+.menuColor {
+    --ion-background-color:#ffffff;
+}
+
+.menuMargin {
+    margin-top: 100px;
+}
+
+.menuText {
+    margin-left: 10px;
+    margin-top: 0%;
+}
+
+.imgRisizeMenu {
+    margin-top: 53px;
+    margin-left: 10px;
+    width:45px;
+    height:auto;
+}
+
+ion-content {
+    --ion-background-color:#E5E5E5;
+}

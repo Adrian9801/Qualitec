@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar class="header" *ngIf="openRegister <= 1">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="auto">
+          <ion-menu-button class="iconHeader"></ion-menu-button>
+        </ion-col>
+        <ion-col>
+          <br><br><br>
+          <ion-text class="text textHeader">{{title}}</ion-text>
+        </ion-col>
+        <ion-col *ngIf="openRegister == 1">
+          <ion-button id="Matricular" class="iconList buttonHeader" (click) = "enroll()">
+            <ion-text color="redColor">
+              {{textButton}}
+            </ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <ion-toolbar class="header" *ngIf="openRegister == 2">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="auto">
+          <ion-icon class="iconHeader" name="arrow-back-outline" (click) = "back()"></ion-icon>
+        </ion-col>
+        <ion-col>
+          <br><br><br>
+          <ion-text class="text textHeader">{{title}}</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-button class="iconList buttonHeader">
+            <ion-text color="redColor">
+              {{textButton}}
+            </ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
+  <ion-toolbar class="headerRed" color="{{colorSubtitle}}">
+    <div class="divHeader2">
+      <ion-title class="text textHeaderRe ion-text-center">
+        {{subTitle}}
+      </ion-title>
+    </div>
+    <div class="divHeader">
+      <ion-spinner class="spinner" name="lines-small" *ngIf="showSpinner"></ion-spinner>
+      <ion-icon name="reload-circle" *ngIf="!showSpinner" class="iconReload" (click) = "reload()"></ion-icon>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="cardP">
+    <ion-card-content>
+      <ion-list class="colorWhite" (click)="detectClick()">
+        <ion-item *ngFor="let course of courses">
+          <ion-grid class="grid">
+            <ion-row class="grid" id='mia' (click)="showGroups(course)">
+              <ion-col>
+                <ion-text class="text courseTitle">
+                  {{course.codigo}} {{course.nombre}}
+                </ion-text>
+                <br>
+                <ion-text class="text courseItem ">
+                  Créditos: {{course.creditos}}
+                </ion-text>
+              </ion-col>
+              <ion-col class="grid">
+                <ion-icon class="iconList" name="chevron-down-outline" *ngIf="!course.showGroups"></ion-icon>
+                <ion-icon class="iconList" name="chevron-up-outline" *ngIf="course.showGroups"></ion-icon>
+                <ion-text color={{course.color}} class="text state">
+                  {{course.state}}
+                </ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-list class="children" *ngIf="course.showGroups">
+                    <ion-item *ngFor="let group of course.groups">
+                      <ion-grid class="grid">
+                        <ion-row class="grid">
+                          <ion-col>
+                            <ion-text class="text campusText">
+                              Sede {{group.sede}}
+                            </ion-text><br>
+                            <ion-text class="text courseTitle">
+                              Prof. {{group.nombre}}
+                            </ion-text><br>
+                            <ion-text class="text courseItem">
+                              Grupo: {{group.numero}}
+                            </ion-text><br>
+                            <ion-text class="text courseItem">
+                              Horario: {{group.dias}}
+                            </ion-text> 
+                          </ion-col>
+                          <ion-col>
+                            <ion-text class="text iconList cupoItem">
+                              Cupo: {{group.cupos}}
+                            </ion-text><br>
+                            <ion-checkbox class="radio" value="group.codigo" [(ngModel)]="group.registered" disabled="{{register}}" (click)="registeredGroup(group, course, true)" color="goldenColor"></ion-checkbox>
+                            <ion-text class="text stateRegitered" *ngIf="group.cupos > 0 && !group.registered">
+                              Matricular
+                            </ion-text>
+                            <ion-text class="text stateRegitered" *ngIf="group.cupos == 0  && !group.registered">
+                              Pedir inclusión
+                            </ion-text>
+                            <ion-text class="text stateRegitered" *ngIf="group.registered && !group.inclusion">
+                              Matriculado
+                            </ion-text>
+                            <ion-text class="text stateRegitered" *ngIf="group.inclusion">
+                              Inclusión
+                            </ion-text>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+                    </ion-item>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
