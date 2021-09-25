@@ -26,8 +26,7 @@ export class AppComponent {
   }
   
   logout(){
-    this.menu.close('custom');
     this.cookieService.delete('tokenAuth');
-    window.location.reload();
+    this.changePage('login');
   }
 }
