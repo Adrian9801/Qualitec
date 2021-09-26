@@ -54,9 +54,18 @@ const routes: Routes = [
   {
     path: 'home-student',
     loadChildren: () => import('./pages/home-student/home-student.module').then( m => m.HomeStudentPageModule)
-  },  {
+  },
+  {
     path: 'account-recovery',
     loadChildren: () => import('./pages/account-recovery/account-recovery.module').then( m => m.AccountRecoveryPageModule)
+  },
+  {
+    path: 'lista-levantamamiento-admin',
+    loadChildren: () => import('./pages/lista-levantamamiento-admin/lista-levantamamiento-admin.module').then( m => m.ListaLevantamamientoAdminPageModule)
+  },
+  {
+    path: 'resumen-levantamiento-admin',
+    loadChildren: () => import('./pages/resumen-levantamiento-admin/resumen-levantamiento-admin.module').then( m => m.ResumenLevantamientoAdminPageModule)
   },
 
 
