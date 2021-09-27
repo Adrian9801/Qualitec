@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button class="color-white"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class = "color-white">Solicitudes de levantamiento de requisitos</ion-title>
+    <ion-button slot="end" color="warning" shape="round" (click)="siguiente()">Siguiente</ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="filterList($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let entry of solicitudes">
+      <div class ="enlista">
+        <ion-card-content>
+          <ion-card-subtitle>Sede: {{entry.sede}} </ion-card-subtitle>
+          <ion-card-title>Solicitud # {{entry.solicitud}}</ion-card-title>
+          <h2> Curso: {{entry.curso}} </h2>
+          <ion-card-subtitle>Nombre: {{entry.nombre}} </ion-card-subtitle>
+          <ion-card-subtitle>Carnet: {{entry.carnet}} </ion-card-subtitle>
+        </ion-card-content>
+      </div>
+      <ion-checkbox color="warning" [(ngModel)]="entry.isChecked"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

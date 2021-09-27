@@ -1,9 +1,67 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>schedule</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="login" class="color-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="color-white">Mi horario</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
+<!--   El siguiente componente de horario semanal se basó de un artículo en línea de CSS-Tricks.com
+  https://css-tricks.com/building-a-conference-schedule-with-css-grid/#mobile-layout-and-grid-fallback-complete -->
+  <div class="schedule" aria-labelledby="schedule-heading">
+
+    <span class="day-slot" aria-hidden="true" style="grid-column: Lunes; grid-row: days;">Lunes</span>
+    <span class="day-slot" aria-hidden="true" style="grid-column: Martes; grid-row: days;">Martes</span>
+    <span class="day-slot" aria-hidden="true" style="grid-column: Miércoles; grid-row: days;">Miércoles</span>
+    <span class="day-slot" aria-hidden="true" style="grid-column: Jueves; grid-row: days;">Jueves</span>
+    <span class="day-slot" aria-hidden="true" style="grid-column: Viernes; grid-row: days;">Viernes</span>
+    <span class="day-slot" aria-hidden="true" style="grid-column: Sábado; grid-row: days;">Sábado</span>
+
+    <h2 class="time-slot" style="grid-row: time-0700;">7:00</h2>
+    <h2 class="time-slot" style="grid-row: time-0730;">7:30</h2>
+    <h2 class="time-slot" style="grid-row: time-0800;">8:00</h2>
+    <h2 class="time-slot" style="grid-row: time-0830;">8:30</h2>
+    <h2 class="time-slot" style="grid-row: time-0900;">9:00</h2>
+    <h2 class="time-slot" style="grid-row: time-0930;">9:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1000;">10:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1030;">10:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1100;">11:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1130;">11:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1200;">12:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1230;">12:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1300;">13:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1330;">13:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1400;">14:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1430;">14:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1500;">15:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1530;">15:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1600;">16:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1630;">16:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1700;">17:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1730;">17:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1800;">18:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1830;">18:30</h2>
+    <h2 class="time-slot" style="grid-row: time-1900;">19:00</h2>
+    <h2 class="time-slot" style="grid-row: time-1930;">19:30</h2>
+    <h2 class="time-slot" style="grid-row: time-2000;">20:00</h2>
+    <h2 class="time-slot" style="grid-row: time-2030;">20:30</h2>
+    <h2 class="time-slot" style="grid-row: time-2100;">21:00</h2>
+    <h2 class="time-slot" style="grid-row: time-2130;">21:30</h2>
+    <h2 class="time-slot" style="grid-row: time-2200;">22:00</h2>
+
+    <div *ngFor="let group of enrolledCoursesTemp" class="course" style="grid-column: {{group.dia}}; grid-row: time-{{group.horaInicio}} / time-{{group.horaFin}};">
+      <h3 class="course-title">{{group.nombre}}</h3>
+      <span class="course-day">{{group.dia}}</span>
+      <span class="course-time">{{group.horaInicio}} - {{group.horaFin}}</span>
+      <span class="course-presenter">{{group.profesor}}</span>
+    </div>
+
+
+  </div>
+
+
 
 </ion-content>
