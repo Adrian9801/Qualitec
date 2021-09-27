@@ -7,7 +7,7 @@ ion-toolbar {
 }
 
 /*************************
- * GRID SCHEDULE LAYOUT
+ * GRID SCHEDULE LAYOUT When screen > 520px
  *************************/
  @media screen and (min-width:520px) {
   .schedule {
@@ -70,7 +70,7 @@ ion-toolbar {
 }
 
 .time-slot {
-  grid-column: times;
+  
 }
 
 .day-slot {
