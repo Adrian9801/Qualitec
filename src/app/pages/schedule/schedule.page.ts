@@ -28,18 +28,18 @@ export class SchedulePage implements OnInit {
       profesor: 'Ivannia Cerdas'
     },
     {
-      nombre: 'Estructuras de datos',
-      dia: 'Viernes',
-      horaInicio: '1300',
-      horaFin: '1500',
-      profesor: 'Ivannia Cerdas'
-    },
-    {
       nombre: 'Análisis de Algoritmos',
       dia: 'Martes',
       horaInicio: '0900',
       horaFin: '1100',
       profesor: 'Rodrigo Núñez'
+    },
+    {
+      nombre: 'Estructuras de datos',
+      dia: 'Viernes',
+      horaInicio: '1300',
+      horaFin: '1500',
+      profesor: 'Ivannia Cerdas'
     },
     {
       nombre: 'Análisis de Algoritmos',
