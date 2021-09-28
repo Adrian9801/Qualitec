@@ -3,7 +3,7 @@ const  sql = require('mssql');
 var jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 
-async  function  getCourses(req){
+async function getCourses(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
@@ -11,7 +11,28 @@ async  function  getCourses(req){
                 user: userLogin,
                 student: isStudent};
     let  pool = await  sql.connect(config);
-    let  courses = await  pool.request().query("SELECT * from curso ORDER by nombre ASC");
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getStudentCourses @carnetE = @carnet");
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getSchedule(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '15m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getSchedule @carnet_estudiante = @carnet");
     let courseList = courses.recordsets;
     courseList.push(info);
     return courseList;
@@ -271,5 +292,6 @@ module.exports = {
   checkCode: checkCode,
   updatePasswordSP: updatePasswordSP,
   getGroupsCourseSP: getGroupsCourseSP,
-  updateGroup: updateGroup
+  updateGroup: updateGroup,
+  getSchedule: getSchedule
 }

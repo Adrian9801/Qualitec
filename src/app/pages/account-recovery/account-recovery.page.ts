@@ -5,6 +5,7 @@ import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service'; 
+import {AppComponent} from '../../app.component';
 
 @Component({
   selector: 'app-account-recovery',
@@ -21,10 +22,11 @@ export class AccountRecoveryPage implements OnInit {
   step: string = 'first';
   showError: boolean = false;
 
-  constructor(private cookieService: CookieService, public alertController: AlertController, public loadingController: LoadingController, private router: Router, private loginService: LoginService, private fb: FormBuilder) { 
+  constructor(public menu:AppComponent, private cookieService: CookieService, public alertController: AlertController, public loadingController: LoadingController, private router: Router, private loginService: LoginService, private fb: FormBuilder) { 
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url == '/account-recovery') {
         this.load();
+        this.menu.setEnable(false);
       }
     });
     this.accountRecoverForm = this.fb.group({
@@ -68,7 +70,7 @@ export class AccountRecoveryPage implements OnInit {
       header: title,
       message: msg,
       buttons: ['Entendido']
-  });
+    });
 
     await alert.present();
   }
