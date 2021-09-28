@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="login" class="color-white"></ion-back-button>
+      <ion-back-button defaultHref="home-student" class="color-white"></ion-back-button>
     </ion-buttons>
     <ion-title class="color-white">Mi horario</ion-title>
   </ion-toolbar>
@@ -52,13 +52,17 @@
     <h2 class="time-slot" style="grid-row: time-2130;">21:30</h2>
     <h2 class="time-slot" style="grid-row: time-2200;">22:00</h2>
 
-    <div *ngFor="let group of enrolledCoursesTemp" class="course" style="grid-column: {{group.dia}}; grid-row: time-{{group.horaInicio}} / time-{{group.horaFin}};">
-      <h3 class="course-title">{{group.nombre}}</h3>
-      <span class="course-day">{{group.dia}}</span>
-      <span class="course-time">{{group.horaInicio}} - {{group.horaFin}}</span>
-      <span class="course-presenter">{{group.profesor}}</span>
-    </div>
 
+
+
+      <div *ngFor="let group of enrolledCourses" class="course" style="grid-column: {{group.diaSemana}}; grid-row: time-{{group.horaI}} / time-{{group.horaF}};">
+      <h3 class="course-title course-center">{{group.nombre}} - GR: {{group.numero}}</h3>
+      <span class="course-day course-center">{{group.diaSemana}}</span>
+      <span class="course-time course-center">{{group.horaInicio}} - {{group.horaFin}}</span>
+      <span class="course-presenter course-center">{{group.profesor}}</span>
+      <br>
+      <span class="course-presenter course-center">{{group.aula}}</span>
+    </div>
 
   </div>
 

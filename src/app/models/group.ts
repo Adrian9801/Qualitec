@@ -8,15 +8,16 @@ export class Group {
     codigo_matricula: string;
     nombre: string;
     dias: string;
+    aula: string;
     id_horario: number;
     registered: boolean;
     inclusion: boolean;
 
-    constructor(_codigo_curso:string, _codigo: number, _numero: number, _cupos: number, _sede: string, _codigo_matricula: string, _nombre: string, _dias: string, _estado: string){
-        this.update(_codigo_curso, _codigo, _numero, _cupos, _sede, _codigo_matricula, _nombre, _dias, _estado);
+    constructor(_codigo_curso:string, _codigo: number, _numero: number, _cupos: number, _sede: string, _codigo_matricula: string, _nombre: string, _dias: string, _estado: string, _aula: string){
+        this.update(_codigo_curso, _codigo, _numero, _cupos, _sede, _codigo_matricula, _nombre, _dias, _estado, _aula);
     }
 
-    update(_codigo_curso:string, _codigo: number, _numero: number, _cupos: number, _sede: string, _codigo_matricula: string, _nombre: string, _dias: string, _estado: string) {
+    update(_codigo_curso:string, _codigo: number, _numero: number, _cupos: number, _sede: string, _codigo_matricula: string, _nombre: string, _dias: string, _estado: string, _aula: string) {
         this.codigo_curso = _codigo_curso;
         this.codigo = _codigo;
         this.numero = _numero;
@@ -26,6 +27,7 @@ export class Group {
         this.nombre = _nombre;
         this.dias = _dias;
         this.estado = _estado;
+        this.aula = _aula;
         this.modifyState(); 
     }
 

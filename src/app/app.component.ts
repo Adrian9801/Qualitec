@@ -24,6 +24,10 @@ export class AppComponent {
     this.menu.close('custom');
     this.router.navigateByUrl(page);
   }
+
+  setEnable(value: boolean){
+    this.menu.enable(value);
+  }
   
   logout(){
     this.cookieService.delete('tokenAuth');

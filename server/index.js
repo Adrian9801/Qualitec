@@ -22,6 +22,12 @@ router.route('/courses').post((request, response) => {
   })
 })
 
+router.route('/schedule').post((request, response) => {
+  Db.getSchedule(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/courses/:id').get((request, response) => {
   Db.getCourse(request.params.id).then((data) => {
     response.json(data[0]);

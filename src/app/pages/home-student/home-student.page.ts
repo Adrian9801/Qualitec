@@ -50,6 +50,7 @@ export class HomeStudentPage implements OnInit {
             this.menu.setStudent(true);
           else
             this.router.navigateByUrl('home-admin');
+          this.menu.setEnable(true);
         }
         else
           this.router.navigateByUrl('login');

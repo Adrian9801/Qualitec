@@ -13,6 +13,7 @@ ion-toolbar {
   .schedule {
     display: grid;
     grid-gap: 1em;
+    overflow-x: scroll;
     grid-template-rows:
       [days] auto
       [time-0700] auto
@@ -70,7 +71,7 @@ ion-toolbar {
 }
 
 .time-slot {
-  
+  grid-column: times;
 }
 
 .day-slot {
@@ -126,6 +127,10 @@ body {
   display: block;
 }
 
+.course-center {
+  text-align: center;
+}
+
 .course-title,
 .time-slot {
   margin: 0;
@@ -141,6 +146,7 @@ body {
 .time-slot {
   font-weight: bold;
   font-size:.75em;
+  background: rgb(255, 255, 255, .9);
 }
 
 .text {

@@ -7,15 +7,17 @@ import { Course } from 'src/app/models/course';
 })
 export class CourseService {
 
-  readonly URL_API = 'http://localhost:8090/api/courses';
+  readonly URL_API = 'http://localhost:8090/api';
 
   courses: Course[] = [];
 
   constructor(private http: HttpClient) { }
 
   getCourses(token){ 
-    return this.http.post(this.URL_API, token);
+    return this.http.post(this.URL_API + '/courses', token);
   }
 
-
+  getSchedule(token){
+    return this.http.post(this.URL_API +'/schedule', token);
+  }
 }
