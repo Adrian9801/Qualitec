@@ -3,7 +3,8 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '
 import { LoginService } from 'src/app/services/login/login.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
-import { CookieService } from 'ngx-cookie-service';  
+import { CookieService } from 'ngx-cookie-service'; 
+import {AppComponent} from '../../app.component'; 
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginPage implements OnInit {
   validUser: boolean = true;
   loading: HTMLIonLoadingElement;
 
-  constructor(private cookieService: CookieService, private router: Router, private loginService: LoginService, private fb: FormBuilder, public loadingController: LoadingController) { 
+  constructor(public menu:AppComponent, private cookieService: CookieService, private router: Router, private loginService: LoginService, private fb: FormBuilder, public loadingController: LoadingController) { 
   }
 
   ngOnInit() {
@@ -24,6 +25,7 @@ export class LoginPage implements OnInit {
       if (event instanceof NavigationEnd && event.url == '/login') {
         this.checkIfLoggedIn();
         this.cookieService.delete('tokenRecovery');
+        this.menu.setEnable(false);
       }
     });
     this.loginForm = this.fb.group({

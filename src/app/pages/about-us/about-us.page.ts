@@ -40,6 +40,7 @@ export class AboutUsPage implements OnInit {
             this.menu.setStudent(true);
           else
             this.menu.setStudent(false);
+          this.menu.setEnable(true);
         }
         else
           this.router.navigateByUrl('login');
