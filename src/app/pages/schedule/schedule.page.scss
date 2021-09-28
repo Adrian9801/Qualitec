@@ -95,6 +95,12 @@ ion-toolbar {
   }
 }
 
+@supports( display:grid ) {
+  @media screen and (max-width:520px) {
+    .course-day { display: block; }
+  }
+}
+
 /* Small-screen & fallback styles */
 .course {
   margin:  1em;
