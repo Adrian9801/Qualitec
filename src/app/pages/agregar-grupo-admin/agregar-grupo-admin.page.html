@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="courses-list-admin" class = "color-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class = "color-white">Formulario de grupo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title> {{ curso.codigo}} {{curso.nombre}}</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <h1>
+        Información general
+      </h1>
+      <ion-item>
+        <ion-label>Sede: </ion-label>
+        <ion-select value="Cartago">
+          <ion-select-option value="Cartago">Cartago</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Número de grupo: </ion-label>
+        <ion-input placeholder="número" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Cupos: </ion-label>
+        <ion-input placeholder="cantidad" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Profesor: </ion-label>
+        <ion-select>
+          <ion-select-option value="Ignacio">Ignacio Trejos</ion-select-option>
+          <ion-select-option value="Jaime">Jaime </ion-select-option>
+          <ion-select-option value="Erika">Erika Solano</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Salón: </ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <h1>
+        Horario
+      </h1>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-checkbox checked="false"></ion-checkbox>
+            </ion-col>
+            <ion-col>
+              <ion-checkbox checked="false"></ion-checkbox>
+            </ion-col>
+            <ion-col>
+              <ion-checkbox checked="false"></ion-checkbox>
+            </ion-col>
+            <ion-col>
+              <ion-checkbox checked="false"></ion-checkbox>
+            </ion-col>
+            <ion-col>
+              <ion-checkbox checked="false"></ion-checkbox>
+            </ion-col>
+            <ion-col>
+              <ion-checkbox checked="false"></ion-checkbox>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-label>L </ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>K </ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>M </ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>J </ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>V </ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>S </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item>
+          <ion-label>Hora de inicio: </ion-label>
+          <ion-select>
+            <ion-select-option value="Ignacio">Ignacio Trejos</ion-select-option>
+            <ion-select-option value="Jaime">Jaime </ion-select-option>
+            <ion-select-option value="Erika">Erika Solano</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Hora de fin: </ion-label>
+          <ion-select>
+            <ion-select-option value="Ignacio">Ignacio Trejos</ion-select-option>
+            <ion-select-option value="Jaime">Jaime </ion-select-option>
+            <ion-select-option value="Erika">Erika Solano</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-button expand="block">Agregar grupo </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
