@@ -1,0 +1,27 @@
+.color-white {
+    color : rgb(255, 254, 254);
+  }
+
+  .color-red {
+    color : red;
+  }
+
+  ion-toolbar {
+    --background: #0C1433;
+  }
+
+  .flag { 
+    position: relative;
+    height: 25px;
+  }
+
+  .text-flag{
+    position:relative;
+    top:-20px;
+    text-align:center;
+  }
+  .centrar{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }

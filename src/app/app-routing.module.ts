@@ -66,7 +66,19 @@ const routes: Routes = [
   {
     path: 'resumen-levantamiento-admin',
     loadChildren: () => import('./pages/resumen-levantamiento-admin/resumen-levantamiento-admin.module').then( m => m.ResumenLevantamientoAdminPageModule)
+  },  {
+    path: 'control-matricula-admin',
+    loadChildren: () => import('./pages/control-matricula-admin/control-matricula-admin.module').then( m => m.ControlMatriculaAdminPageModule)
   },
+  {
+    path: 'courses-list-admin',
+    loadChildren: () => import('./pages/courses-list-admin/courses-list-admin.module').then( m => m.CoursesListAdminPageModule)
+  },
+  {
+    path: 'agregar-grupo-admin',
+    loadChildren: () => import('./pages/agregar-grupo-admin/agregar-grupo-admin.module').then( m => m.AgregarGrupoAdminPageModule)
+  },
+
 
 
 
