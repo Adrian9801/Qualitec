@@ -10,10 +10,39 @@
     --background: #0C1433;
   }
 
+  @media (min-width: 500px) {
+    .button-text {
+      display:none;
+    }
+  }
+
+  .enlista{
+    display: flex;
+    flex-direction: column;
+    width: calc(100%) !important;
+    margin: 0 !important;
+  }
+
   .flag { 
     position: relative;
     height: 25px;
   }
+
+  .estiloCourse {
+    overflow-x: scroll;
+  }
+
+  .buttonGroup {
+    --background: linear-gradient(#ffffff, #fcc859, #FFB81C);
+}
+
+  .enListaCupos{
+    display: flex;
+    flex-direction: column;
+    width: 200px !important;
+    margin-left: calc(99%);
+  }
+  
 
   .text-flag{
     position:relative;
