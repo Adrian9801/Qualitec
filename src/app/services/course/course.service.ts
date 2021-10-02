@@ -20,4 +20,12 @@ export class CourseService {
   getSchedule(token){
     return this.http.post(this.URL_API +'/schedule', token);
   }
+
+  getCoursesAdmin(token){
+    return this.http.post(this.URL_API +'/coursesAdmin', token);
+  }
+
+  getMatricula(){
+    return this.http.get(this.URL_API +'/obtenerMatricula');
+  }
 }

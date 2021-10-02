@@ -28,6 +28,12 @@ router.route('/schedule').post((request, response) => {
   })
 })
 
+router.route('/coursesAdmin').post((request, response) => {
+  Db.getcoursesAdmin(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/courses/:id').get((request, response) => {
   Db.getCourse(request.params.id).then((data) => {
     response.json(data[0]);
@@ -46,14 +52,32 @@ router.route('/groups/:idCourse/:id').get((request, response) => {
   })
 })
 
-/*router.route('/groups/:idCourse').get((request, response) => {
-  Db.getGroupsCourse(request.params.idCourse).then((data) => {
+router.route('/obtenerMatricula').get((request, response) => {
+  Db.obtenerMatricula().then((data) => {
     response.json(data[0]);
   })
-})*/
+})
+
+router.route('/requestCourse').post((request, response) => {
+  Db.getrequestCourse(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/updateRequestCourse').post((request, response) => {
+  Db.updateRequestCourse(request.body).then((data) => {
+    response.json(data[0]);
+  })
+})
 
 router.route('/groups/course').post((request, response) => {
   Db.getGroupsCourseSP(request.body).then((data) => {
+    response.json(data[0]);
+  })
+})
+
+router.route('/groups/courseAdmin').post((request, response) => {
+  Db.getGroupsCourseAdmin(request.body).then((data) => {
     response.json(data[0]);
   })
 })

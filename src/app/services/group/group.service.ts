@@ -24,6 +24,10 @@ export class GroupService {
     return this.http.post(this.URL_API + '/course', data);
   }
 
+  getGroupsCourseAdmin(data){
+    return this.http.post(this.URL_API + '/courseAdmin', data);
+  }
+
   UpdateGroupCourse(data){
     return this.http.post(this.URL_API + '/update', data);
   }

@@ -7,7 +7,7 @@ async function getCourses(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
-    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '15m' }),
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
                 user: userLogin,
                 student: isStudent};
     let  pool = await  sql.connect(config);
@@ -26,7 +26,7 @@ async function getSchedule(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
-    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '15m' }),
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
                 user: userLogin,
                 student: isStudent};
     let  pool = await  sql.connect(config);
@@ -36,6 +36,85 @@ async function getSchedule(req){
     let courseList = courses.recordsets;
     courseList.push(info);
     return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getcoursesAdmin(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .query("EXEC getCoursesTotal");
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getGroupsCourseAdmin(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  groups = await  pool.request()
+      .input('idC', sql.VarChar, req.courseId)
+      .query("EXEC getGroupsCourseAdmin  @codigo_curso = @idC");
+    let groupsList = groups.recordsets;
+    return groupsList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function obtenerMatricula(){
+  try {
+    let  pool = await  sql.connect(config);
+    let  matricula = await  pool.request()
+      .query("EXEC obtenerEstadoMatricula");
+    let codigo = matricula.recordsets;
+    return codigo;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getrequestCourse(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  request = await  pool.request()
+      .query("EXEC getRequirementLiftRequests");
+    let requestList = (request.recordsets);
+    requestList.push(info);
+    return requestList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function updateRequestCourse(req){// Falta
+  try {
+    /*let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};*/
+    let  pool = await  sql.connect(config);
+    let  request = await  pool.request()
+      .query("EXEC getRequirementLiftRequests");
+    let requestList = request.recordsets;
+    //requestList.push(info);
+    return requestList;
   } catch (error) {
     return [];
   }
@@ -293,5 +372,9 @@ module.exports = {
   updatePasswordSP: updatePasswordSP,
   getGroupsCourseSP: getGroupsCourseSP,
   updateGroup: updateGroup,
-  getSchedule: getSchedule
+  getSchedule: getSchedule,
+  getrequestCourse: getrequestCourse,
+  getcoursesAdmin: getcoursesAdmin,
+  getGroupsCourseAdmin: getGroupsCourseAdmin,
+  obtenerMatricula: obtenerMatricula
 }
