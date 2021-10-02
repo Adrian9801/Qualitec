@@ -87,21 +87,11 @@ export class EnrollmentPage implements OnInit {
               courseAux.addGroup(groupAux);
             }
             this.courses = this.courseService.courses;
-            this.showSpinner = false;
           });
         }
+        this.showSpinner = false;
       });
     }
-  }
-  
-  getGroups(){
-    this.groupService.getGroups()
-    .subscribe(res => {
-      let groupsTemp: Group[] = res[0] as Group[];
-      for (let group of groupsTemp){
-        this.groupService.groups.push(new Group(group.codigo_curso, group.codigo, group.numero, group.cupos, group.sede, group.codigo_matricula, group.nombre, group.dias, group.estado, group.aula));
-      }
-    });
   }
 
   delay(ms: number) {
@@ -283,7 +273,7 @@ export class EnrollmentPage implements OnInit {
     this.openRegister = 2;
     this.title = "Mi matrícula";
     this.register = false;
-    this.textButton = "Siguiente";
+    this.textButton = "Ver Resumen";
     this.getCourses();
   }
 
