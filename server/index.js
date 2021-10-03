@@ -94,6 +94,18 @@ router.route('/getCoursesResumen').post((request, response) => {
   })
 })
 
+router.route('/groups/createNewGroup').post((request, response) => {
+  Db.createNewGroup(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getTeachers').get((request, response) => {
+  Db.getTeachers().then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/groups/getGroupMatriculado').post((request, response) => {
   Db.getGroupMatriculado(request.body).then((data) => {
     response.json(data);

@@ -83,15 +83,12 @@ export class HomeStudentPage implements OnInit {
               this.creditosMatriculadosInclusion += course.creditos;
               this.listaCursosInclusion.push(courseAdd);
 
-            /*this.groupService.getGroupsCourseAdmin({courseId: course.codigo})
+              this.groupService.getGroupMatriculado({courseId: course.codigo, token: this.cookieService.get('tokenAuth')})
               .subscribe(res2 => {
-                console.log(res2[0]);
-                let listaGrupos = res2 as GroupAdmin[];
-
-                for (let group of listaGrupos){
-                  courseAdd.addGroup(new GroupAdmin(group.codigo, group.nombre, group.codigo_curso, group.sede, group.numero, group.cupos, group.cantidad_matriculados));
-                }
-              });*/
+                console.log(res2);
+                let group = res2[0] as GroupStudent;
+                courseAdd.group = new GroupStudent(group.codigo, group.nombre, group.sede, group.numero, group.aula);
+              });
             }
             if((207000 -this.totalPagar) > this.creditosMatriculadosInclusion*16000)
               this.totalPagarInclusion = this.creditosMatriculadosInclusion*16000

@@ -51,4 +51,12 @@ export class GroupService {
   getGroupMatriculado(data){
     return this.http.post(this.URL_API + '/getGroupMatriculado', data);
   }
+
+  createNewGroup(data){
+    return this.http.post(this.URL_API + '/createNewGroup', data);
+  }
+
+  getTeachers(){
+    return this.http.get(this.URL_API + '/getTeachers');
+  }
 }

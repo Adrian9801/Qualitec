@@ -120,6 +120,25 @@ async function getCoursesInclusion(req){
   }
 }
 
+async function createNewGroup(req){ //FALTA
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC createNewGroup @numero , @sede , @cupos , @cedulaProf , @horario , @horaI , @horaF , @codCurso , @aula ");
+    let resultList = result.recordsets;
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
 async function aumentarCupos(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
@@ -140,7 +159,7 @@ async function aumentarCupos(req){
   }
 }
 
-async function addRequestStudent(req){//falta
+async function addRequestStudent(req){//falta NELSON
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
@@ -160,7 +179,7 @@ async function addRequestStudent(req){//falta
   }
 }
 
-async function getRequestStudent(req){//falta
+async function getRequestStudent(req){//falta MOISES
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
@@ -224,6 +243,18 @@ async function getGroupsCourseAdmin(req){
   }
 }
 
+async function getTeachers(){
+  try {
+    let  pool = await  sql.connect(config);
+    let  teachers = await  pool.request()
+      .query("SELECT * from profesor");
+    let teachersList = teachers.recordsets;
+    return teachersList;
+  } catch (error) {
+    return [];
+  }
+}
+
 async function obtenerMatricula(){
   try {
     let  pool = await  sql.connect(config);
@@ -254,7 +285,7 @@ async function getrequestCourse(req){
   }
 }
 
-async function updateRequestCourse(req){// Falta
+async function updateRequestCourse(req){
   try {
     let  pool = await  sql.connect(config);
     let request = await pool.request()
@@ -508,12 +539,12 @@ async function updatePasswordSP(req) {
 }
   
 module.exports = {
-  getCourses:  getCourses,
-  getCourse:  getCourse,
-  addCourse:  addCourse,
-  getGroups:  getGroups,
-  getGroup:  getGroup,
-  addGroup:  addGroup,
+  getCourses: getCourses,
+  getCourse: getCourse,
+  addCourse: addCourse,
+  getGroups: getGroups,
+  getGroup: getGroup,
+  addGroup: addGroup,
   getGroupsCourse: getGroupsCourse,
   loginUser: loginUser,
   checkLogIn: checkLogIn,
@@ -536,5 +567,7 @@ module.exports = {
   getCoursesInclusion: getCoursesInclusion,
   addRequestStudent: addRequestStudent,
   getRequestStudent: getRequestStudent,
-  getGroupMatriculado: getGroupMatriculado
+  getGroupMatriculado: getGroupMatriculado,
+  createNewGroup: createNewGroup,
+  getTeachers: getTeachers
 }

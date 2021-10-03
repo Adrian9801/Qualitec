@@ -18,9 +18,6 @@ export class LoginPage implements OnInit {
   loading: HTMLIonLoadingElement;
 
   constructor(public menu:AppComponent, private cookieService: CookieService, private router: Router, private loginService: LoginService, private fb: FormBuilder, public loadingController: LoadingController) { 
-  }
-
-  ngOnInit() {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url == '/login') {
         this.checkIfLoggedIn();
@@ -32,6 +29,9 @@ export class LoginPage implements OnInit {
       correo: [null, [Validators.required, Validators.email]],
       pass: [null, [Validators.required, Validators.minLength(8)]]
     });
+  }
+
+  ngOnInit() {
   }
 
   async presentLoading() {
