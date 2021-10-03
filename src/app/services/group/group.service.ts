@@ -43,4 +43,12 @@ export class GroupService {
   deleteGroup(_id: string){
     return this.http.delete(this.URL_API + `/${_id}`);
   }
+
+  aumentarCupos(data){
+    return this.http.post(this.URL_API + '/aumentarCupos', data);
+  }
+
+  getGroupMatriculado(data){
+    return this.http.post(this.URL_API + '/getGroupMatriculado', data);
+  }
 }

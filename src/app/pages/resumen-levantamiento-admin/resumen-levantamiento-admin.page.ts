@@ -66,44 +66,47 @@ export class ResumenLevantamientoAdminPage implements OnInit {
   }
 
   public async presentAlert() {
-    
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Aceptar solicitudes',
-      message: 'Se aceptarán y rechazarán todas las solicitudes seleccionadas, las demas quedarán en pendiente.',
-      buttons: [
-        {
-          text: 'Volver',
-          role: 'cancel',
-          cssClass: 'Danger'
-        }, {
-          text: 'Aceptar',
-          handler: () => {
-            this.updateRequests();
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else {
+      const alert = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'Actualizar solicitudes',
+        message: 'Se aceptarán y rechazarán todas las solicitudes seleccionadas, las demas quedarán en pendiente.',
+        buttons: [
+          {
+            text: 'Volver',
+            role: 'cancel',
+            cssClass: 'Danger'
+          }, {
+            text: 'Aceptar',
+            handler: () => {
+              this.updateRequests();
+            }
           }
-        }
-      ]
-    });
+        ]
+      });
 
-    await alert.present();
-    
+      await alert.present();
+    }
   }
 
   updateRequests(){
-    this.requestService.updateRequests({soli: this.aceptadas, token: this.cookieService.get('tokenAuth')}).subscribe(res => {
-      if(res[0].result == 1){
-        this.requestService.updateRequests({soli: this.rechazadas, token: this.cookieService.get('tokenAuth')}).subscribe(res2 => {
-          if(res2[0].result == 1){
-            const dateNow = new Date();
-            dateNow.setMinutes(dateNow.getMinutes() + 15);
-            this.cookieService.set('tokenAuth', res2[1].token, dateNow);
-
-            this.router.navigateByUrl('home-admin');
-          }
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else {
+      this.aceptadas.forEach(element => {
+        this.requestService.updateRequests({carnet: element.carnet_estudiante, codCurso: element.codigo_curso, estado: 2, token: this.cookieService.get('tokenAuth')}).subscribe(res => {
+  
         });
-      }
+      });
+      this.rechazadas.forEach(element => {
+        this.requestService.updateRequests({carnet: element.carnet_estudiante, codCurso: element.codigo_curso, estado: 0, token: this.cookieService.get('tokenAuth')}).subscribe(res2 => {
 
-    });
+        });
+      });
+      this.router.navigateByUrl('home-admin');
+    }
   }
 
   checkIfLoggedIn(){

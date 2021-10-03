@@ -59,6 +59,158 @@ async function getcoursesAdmin(req){
   }
 }
 
+async function getCoursesAdd(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .query("SELECT * from curso");
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getCoursesResumen(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC getCoursesMatriculados @carnet_estudiante = @carnet");
+    let courseList = courses.recordsets;
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getGroupMatriculado(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  group = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .input('codCourse', sql.VarChar, req.courseId)
+      .query("EXEC getGroupMatriculado @carnet_estudiante = @carnet, @codigo_curso = @codCourse");
+    let groupL = group.recordsets;
+    return groupL[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getCoursesInclusion(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC getCoursesInclusion @carnet_estudiante = @carnet");
+    let courseList = courses.recordsets;
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function aumentarCupos(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('idG', sql.VarChar, req.codeGroup)
+      .input('cant', sql.VarChar, req.cant)
+      .query("EXEC increasePlaces @codigo_grupo = @idG, @cantidad = @cant");
+    let resultList = result.recordsets[0];
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function addRequestStudent(req){//falta
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .input('idC', sql.VarChar, req.codCurso)
+      .query("EXEC increasePlaces @carnet_estudiante = @carnet, @codigo_curso = @idC");
+    let resultList = result.recordsets;
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getRequestStudent(req){//falta
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getStudentRequirementCourses @carnetE = @carnet");
+    let resultList = result.recordsets;
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function abrirMatricula(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    /*let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .query("EXEC abrirMatricula");*/
+    return [info];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function cerrarMatricula(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    /*let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .query("EXEC cerrarMatricula");*/
+    return [info];
+  } catch (error) {
+    return [];
+  }
+}
+
 async function getGroupsCourseAdmin(req){
   try {
     let  pool = await  sql.connect(config);
@@ -104,17 +256,13 @@ async function getrequestCourse(req){
 
 async function updateRequestCourse(req){// Falta
   try {
-    /*let userLogin = jwt.verify(req.token, 'secret-Key').user;
-    let isStudent = jwt.verify(req.token, 'secret-Key').student;
-    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
-                user: userLogin,
-                student: isStudent};*/
     let  pool = await  sql.connect(config);
-    let  request = await  pool.request()
-      .query("EXEC getRequirementLiftRequests");
-    let requestList = request.recordsets;
-    //requestList.push(info);
-    return requestList;
+    let request = await pool.request()
+      .input('carnet', sql.Int, parseInt(req.carnet))
+      .input('codC', sql.VarChar, req.codCurso)
+      .input('estadoSoli', sql.Int, req.estado)
+      .query("EXEC updateSolicitudes @carnet_estudiante = @carnet, @codigo_curso = @codC, @estado = @estadoSoli");
+    return [];
   } catch (error) {
     return [];
   }
@@ -264,6 +412,8 @@ async function loginUser(userData) {
   }
 }
 
+
+
 async function checkLogIn(req) {
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
@@ -376,5 +526,15 @@ module.exports = {
   getrequestCourse: getrequestCourse,
   getcoursesAdmin: getcoursesAdmin,
   getGroupsCourseAdmin: getGroupsCourseAdmin,
-  obtenerMatricula: obtenerMatricula
+  obtenerMatricula: obtenerMatricula,
+  cerrarMatricula: cerrarMatricula,
+  abrirMatricula: abrirMatricula,
+  getCoursesAdd: getCoursesAdd,
+  aumentarCupos: aumentarCupos,
+  updateRequestCourse: updateRequestCourse,
+  getCoursesResumen: getCoursesResumen,
+  getCoursesInclusion: getCoursesInclusion,
+  addRequestStudent: addRequestStudent,
+  getRequestStudent: getRequestStudent,
+  getGroupMatriculado: getGroupMatriculado
 }

@@ -28,4 +28,24 @@ export class CourseService {
   getMatricula(){
     return this.http.get(this.URL_API +'/obtenerMatricula');
   }
+
+  abrirMatricula(token){
+    return this.http.post(this.URL_API +'/abrirMatricula', token);
+  }
+
+  cerrarMatricula(token){
+    return this.http.post(this.URL_API +'/cerrarMatricula', token);
+  }
+
+  getCoursesAdd(token){
+    return this.http.post(this.URL_API +'/getCoursesAdd', token);
+  }
+
+  getCoursesResumen(token){
+    return this.http.post(this.URL_API +'/getCoursesResumen', token);
+  }
+
+  getCoursesInclusion(token){
+    return this.http.post(this.URL_API +'/getCoursesInclusion', token);
+  }
 }
