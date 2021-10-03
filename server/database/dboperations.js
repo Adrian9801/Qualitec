@@ -428,12 +428,22 @@ async function loginUser(userData) {
       userLogin = (await  pool.request()
       .input('correo', sql.VarChar, userData.correo)
       .query("SELECT * from estudiante where estudiante.correo = @correo")).recordsets;
-      if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
-        userLogin[0].push({student:true});
-        userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: true}, 'secret-Key', { expiresIn: '16m' })});
-      }
-      else{
-        userLogin = [[]];
+      if(userLogin[0].length != 0){
+        if(userLogin[0][0].estado == 0){
+          userLogin[0][0].contrasena = await bcryptjs.hashSync(userLogin[0][0].contrasena,8);
+          let  pool2 = await  sql.connect(config);
+          await  pool2.request()
+            .input('userIdent', sql.VarChar, userLogin[0][0].carnet+'')
+            .input('pass', sql.VarChar, userLogin[0][0].contrasena)
+            .input('typeUser', sql.VarChar, 1)
+            .query("EXEC updatePasswordSP @user = @userIdent, @newPassword = @pass, @type = @typeUser");
+        }
+        if((await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
+          userLogin[0].push({student:true});
+          userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: true}, 'secret-Key', { expiresIn: '16m' })});
+        }
+        else
+          userLogin = [[]];
       }
     }
     return userLogin[0];
