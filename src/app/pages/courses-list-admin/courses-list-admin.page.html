@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="control-matricula-admin" class = "color-white"></ion-back-button>
+      <ion-back-button defaultHref="home-admin" class = "color-white"></ion-back-button>
     </ion-buttons>
     <ion-title class = "color-white">Seleccionar curso</ion-title>
   </ion-toolbar>
@@ -14,7 +14,7 @@
       <ion-grid >
         <ion-row class="centrar" (click)="seleccionado(entry)">
           <ion-col>
-            <ion-label>{{entry.codigo}} {{entry.curso}}</ion-label>
+            <ion-label>{{entry.codigo}} {{entry.nombre}}</ion-label>
           </ion-col>
           <ion-col class="centrar">
             <ion-label color="medium"> Seleccionar

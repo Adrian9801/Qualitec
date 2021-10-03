@@ -64,6 +64,60 @@ router.route('/requestCourse').post((request, response) => {
   })
 })
 
+router.route('/abrirMatricula').post((request, response) => {
+  Db.abrirMatricula(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/cerrarMatricula').post((request, response) => {
+  Db.cerrarMatricula(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/addRequestStudent').post((request, response) => {
+  Db.addRequestStudent(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getRequestStudent').post((request, response) => {
+  Db.getRequestStudent(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getCoursesResumen').post((request, response) => {
+  Db.getCoursesResumen(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getGroupMatriculado').post((request, response) => {
+  Db.getGroupMatriculado(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getCoursesInclusion').post((request, response) => {
+  Db.getCoursesInclusion(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getCoursesAdd').post((request, response) => {
+  Db.getCoursesAdd(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/aumentarCupos').post((request, response) => {
+  Db.aumentarCupos(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/updateRequestCourse').post((request, response) => {
   Db.updateRequestCourse(request.body).then((data) => {
     response.json(data[0]);

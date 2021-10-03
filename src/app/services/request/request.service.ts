@@ -17,4 +17,12 @@ export class RequestService {
   updateRequests(data){
     return this.http.post(this.URL_API+'/updateRequestCourse', data);
   }
+
+  addRequestStudent(data){
+    return this.http.post(this.URL_API+'/addRequestStudent', data);
+  }
+
+  getRequestStudent(data){
+    return this.http.post(this.URL_API+'/getRequestStudent', data);
+  }
 }

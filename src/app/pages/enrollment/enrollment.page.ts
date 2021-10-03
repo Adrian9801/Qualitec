@@ -199,82 +199,120 @@ export class EnrollmentPage implements OnInit {
 
   registeredGroup(group: Group, course: Course, primary: boolean){
     if(this.cookieService.check('tokenAuth')){
-      if(!group.registered){
-        if(this.checkScheduleClash(group)){
-          this.presentAlert('Choque de horario', 'Hay un conflicto con el horario de otro curso.', group);
-          return;
-        }
-        this.register = true;
-        this.groupService.UpdateGroupCourse({codigo: group.codigo, cupos: -1, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
-        .subscribe(res => {
-          const dateNow = new Date();
-          dateNow.setMinutes(dateNow.getMinutes() + 15);
-          this.cookieService.set('tokenAuth', res[1].token, dateNow);
-          let groupA = res[0][0] as Group;
-          group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado, groupA.aula);
-          course.state = group.estado;
-          course.color = "success";
-          for(let groupTemp of course.groups){
-            if(groupTemp != group && groupTemp.registered == true){
-              this.registeredGroup(groupTemp, course, false);
-              groupTemp.registered = false;
-              return;
+      this.courseService.getMatricula().subscribe(res => {
+        let list: Object[] = res as Object[];
+        if(list.length > 0){
+          if(res[0].estado == 1){
+            if(group.registered){
+              if(this.checkScheduleClash(group)){
+                this.presentAlert('Choque de horario', 'Hay un conflicto con el horario de otro curso.', group);
+                return;
+              }
+              this.register = true;
+              this.groupService.UpdateGroupCourse({codigo: group.codigo, cupos: -1, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
+              .subscribe(res => {
+                const dateNow = new Date();
+                dateNow.setMinutes(dateNow.getMinutes() + 15);
+                this.cookieService.set('tokenAuth', res[1].token, dateNow);
+                let groupA = res[0][0] as Group;
+                group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado, groupA.aula);
+                course.state = group.estado;
+                course.color = "success";
+                for(let groupTemp of course.groups){
+                  if(groupTemp != group && groupTemp.registered == true){
+                    this.registeredGroup(groupTemp, course, false);
+                    groupTemp.registered = false;
+                    return;
+                  }
+                }
+                this.register = false;
+              });
+            }
+            else {
+              this.groupService.UpdateGroupCourse({codigo: group.codigo, cupos: 1, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
+              .subscribe(res => {
+                const dateNow = new Date();
+                dateNow.setMinutes(dateNow.getMinutes() + 15);
+                this.cookieService.set('tokenAuth', res[1].token, dateNow);
+                let groupA = res[0][0] as Group;
+                group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado, groupA.aula);
+                this.register = false;
+                if(!primary){
+                  return;
+                }
+                course.state = "Sin matricular";
+                course.color = "danger";
+              });
             }
           }
-          this.register = false;
-        });
-      }
-      else {
-        this.groupService.UpdateGroupCourse({codigo: group.codigo, cupos: 1, carnet: this.user.carnet, token: this.cookieService.get('tokenAuth')})
-        .subscribe(res => {
-          const dateNow = new Date();
-          dateNow.setMinutes(dateNow.getMinutes() + 15);
-          this.cookieService.set('tokenAuth', res[1].token, dateNow);
-          let groupA = res[0][0] as Group;
-          group.update(groupA.codigo_curso, groupA.codigo, groupA.numero, groupA.cupos, groupA.sede, groupA.codigo_matricula, groupA.nombre, groupA.dias, groupA.estado, groupA.aula);
-          this.register = false;
-          if(!primary){
-            return;
+          else{
+            this.menu.setEnable(true);
+            this.title = "Lista de cursos";
+            this.openRegister = 0;
+            this.subTitle = "Matrícula cerrada";
+            this.colorSubtitle = "danger";
+            this.register = true;
+            this.textButton = "Matricular";
+            this.getCourses();
           }
-          course.state = "Sin matricular";
-          course.color = "danger";
-        });
-      }
+        }
+      });
     }
     else
       this.checkIfLoggedIn();
   }
 
+  verificarMatricula(){
+    this.courseService.getMatricula().subscribe(res => {
+      let list: Object[] = res as Object[];
+      if(list.length > 0){
+        if(res[0].estado == 1){
+          if(this.openRegister <= 1){
+            this.openRegister = 1;
+            this.subTitle = "Matrícula abierta";
+            this.colorSubtitle = "success"
+            this.register = true;
+            this.title = "Lista de cursos";
+            this.textButton = "Matricular";
+            this.menu.setEnable(true);
+          }
+          else{
+            this.subTitle = "Matrícula abierta";
+            this.colorSubtitle = "success"
+            this.menu.setEnable(true);
+            this.openRegister = 2;
+            this.title = "Mi matrícula";
+            this.register = false;
+            this.textButton = "Ver Resumen";
+          }
+        }
+        else{
+          this.menu.setEnable(true);
+          this.title = "Lista de cursos";
+          this.openRegister = 0;
+          this.subTitle = "Matrícula cerrada";
+          this.colorSubtitle = "danger";
+          this.register = true;
+          this.textButton = "Matricular";
+        }
+        this.getCourses();
+        this.showSpinner = false;
+      }
+    });
+  }
+
   reload(){
     if(this.cookieService.check('tokenAuth')){
       this.showSpinner = true;
-      if(this.openRegister == 0){
-        this.openRegister = 1;
-        this.subTitle = "Matrícula abierta";
-        this.colorSubtitle = "success"
-      }
-      this.getCourses();
+      this.verificarMatricula();
     }
     else
       this.router.navigateByUrl('login');
   }
 
-  back(){
-    this.menu.setEnable(true);
-    this.openRegister = 1;
-    this.register = true;
-    this.title = "Lista de cursos";
-    this.textButton = "Matricular";
-    this.getCourses();
-  }
-
   enroll(){
-    this.menu.setEnable(false);
     this.openRegister = 2;
-    this.title = "Mi matrícula";
-    this.register = false;
-    this.textButton = "Ver Resumen";
-    this.getCourses();
+    this.verificarMatricula();
   }
 
   checkIfLoggedIn(){
@@ -291,7 +329,7 @@ export class EnrollmentPage implements OnInit {
           if(res[0].student){
             this.menu.setStudent(true);
             this.user = res[0].user;
-            this.getCourses();
+            this.verificarMatricula();
           }
           else
             this.router.navigateByUrl('home-admin');
