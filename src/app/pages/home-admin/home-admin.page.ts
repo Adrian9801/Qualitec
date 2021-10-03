@@ -35,18 +35,15 @@ export class HomeAdminPage implements OnInit {
   ngOnInit() {
   }
 
-  public async presentAlert() {
-    if (this.listaCursos.length == 0){
+  public async presentAlert(titulo: string, msg: string) {
       const alert = await this.alertController.create({
         cssClass: 'my-custom-class',
-        header: 'No se puede iniciar periodo',
-        message: 'No hay cursos abiertos para este periodo de matricula.',
+        header: titulo,
+        message: msg,
         buttons: ['Entendido']
       });
   
       await alert.present();
-    }
-    
   }
 
   loadCourses(){
@@ -59,7 +56,7 @@ export class HomeAdminPage implements OnInit {
         this.verificarMatricula();
         let listaCursosAux = res[0] as CourseAdmin[];
         for (let course of listaCursosAux){
-          let courseAdd: CourseAdmin = new CourseAdmin(course.codigo, course.nombre);
+          let courseAdd: CourseAdmin = new CourseAdmin(course.codigo, course.nombre, course.creditos);
           this.listaCursos.push(courseAdd);
 
          this.groupService.getGroupsCourseAdmin({courseId: course.codigo})
@@ -73,6 +70,118 @@ export class HomeAdminPage implements OnInit {
           });
         }
       });
+  }
+
+  async presentAlertMatricula(titulo: string, msg: string) {
+    const alert = await this.alertController.create({
+      cssClass: 'alertCustom',
+      header: titulo,
+      message: msg,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {}
+        }, {
+          text: 'Aceptar',
+          cssClass: 'buttonAlertDelete',
+          handler: () => {
+            if(this.estadoMatricula == 0){
+              this.courseService.abrirMatricula({token: this.cookieService.get('tokenAuth')})
+              .subscribe(res => {
+                const dateNow = new Date();
+                dateNow.setMinutes(dateNow.getMinutes() + 15);
+                this.cookieService.set('tokenAuth', res[0].token, dateNow);
+      
+                this.estadoMatricula = 1;
+                this.textButton1 = "Cerrar periodo";
+                this.textHeader = "Matrícula abierta";
+                this.colorSubtitle = "success";
+                
+              });
+            }
+            else{
+              this.courseService.cerrarMatricula({token: this.cookieService.get('tokenAuth')})
+              .subscribe(res => {
+                const dateNow = new Date();
+                dateNow.setMinutes(dateNow.getMinutes() + 15);
+                this.cookieService.set('tokenAuth', res[0].token, dateNow);
+      
+                this.estadoMatricula = 0;
+                this.textButton1 = "Abrir periodo";
+                this.textHeader = "Matrícula cerrada";
+                this.colorSubtitle = "danger";
+                this.loadCourses();
+              });
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
+  async presentAlertCupos(group: GroupAdmin) {
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else{
+      const alert = await this.alertController.create({
+        cssClass: 'alertCustom',
+        header: 'Aumentar cupos',
+        message: 'Total de cupos: ' + (group.cupos+group.cantidad_matriculados)+ '<br>Cupos restantes: '+ group.cupos,
+        inputs: [
+          {
+            placeholder: "Número de cupos ha aumentar.",
+            name: 'cupos',
+            type: 'number'
+          }], 
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (blah) => {}
+          }, {
+            text: 'Aceptar',
+            cssClass: 'buttonAlertDelete',
+            handler: (alertData) => {
+              let numCupos;
+              try {
+                numCupos = +alertData.cupos;
+              } catch (error) {
+                numCupos = null;
+              }
+              if(Number.isInteger(numCupos) && (numCupos > 0)){
+                if(!this.cookieService.check('tokenAuth'))
+                  this.router.navigateByUrl('login');
+                else {
+                  this.groupService.aumentarCupos({codeGroup: group.codigo, cant: numCupos, token: this.cookieService.get('tokenAuth')})
+                  .subscribe(res => {
+                    console.log(res);
+                    let groupA: GroupAdmin = res[0];
+                    const dateNow = new Date();
+                    dateNow.setMinutes(dateNow.getMinutes() + 15);
+                    this.cookieService.set('tokenAuth', res[1].token, dateNow);
+
+                    group.cupos = groupA.cupos;
+                    group.cantidad_matriculados = groupA.cantidad_matriculados;
+                  });
+                }
+
+              }
+              else{
+                this.presentAlert('Error', 'El número de cupos de ser un entero positivo');
+              }
+            }
+          }
+        ]
+      });
+
+      await alert.present();
+    }
   }
 
   verificarMatricula(){
@@ -90,11 +199,21 @@ export class HomeAdminPage implements OnInit {
   }
 
   modificarEstadoMatricula(){
-    if(this.listaCursos.length > 0 || this.estadoMatricula == 1){
-
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else if(this.listaCursos.length > 0 || this.estadoMatricula == 1){
+      if(this.estadoMatricula == 0){
+        if(this.listaCursos.length <= 0)
+          this.presentAlert('No se puede iniciar periodo', 'No hay cursos abiertos para este periodo de matricula.');
+        else
+          this.presentAlertMatricula('Abrir periodo de matrícula', '¿Está seguro que quieres abrir el periodo de matrícula?');
+      }
+      else{
+        this.presentAlertMatricula('Cerrar periodo de matrícula', '¿Está seguro que quieres cerrar el periodo de matrícula?');
+      }
     }
     else
-      this.presentAlert();
+      this.presentAlert('No se puede iniciar periodo', 'No hay cursos abiertos para este periodo de matrícula.');
   }
 
   showCourses(){
@@ -103,6 +222,13 @@ export class HomeAdminPage implements OnInit {
 
   showGroup(group: GroupAdmin){
     group.ver = !group.ver;
+  }
+
+  addCourse(){
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else
+      this.router.navigateByUrl('courses-list-admin');
   }
 
   checkIfLoggedIn(){

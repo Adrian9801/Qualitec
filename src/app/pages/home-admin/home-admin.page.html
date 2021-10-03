@@ -16,8 +16,8 @@
     <ion-button expand="block" class='buttonGroup' (click)="modificarEstadoMatricula()"><ion-text color="redColor">{{textButton1}} <br class='button-text'> de matrícula</ion-text></ion-button>
     <ion-card>
       <ion-card-header (click)="showCourses()">
-        <ion-card-title>Lista de cursos</ion-card-title>
-        <ion-card-subtitle>Cursos disponibles: {{this.listaCursos.length}}</ion-card-subtitle>
+        <ion-card-title>Lista de cursos <ion-icon *ngIf="!ver && this.listaCursos.length > 0" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="ver && this.listaCursos.length > 0" name="chevron-up-outline"></ion-icon></ion-card-title>
+        <ion-card-subtitle>Cursos disponibles: {{this.listaCursos.length}} </ion-card-subtitle>
       </ion-card-header>
     
       <ion-card-content>
@@ -30,7 +30,7 @@
           <ion-item *ngFor="let entry of listaCursos">
             <div class ="enlista">
               <ion-card-content (click)="showGroup(entry)">
-                <h2> Curso: {{entry.codigo}} {{entry.nombre}} </h2>
+                <h2> Curso: {{entry.codigo}} {{entry.nombre}} <ion-icon *ngIf="!entry.ver" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="entry.ver" name="chevron-up-outline"></ion-icon></h2>
                 <ion-card-subtitle>Grupos: {{entry.groups.length}} </ion-card-subtitle>
               </ion-card-content>
 
@@ -46,7 +46,7 @@
                   <div class="senListaCupos">
                       <h5>Total cupos: {{groupItem.cupos}} </h5>
                       <h5>Cupos restantes: {{groupItem.cupos - groupItem.cantidad_matriculados}} </h5>
-                      <ion-button class="buttonGroup">
+                      <ion-button (click)='presentAlertCupos(groupItem)' class="buttonGroup">
                         <ion-text color="redColor">
                           Agregar <br class='button-text'>cupos
                         </ion-text>
@@ -60,7 +60,7 @@
       </ion-card-content>
       <ion-item-divider></ion-item-divider>
       <ion-card-header>
-        <ion-card-title style="text-align:center" color="primary">Agregar curso </ion-card-title>
+        <ion-card-title (click)='addCourse()' style="text-align:center" color="primary">Agregar curso </ion-card-title>
       </ion-card-header>
     </ion-card>
   </ion-content>
