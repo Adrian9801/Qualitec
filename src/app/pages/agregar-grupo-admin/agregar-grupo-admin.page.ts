@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-agregar-grupo-admin',
@@ -24,7 +25,7 @@ export class AgregarGrupoAdminPage implements OnInit {
 
   public curso = {nombre : "", codigo: ""}
 
-  constructor( public cdr: ChangeDetectorRef) { }
+  constructor( public alertController: AlertController) { }
 
   ngOnInit() {
     var recibido = history.state
@@ -71,7 +72,7 @@ export class AgregarGrupoAdminPage implements OnInit {
     //this.cdr.detectChanges();
   }
 
-  enviar(){
+  async enviar() {
     this.dias.forEach(dia => {
       if(dia.checked ==true){
         this.diasSelected.push(dia.dia)
@@ -80,6 +81,23 @@ export class AgregarGrupoAdminPage implements OnInit {
     var formulario = {sede : this.sede, num : this.numero, cupos : this.cupos, prof : this.prof, 
     salon : this.salon, inicio : this.inicio, fin : this.fin, dias : this.diasSelected}
     console.log(formulario)
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Agregar grupo',
+      message: ('Curso: ' + this.curso.codigo + " " + this.curso.nombre + "\r" +
+                "Sede: " + this.sede + "\r" +
+                'Grupo: ' + this.numero + "\r" +
+                "Profesor: " + this.prof + "\r" +
+                "Cupos: " + this.cupos  + "\r" +
+                "Salon: " + this.salon  + "\r" +
+                "Dias: " + this.diasSelected  + "\r" +
+                "Hora inicio: " + this.inicio + "\r" +
+                "Hora fin: " + this.fin),
+      buttons: ['Cancel', 'Confirmar']
+    });
+
+    await alert.present();
   }
+
 
 }
