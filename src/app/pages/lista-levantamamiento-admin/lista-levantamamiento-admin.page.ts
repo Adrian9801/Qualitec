@@ -4,21 +4,23 @@ import { AlertController } from '@ionic/angular';
 import { RequestCourse } from 'src/app/models/requestCourse';
 import { CookieService } from 'ngx-cookie-service'; 
 import { LoginService } from 'src/app/services/login/login.service';
-import { RequestService } from 'src/app/services/request/request.service'
+import { RequestService } from 'src/app/services/request/request.service';
+import { CourseService } from 'src/app/services/course/course.service';
 import {AppComponent} from '../../app.component';
 
 @Component({
   selector: 'app-lista-levantamamiento-admin',
   templateUrl: './lista-levantamamiento-admin.page.html',
   styleUrls: ['./lista-levantamamiento-admin.page.scss'],
-  providers: [LoginService, RequestService]
+  providers: [LoginService, RequestService, CourseService]
 })
 export class ListaLevantamamientoAdminPage implements OnInit {
 
   private solicitudes: RequestCourse[] = [];
   private solicitudesAux: RequestCourse[] = [];
+  private estadoMatricula: boolean = true;
 
-  constructor(private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private requestService: RequestService) { 
+  constructor(private courseService: CourseService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private requestService: RequestService) { 
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url == '/lista-levantamamiento-admin') {
         this.checkIfLoggedIn();
@@ -45,6 +47,7 @@ export class ListaLevantamamientoAdminPage implements OnInit {
   }
 
   loadRequest(){
+    this.verificarMatricula();
     this.solicitudesAux = this.solicitudes = [];
     this.requestService.getRequests({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
       const dateNow = new Date();
@@ -74,6 +77,19 @@ export class ListaLevantamamientoAdminPage implements OnInit {
         }
       }
     }
+  }
+
+  verificarMatricula(){
+    this.courseService.getMatricula().subscribe(res => {
+      let list: Object[] = res as Object[];
+      if(list.length > 0){
+        if(res[0].estado == 1){
+          this.estadoMatricula = true;
+        }
+        else
+          this.estadoMatricula = false;
+      }
+    });
   }
 
   public async presentAlert() {
