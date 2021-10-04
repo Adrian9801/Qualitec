@@ -19,6 +19,7 @@ import { AppComponent } from '../../app.component';
 export class SolicitudLevantamientoModalPage implements OnInit {
 
   cursos: CourseAdd[] = [];
+  private estadoMatricula: number;
 
   constructor(public menu:AppComponent, private requestService: RequestService, private cookieService: CookieService, private router: Router, private loginService: LoginService, private courseService: CourseService, private alertCtrl: AlertController) { 
     this.router.events.subscribe((event: Event) => {
@@ -33,35 +34,39 @@ export class SolicitudLevantamientoModalPage implements OnInit {
   }
 
   onSubmit(codigo: string, nombre: string) {
-    let datosSolicitud = {codigo: '', nombre: ''};
+    if(this.estadoMatricula == 1)
+      this.presentAlert();
+    else {
+      let datosSolicitud = {codigo: '', nombre: ''};
 
-    datosSolicitud.codigo = codigo;
-    datosSolicitud.nombre = nombre;
+      datosSolicitud.codigo = codigo;
+      datosSolicitud.nombre = nombre;
 
-    this.alertCtrl.create({
-      header: 'Solicitar levantamiento',
-      message: `¿Está seguro que desea solicitar levantamiento de requisitos para ${codigo}-${nombre}?`,
-      cssClass: 'buttonCss',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'cancel-button',
-        },
-        {
-          text: 'Aceptar',
-          handler: () => {
-            this.requestService.addRequestStudent({codCurso: codigo, token: this.cookieService.get('tokenAuth')}).subscribe(res => {
-              const dateNow = new Date();
-              dateNow.setMinutes(dateNow.getMinutes() + 15);
-              this.cookieService.set('tokenAuth', res[1].token, dateNow);
-        
-              this.cursos = res[0] as CourseAdd[];
-            });
-          } 
-        }
-      ]
-    }).then(alertEl => alertEl.present());
+      this.alertCtrl.create({
+        header: 'Solicitar levantamiento',
+        message: `¿Está seguro que desea solicitar levantamiento de requisitos para ${codigo}-${nombre}?`,
+        cssClass: 'buttonCss',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'cancel-button',
+          },
+          {
+            text: 'Aceptar',
+            handler: () => {
+              this.requestService.addRequestStudent({codCurso: codigo, token: this.cookieService.get('tokenAuth')}).subscribe(res => {
+                const dateNow = new Date();
+                dateNow.setMinutes(dateNow.getMinutes() + 15);
+                this.cookieService.set('tokenAuth', res[1].token, dateNow);
+          
+                this.loadCourses();
+              });
+            } 
+          }
+        ]
+      }).then(alertEl => alertEl.present());
+    }
   }
 
   loadCourses(){
@@ -72,6 +77,40 @@ export class SolicitudLevantamientoModalPage implements OnInit {
 
       this.cursos = res[0] as CourseAdd[];
     });
+  }
+
+  ionViewDidEnter(): void {
+    this.menu.setEnable(false);
+   }
+   
+    ionViewDidLeave(): void {
+     this.menu.setEnable(true);
+    }
+
+  goHome() {
+    this.router.navigateByUrl('home-student');
+  }
+
+  public async presentAlert() {
+    const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header: 'No se puede realizar solicitudes',
+      message: 'El periodo de matrícula está iniciado, no se puede realizar solicitudes.',
+      buttons: ['Entendido']
+  });
+
+    await alert.present();
+  }
+
+  verificarMatricula(){
+    this.courseService.getMatricula().subscribe(res => {
+      let list: Object[] = res as Object[];
+      if(list.length > 0){
+        this.estadoMatricula = res[0].estado;
+        if(this.estadoMatricula == 1)
+          this.presentAlert();
+      }
+    })
   }
 
   checkIfLoggedIn(){
@@ -87,9 +126,10 @@ export class SolicitudLevantamientoModalPage implements OnInit {
           this.cookieService.set('tokenAuth', res[0].token, dateNow);
           if(!res[0].student)
             this.router.navigateByUrl('home-admin');
-          else
+          else {
             this.loadCourses();
-          this.menu.setEnable(false);
+            this.verificarMatricula();
+          }
         }
         else
           this.router.navigateByUrl('login');

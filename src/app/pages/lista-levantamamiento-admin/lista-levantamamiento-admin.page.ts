@@ -52,16 +52,17 @@ export class ListaLevantamamientoAdminPage implements OnInit {
     this.requestService.getRequests({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
       const dateNow = new Date();
       dateNow.setMinutes(dateNow.getMinutes() + 15);
-      this.cookieService.set('tokenAuth', res[1].token, dateNow);
+        this.cookieService.set('tokenAuth', res[1].token, dateNow);
 
-      let requestList: RequestCourse[] = res[0] as RequestCourse[];
-      requestList.forEach(element => {
-        this.solicitudes.push(new RequestCourse(element.nombre_estudiante, element.carnet_estudiante, element.nombre_curso, element.codigo_curso, element.sede, element.estado, element.numero_solicitud));
-      });
-      this.solicitudesAux = this.solicitudes;
-      if (this.solicitudes.length == 0)
-        this.presentAlert();
-      this.load();
+        let requestList: RequestCourse[] = res[0] as RequestCourse[];
+        requestList.forEach(element => {
+          this.solicitudes.push(new RequestCourse(element.nombre_estudiante, element.carnet_estudiante, element.nombre_curso, element.codigo_curso, element.sede, element.estado, element.numero_solicitud));
+        });
+        this.solicitudesAux = this.solicitudes;
+        if (this.solicitudes.length == 0)
+          this.presentAlert();
+        this.load();
+
     });
   }
 

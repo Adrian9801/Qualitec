@@ -48,6 +48,7 @@ export class HomeAdminPage implements OnInit {
 
   loadCourses(){
     this.listaCursos = [];
+
     this.courseService.getCoursesAdmin({token: this.cookieService.get('tokenAuth')})
       .subscribe(res => {
         const dateNow = new Date();
@@ -61,7 +62,6 @@ export class HomeAdminPage implements OnInit {
 
          this.groupService.getGroupsCourseAdmin({courseId: course.codigo})
           .subscribe(res2 => {
-            console.log(res2[0]);
             let listaGrupos = res2 as GroupAdmin[];
 
             for (let group of listaGrupos){
@@ -90,6 +90,7 @@ export class HomeAdminPage implements OnInit {
             if(this.estadoMatricula == 0){
               this.courseService.abrirMatricula({token: this.cookieService.get('tokenAuth')})
               .subscribe(res => {
+                console.log(res);
                 const dateNow = new Date();
                 dateNow.setMinutes(dateNow.getMinutes() + 15);
                 this.cookieService.set('tokenAuth', res[0].token, dateNow);
@@ -161,7 +162,7 @@ export class HomeAdminPage implements OnInit {
                   this.groupService.aumentarCupos({codeGroup: group.codigo, cant: numCupos, token: this.cookieService.get('tokenAuth')})
                   .subscribe(res => {
                     console.log(res);
-                    let groupA: GroupAdmin = res[0];
+                    let groupA: GroupAdmin = res[0][0];
                     const dateNow = new Date();
                     dateNow.setMinutes(dateNow.getMinutes() + 15);
                     this.cookieService.set('tokenAuth', res[1].token, dateNow);
@@ -189,6 +190,7 @@ export class HomeAdminPage implements OnInit {
       let list: Object[] = res as Object[];
       if(list.length > 0){
         this.estadoMatricula = res[0].estado;
+        console.log(this.estadoMatricula);
         if(res[0].estado == 1){
           this.textButton1 = "Cerrar periodo";
           this.textHeader = "Matrícula abierta";
