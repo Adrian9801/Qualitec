@@ -8,12 +8,14 @@ import { GroupService } from 'src/app/services/group/group.service';
 import { CookieService } from 'ngx-cookie-service'; 
 import { CourseAdmin } from 'src/app/models/courseAdmin';
 import { GroupStudent } from 'src/app/models/groupStudent';
+import { RequestCourse } from 'src/app/models/requestCourse';
+import { RequestService } from 'src/app/services/request/request.service';
 
 @Component({
   selector: 'app-home-student',
   templateUrl: './home-student.page.html',
   styleUrls: ['./home-student.page.scss'],
-  providers : [LoginService, CourseService, GroupService]
+  providers : [LoginService, CourseService, GroupService, RequestService]
 })
 export class HomeStudentPage implements OnInit {
   private listaCursos: CourseAdmin[] = [];
@@ -25,8 +27,12 @@ export class HomeStudentPage implements OnInit {
   private listaCursosInclusion: CourseAdmin[] = [];
   private verInclusion = false;
   private creditosMatriculadosInclusion: number = 0;
+  private estadoMatricula: boolean = false;
 
-  constructor(private groupService: GroupService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private courseService: CourseService) { 
+  private listaSolicitudes: RequestCourse[] = [];
+  private aprobadas: number = 0;
+
+  constructor(private requestService: RequestService, private groupService: GroupService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private courseService: CourseService) { 
   }
 
   ngOnInit() {
@@ -49,6 +55,7 @@ export class HomeStudentPage implements OnInit {
   }
 
   loadCourses(){
+    this.verificarMatricula();
     this.listaCursos = [];
     this.creditosMatriculados = 0;
     this.listaCursosInclusion = [];
@@ -96,6 +103,33 @@ export class HomeStudentPage implements OnInit {
               this.totalPagarInclusion = (207000 -this.totalPagar);
           });
       });
+  }
+
+  verificarMatricula(){
+    this.courseService.getMatricula().subscribe(res => {
+      let list: Object[] = res as Object[];
+      if(list.length > 0){
+        if(res[0].estado == 1){
+          this.estadoMatricula = true;
+        }
+        else{
+          this.estadoMatricula = false;
+          this.aprobadas = 0;
+          this.requestService.getRequests({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
+            const dateNow = new Date();
+            dateNow.setMinutes(dateNow.getMinutes() + 15);
+            this.cookieService.set('tokenAuth', res[1].token, dateNow);
+      
+            let requestList: RequestCourse[] = res[0] as RequestCourse[];
+            requestList.forEach(element => {
+              if(element.estado == 2)
+                this.aprobadas++;
+              this.listaSolicitudes.push(new RequestCourse(element.nombre_estudiante, element.carnet_estudiante, element.nombre_curso, element.codigo_curso, element.sede, element.estado, element.numero_solicitud));
+            });
+          });
+        }
+      }
+    });
   }
 
   showCourses(){
