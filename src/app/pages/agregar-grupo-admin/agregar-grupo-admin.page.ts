@@ -1,15 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { RequestCourse } from 'src/app/models/requestCourse';
+import { CookieService } from 'ngx-cookie-service'; 
+import { LoginService } from 'src/app/services/login/login.service';
+import { RequestService } from 'src/app/services/request/request.service'
+import { AppComponent } from '../../app.component';
+import { Teacher } from 'src/app/models/teacher';
+import { GroupService } from 'src/app/services/group/group.service'
 
 @Component({
   selector: 'app-agregar-grupo-admin',
   templateUrl: './agregar-grupo-admin.page.html',
   styleUrls: ['./agregar-grupo-admin.page.scss'],
+  providers: [LoginService, RequestService, GroupService]
 })
 export class AgregarGrupoAdminPage implements OnInit {
 
   sedes = []
-  Profesores = []
+  Profesores: Teacher[] = []
   horasInicio = []
   horasFin = []
   dias = []
@@ -17,7 +26,7 @@ export class AgregarGrupoAdminPage implements OnInit {
   sede = null
   numero = null
   cupos = null
-  prof = null
+  prof: string = null
   salon = null
   inicio : string
   fin = null
@@ -25,29 +34,50 @@ export class AgregarGrupoAdminPage implements OnInit {
 
   public curso = {nombre : "", codigo: ""}
 
-  constructor( public alertController: AlertController) { }
+  constructor(private groupService: GroupService, private loginService: LoginService, private requestService: RequestService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router) { 
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd && event.url == '/agregar-grupo-admin') {
+        //this.checkIfLoggedIn();
+        this.loadTeachers();
+      }
+    });
+  }
 
   ngOnInit() {
+    this.loadData();
+  }
+
+  loadTeachers(){
+    this.groupService.getTeachers().subscribe(res => {
+      console.log(res);
+      console.log('asdsd');
+      this.Profesores = res[0] as Teacher[];
+    });
+  }
+
+  loadData(){
     var recibido = history.state
-    this.curso.nombre = recibido.curso
-    this.curso.codigo = recibido.codigo
+    /*if(recibido.curso == undefined)
+      this.router.navigateByUrl('courses-list-admin');*/
+    //else{
+      this.curso.nombre = recibido.curso
+      this.curso.codigo = recibido.codigo
 
-    this.sedes = [{sede:'Cartago'}]
-    this.Profesores = [{profesor:"Ignacio Trejos"}, {profesor:"Mario Chacon"}, {profesor:"Mauricio Montero"},
-    {profesor:"Jose Carranza"}]
-    this.horasInicio =[{hora:"07:00"},{hora:"07:30"},{hora:"08:00"},{hora:"08:30"},{hora:"09:00"},{hora:"09:30"}
-    ,{hora:"10:00"},{hora:"10:30"},{hora:"11:00"},{hora:"11:30"},{hora:"12:00"},{hora:"12:30"},{hora:"13:00"}
-    ,{hora:"13:30"},{hora:"14:00"},{hora:"14:30"},{hora:"15:00"},{hora:"15:30"},{hora:"16:00"},{hora:"16:30"}
-    ,{hora:"17:00"},{hora:"17:30"},{hora:"18:00"},{hora:"18:30"},{hora:"19:00"},{hora:"19:30"},{hora:"20:00"}
-    ,{hora:"20:30"},{hora:"21:00"},{hora:"21:30"},{hora:"22:00"}]
+      this.sedes = [{sede:'Cartago'}];
+      this.horasInicio =[{hora:"07:00"},{hora:"07:30"},{hora:"08:00"},{hora:"08:30"},{hora:"09:00"},{hora:"09:30"}
+      ,{hora:"10:00"},{hora:"10:30"},{hora:"11:00"},{hora:"11:30"},{hora:"12:00"},{hora:"12:30"},{hora:"13:00"}
+      ,{hora:"13:30"},{hora:"14:00"},{hora:"14:30"},{hora:"15:00"},{hora:"15:30"},{hora:"16:00"},{hora:"16:30"}
+      ,{hora:"17:00"},{hora:"17:30"},{hora:"18:00"},{hora:"18:30"},{hora:"19:00"},{hora:"19:30"},{hora:"20:00"}
+      ,{hora:"20:30"},{hora:"21:00"},{hora:"21:30"},{hora:"22:00"}];
 
-    this.horasFin =[{hora:"07:00"},{hora:"07:30"},{hora:"08:00"},{hora:"08:30"},{hora:"09:00"},{hora:"09:30"}
-    ,{hora:"10:00"},{hora:"10:30"},{hora:"11:00"},{hora:"11:30"},{hora:"12:00"},{hora:"12:30"},{hora:"13:00"}
-    ,{hora:"13:30"},{hora:"14:00"},{hora:"14:30"},{hora:"15:00"},{hora:"15:30"},{hora:"16:00"},{hora:"16:30"}
-    ,{hora:"17:00"},{hora:"17:30"},{hora:"18:00"},{hora:"18:30"},{hora:"19:00"},{hora:"19:30"},{hora:"20:00"}
-    ,{hora:"20:30"},{hora:"21:00"},{hora:"21:30"},{hora:"22:00"}]
-    this.dias = [{dia: "L", checked : false}, {dia: "K", checked : false}, {dia: "M", checked : false}
-  ,{dia: "J", checked : false},{dia: "V", checked : false},{dia: "S", checked : false}]
+      this.horasFin =[{hora:"07:00"},{hora:"07:30"},{hora:"08:00"},{hora:"08:30"},{hora:"09:00"},{hora:"09:30"}
+      ,{hora:"10:00"},{hora:"10:30"},{hora:"11:00"},{hora:"11:30"},{hora:"12:00"},{hora:"12:30"},{hora:"13:00"}
+      ,{hora:"13:30"},{hora:"14:00"},{hora:"14:30"},{hora:"15:00"},{hora:"15:30"},{hora:"16:00"},{hora:"16:30"}
+      ,{hora:"17:00"},{hora:"17:30"},{hora:"18:00"},{hora:"18:30"},{hora:"19:00"},{hora:"19:30"},{hora:"20:00"}
+      ,{hora:"20:30"},{hora:"21:00"},{hora:"21:30"},{hora:"22:00"}];
+      this.dias = [{dia: "L", checked : false}, {dia: "K", checked : false}, {dia: "M", checked : false}
+    ,{dia: "J", checked : false},{dia: "V", checked : false},{dia: "S", checked : false}];
+    //}
   }
 
   GetHorasFin(){
@@ -99,5 +129,27 @@ export class AgregarGrupoAdminPage implements OnInit {
     await alert.present();
   }
 
-
+  checkIfLoggedIn(){
+    if(!this.cookieService.check('tokenAuth'))
+      this.router.navigateByUrl('login');
+    else {
+      this.loginService.checkLogIn({token: this.cookieService.get('tokenAuth')})
+      .subscribe(res => {
+        let list = res as JSON[];
+        if(list.length > 0){
+          const dateNow = new Date();
+          dateNow.setMinutes(dateNow.getMinutes() + 15);
+          this.cookieService.set('tokenAuth', res[0].token, dateNow);
+          if(res[0].student)
+            this.router.navigateByUrl('home-student');
+          else{
+            this.menu.setStudent(false);
+          }
+          this.menu.setEnable(false);
+        }
+        else
+          this.router.navigateByUrl('login');
+      });
+    }
+  }
 }

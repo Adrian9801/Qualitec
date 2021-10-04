@@ -151,7 +151,7 @@ async function aumentarCupos(req){
       .input('idG', sql.VarChar, req.codeGroup)
       .input('cant', sql.VarChar, req.cant)
       .query("EXEC increasePlaces @codigo_grupo = @idG, @cantidad = @cant");
-    let resultList = result.recordsets[0];
+    let resultList = result.recordsets;
     resultList.push(info);
     return resultList;
   } catch (error) {
@@ -170,7 +170,7 @@ async function addRequestStudent(req){//falta NELSON
     let  result = await  pool.request()
       .input('carnet', sql.Int, parseInt(userLogin.carnet))
       .input('idC', sql.VarChar, req.codCurso)
-      .query("EXEC increasePlaces @carnet_estudiante = @carnet, @codigo_curso = @idC");
+      .query("EXEC addSolicitudes @carnet_estudiante = @carnet, @codigo_curso = @idC");
     let resultList = result.recordsets;
     resultList.push(info);
     return resultList;
@@ -205,9 +205,9 @@ async function abrirMatricula(req){
     let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
                 user: userLogin,
                 student: isStudent};
-    /*let  pool = await  sql.connect(config);
+    let  pool = await  sql.connect(config);
     let  result = await  pool.request()
-      .query("EXEC abrirMatricula");*/
+      .query("EXEC abrirMatricula");
     return [info];
   } catch (error) {
     return [];
@@ -221,9 +221,9 @@ async function cerrarMatricula(req){
     let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
                 user: userLogin,
                 student: isStudent};
-    /*let  pool = await  sql.connect(config);
+    let  pool = await  sql.connect(config);
     let  result = await  pool.request()
-      .query("EXEC cerrarMatricula");*/
+      .query("EXEC cerrarMatricula");
     return [info];
   } catch (error) {
     return [];
@@ -276,7 +276,7 @@ async function getrequestCourse(req){
                 student: isStudent};
     let  pool = await  sql.connect(config);
     let  request = await  pool.request()
-      .query("EXEC getRequirementLiftRequests");
+      .query("EXEC getRequirementLiftRequestsH");
     let requestList = (request.recordsets);
     requestList.push(info);
     return requestList;

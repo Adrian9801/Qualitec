@@ -33,8 +33,8 @@
       </ion-item>
       <ion-item>
         <ion-label>Profesor: </ion-label>
-        <ion-select [(ngModel)]="prof">
-          <ion-select-option *ngFor="let prof of Profesores">{{prof.profesor}}</ion-select-option>
+        <ion-select class="myCustomSelect" [(ngModel)]="prof">
+          <ion-select-option class="myCustomSelect" *ngFor="let prof of Profesores"><h3>{{prof.nombre}}</h3></ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>

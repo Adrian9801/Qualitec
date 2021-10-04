@@ -115,7 +115,9 @@ export class HomeStudentPage implements OnInit {
         else{
           this.estadoMatricula = false;
           this.aprobadas = 0;
+          this.listaSolicitudes = [];
           this.requestService.getRequests({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
+            console.log(res)
             const dateNow = new Date();
             dateNow.setMinutes(dateNow.getMinutes() + 15);
             this.cookieService.set('tokenAuth', res[1].token, dateNow);

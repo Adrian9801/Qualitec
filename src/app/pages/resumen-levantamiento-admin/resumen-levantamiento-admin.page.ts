@@ -5,7 +5,7 @@ import { RequestCourse } from 'src/app/models/requestCourse';
 import { CookieService } from 'ngx-cookie-service'; 
 import { LoginService } from 'src/app/services/login/login.service';
 import { RequestService } from 'src/app/services/request/request.service'
-import {AppComponent} from '../../app.component';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-resumen-levantamiento-admin',

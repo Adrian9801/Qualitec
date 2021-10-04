@@ -44,8 +44,8 @@
                     </ion-card-content>
                   </div>
                   <div class="senListaCupos">
-                      <h5>Total cupos: {{groupItem.cupos}} </h5>
-                      <h5>Cupos restantes: {{groupItem.cupos - groupItem.cantidad_matriculados}} </h5>
+                      <h5>Total cupos: {{groupItem.cupos + groupItem.cantidad_matriculados}} </h5>
+                      <h5>Cupos restantes: {{groupItem.cupos}} </h5>
                       <ion-button (click)='presentAlertCupos(groupItem)' class="buttonGroup">
                         <ion-text color="redColor">
                           Agregar <br class='button-text'>cupos
