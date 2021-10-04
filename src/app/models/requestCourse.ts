@@ -8,6 +8,7 @@ export class RequestCourse {
     carnet_estudiante: number;
     estado: number;
     estado_solitud: string;
+    estado_solitud_Student: string;
     styleSelect: {} = {};
 
     constructor(nombre_estudiante: string, _carnet_estudiante: number, nombre_curso: string, codigo_curso: string, _sede: string, _estado: number, _numero_solicitud: number){
@@ -24,18 +25,21 @@ export class RequestCourse {
     loadColor() {
         if(this.estado == 0){
             this.estado_solitud = 'Rechazar';
+            this.estado_solitud_Student = 'Rechazada';
             this.styleSelect = {
                 'color': '#EB445A',
             };
         }
         else if(this.estado == 1) {
             this.estado_solitud = 'Pendiente';
+            this.estado_solitud_Student = 'Pendiente';
             this.styleSelect = {
                 'color': '#0C1433',
             };
         }
         else {
             this.estado_solitud = 'Aceptar';
+            this.estado_solitud_Student = 'Aceptada';
             this.styleSelect = {
                 'color': '#3880FF',
             };
