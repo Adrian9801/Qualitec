@@ -66,7 +66,8 @@ const routes: Routes = [
   {
     path: 'resumen-levantamiento-admin',
     loadChildren: () => import('./pages/resumen-levantamiento-admin/resumen-levantamiento-admin.module').then( m => m.ResumenLevantamientoAdminPageModule)
-  },  {
+  },
+  {
     path: 'control-matricula-admin',
     loadChildren: () => import('./pages/control-matricula-admin/control-matricula-admin.module').then( m => m.ControlMatriculaAdminPageModule)
   },
@@ -77,6 +78,10 @@ const routes: Routes = [
   {
     path: 'agregar-grupo-admin',
     loadChildren: () => import('./pages/agregar-grupo-admin/agregar-grupo-admin.module').then( m => m.AgregarGrupoAdminPageModule)
+  },
+  {
+    path: 'solicitud-levantamiento-modal',
+    loadChildren: () => import('./solicitud-levantamiento-modal/solicitud-levantamiento-modal.module').then( m => m.SolicitudLevantamientoModalPageModule)
   },
 
 
