@@ -81,7 +81,7 @@ const routes: Routes = [
   },
   {
     path: 'solicitud-levantamiento-modal',
-    loadChildren: () => import('./solicitud-levantamiento-modal/solicitud-levantamiento-modal.module').then( m => m.SolicitudLevantamientoModalPageModule)
+    loadChildren: () => import('./pages/solicitud-levantamiento-modal/solicitud-levantamiento-modal.module').then( m => m.SolicitudLevantamientoModalPageModule)
   },
 
 

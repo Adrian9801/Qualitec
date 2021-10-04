@@ -179,7 +179,7 @@ async function addRequestStudent(req){//falta NELSON
   }
 }
 
-async function getRequestStudent(req){//falta MOISES
+async function getRequestStudent(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
