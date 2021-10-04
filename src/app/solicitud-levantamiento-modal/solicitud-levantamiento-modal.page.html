@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home-student" class="color-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="color-white">Seleccionar curso</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lista de cursos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let curso of cursosTemp" button detail=true (click)="onSubmit(curso.codigo, curso.nombre)">
+          <ion-label>{{ curso.codigo }} - {{ curso.nombre }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+
+  </ion-card>
+
+
+
+
+</ion-content>
