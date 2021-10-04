@@ -25,6 +25,7 @@ export class HomeStudentPage implements OnInit {
   private listaCursosInclusion: CourseAdmin[] = [];
   private verInclusion = false;
   private creditosMatriculadosInclusion: number = 0;
+  private estadoMatricula: boolean = false;
 
   constructor(private groupService: GroupService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private courseService: CourseService) { 
   }
@@ -49,6 +50,7 @@ export class HomeStudentPage implements OnInit {
   }
 
   loadCourses(){
+    this.verificarMatricula();
     this.listaCursos = [];
     this.creditosMatriculados = 0;
     this.listaCursosInclusion = [];
@@ -96,6 +98,19 @@ export class HomeStudentPage implements OnInit {
               this.totalPagarInclusion = (207000 -this.totalPagar);
           });
       });
+  }
+
+  verificarMatricula(){
+    this.courseService.getMatricula().subscribe(res => {
+      let list: Object[] = res as Object[];
+      if(list.length > 0){
+        if(res[0].estado == 1){
+          this.estadoMatricula = true;
+        }
+        else
+          this.estadoMatricula = false;
+      }
+    });
   }
 
   showCourses(){

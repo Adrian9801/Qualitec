@@ -68,6 +68,8 @@ export class EnrollmentPage implements OnInit {
         dateNow.setMinutes(dateNow.getMinutes() + 15);
         this.cookieService.set('tokenAuth', res[1].token, dateNow);
         let coursesTemp: Course[] = res[0] as Course[];
+        if(coursesTemp.length == 0)
+          this.presentAlertE('No hay cursos', 'No se a agregado ningún grupo que puedas matricular.');
         let pos = 0;
         for (let course of coursesTemp){
           let courseAux: Course = new Course(course.codigo,course.nombre,course.creditos, pos);
@@ -155,6 +157,17 @@ export class EnrollmentPage implements OnInit {
 
     await alert.present();
     group.registered = false;
+  }
+
+  public async presentAlertE(title: string, msg: string) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: title,
+      message: msg,
+      buttons: ['Entendido']
+    });
+
+    await alert.present();
   }
 
 

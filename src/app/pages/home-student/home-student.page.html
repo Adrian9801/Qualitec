@@ -19,7 +19,8 @@
       <ion-card-content>
         <ion-item *ngIf="this.listaCursos.length == 0">
           <ion-icon name="warning" class="color-red" slot="start"></ion-icon>
-          <h3>Matrícula pendiente</h3>
+          <h3 *ngIf="estadoMatricula">Matrícula pendiente</h3>
+          <h3 *ngIf="!estadoMatricula">Matrícula cerrada</h3>
         </ion-item>
 
         <ion-list *ngIf="ver && this.listaCursos.length > 0">

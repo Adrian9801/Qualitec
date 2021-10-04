@@ -23,11 +23,12 @@
       </div>
       <div class="select-estado">
         <ion-item>
-          <ion-select [compareWith]="compareFn" [ngStyle]="entry.styleSelect" [(ngModel)]="entry.estado" (ionChange)="SetBackground($event, entry)">
+          <ion-select *ngIf="!estadoMatricula" [compareWith]="compareFn" [ngStyle]="entry.styleSelect" [(ngModel)]="entry.estado" (ionChange)="SetBackground($event, entry)">
             <ion-select-option value=1>Pendiente</ion-select-option>
             <ion-select-option value=2>Aceptar</ion-select-option>
             <ion-select-option value=0>Rechazar</ion-select-option>
           </ion-select>
+          <ion-card-subtitle *ngIf="estadoMatricula">Pendiente</ion-card-subtitle>
         </ion-item>
       </div>
     </ion-item>
