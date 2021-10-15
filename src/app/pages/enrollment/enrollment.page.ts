@@ -328,6 +328,10 @@ export class EnrollmentPage implements OnInit {
     this.verificarMatricula();
   }
 
+  goHome(){
+    this.router.navigateByUrl('home-student');
+  }
+
   checkIfLoggedIn(){
     if(!this.cookieService.check('tokenAuth'))
       this.router.navigateByUrl('login');
