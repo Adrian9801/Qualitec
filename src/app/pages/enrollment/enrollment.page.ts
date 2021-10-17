@@ -181,7 +181,7 @@ export class EnrollmentPage implements OnInit {
     let hour2I: number = +(hour2List[0].replace(':',''));
     let hour2F: number = +(hour2List[1].replace(':',''));
 
-    if((hour1I <= hour2I && hour1F >= hour2I) || (hour1I <= hour2F && hour1F >= hour2F))
+    if((hour1I <= hour2I && hour1F >= hour2I) || (hour2I <= hour1I && hour2F >= hour1I) || (hour1F <= hour2F && hour1I >= hour2F) || (hour2F <= hour1F && hour2I >= hour1F))
       return true;
     return false;
   }
@@ -199,11 +199,11 @@ export class EnrollmentPage implements OnInit {
     for(let element of listGroups){
       let listScheduleElement: string[] = element.dias.split(" ");
       let hoursElement: string = listScheduleElement[1];
-
       for (let index = 0; index < listSchedule.length; index+=2) {
         for (let indexElement = 0; indexElement < listScheduleElement.length; indexElement+=2) {
           if(listSchedule[index] == listScheduleElement[indexElement])
-            return this.checkHours(Hours, hoursElement);
+            if(this.checkHours(Hours, hoursElement))
+              return true;
         }
       }
     }
@@ -326,6 +326,10 @@ export class EnrollmentPage implements OnInit {
   enroll(){
     this.openRegister = 2;
     this.verificarMatricula();
+  }
+
+  goHome(){
+    this.router.navigateByUrl('home-student');
   }
 
   checkIfLoggedIn(){

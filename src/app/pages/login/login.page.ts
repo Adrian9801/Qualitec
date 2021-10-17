@@ -16,10 +16,12 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
   validUser: boolean = true;
   loading: HTMLIonLoadingElement;
+  private checkL: boolean = false;
 
   constructor(public menu:AppComponent, private cookieService: CookieService, private router: Router, private loginService: LoginService, private fb: FormBuilder, public loadingController: LoadingController) { 
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/login') {
+      if (event instanceof NavigationEnd && event.url == '/login' && !this.checkL) {
+        this.checkL = true;
         this.checkIfLoggedIn();
         this.cookieService.delete('tokenRecovery');
         this.menu.setEnable(false);
@@ -32,6 +34,12 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+    if(!this.checkL){
+      this.checkL = true;
+      this.checkIfLoggedIn();
+      this.cookieService.delete('tokenRecovery');
+      this.menu.setEnable(false);
+    }
   }
 
   async presentLoading() {

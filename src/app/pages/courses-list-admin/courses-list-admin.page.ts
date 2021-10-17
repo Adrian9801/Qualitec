@@ -51,12 +51,15 @@ export class CoursesListAdminPage implements OnInit {
       this.router.navigateByUrl('agregar-grupo-admin', { state: curso });
   }
 
+  goHome(){
+    this.router.navigateByUrl('home-admin');
+  }
+
   loadCourses(){
     this.courseService.getCoursesAdd({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
       const dateNow = new Date();
       dateNow.setMinutes(dateNow.getMinutes() + 15);
       this.cookieService.set('tokenAuth', res[1].token, dateNow);
-      console.log(res);
       this.cursos = res[0];
       this.cursosAux = this.cursos;
     });

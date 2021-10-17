@@ -10,6 +10,9 @@
     --background: #0C1433;
   }
 
-  .myCustomSelect{
 
-   }
+   ion-select {
+
+    /* Set a different placeholder color */
+    --placeholder-color: #000000;
+  }

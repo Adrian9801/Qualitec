@@ -52,6 +52,10 @@ export class GroupService {
     return this.http.post(this.URL_API + '/getGroupMatriculado', data);
   }
 
+  getScheduleTeacher(data){
+    return this.http.post(this.URL_API + '/getScheduleTeacher', data);
+  }
+
   createNewGroup(data){
     return this.http.post(this.URL_API + '/createNewGroup', data);
   }

@@ -18,28 +18,28 @@
         Información general
       </h1>
       <ion-item>
-        <ion-label>Sede: </ion-label>
-        <ion-select [(ngModel)]="sede">
+        <ion-text *ngIf='sede == null'>Seleccione una sede: </ion-text>
+        <ion-select (ionChange)="changeSelect($event)">
           <ion-select-option *ngFor="let sede of sedes">{{sede.sede}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
-        <ion-label>Número de grupo: </ion-label>
-        <ion-input type="number" [(ngModel)]="numero" slot="end"></ion-input>
+        <ion-label position="floating">Número de grupo:</ion-label>
+        <ion-input [(ngModel)]="numero" type="number" placeholder="Número de grupo aquí"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Cupos: </ion-label>
-        <ion-input  type="number" [(ngModel)]="cupos" slot="end"></ion-input>
+        <ion-label position="floating">Cantidad de cupos:</ion-label>
+        <ion-input [(ngModel)]="cupos" type="number" placeholder="Cantidad de cupos aquí"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Profesor: </ion-label>
-        <ion-select class="myCustomSelect" [(ngModel)]="prof">
-          <ion-select-option class="myCustomSelect" *ngFor="let prof of Profesores"><h3>{{prof.nombre}}</h3></ion-select-option>
+        <ion-text *ngIf='prof == null'>Seleccione un profesor: </ion-text>
+        <ion-select (ionChange)="changeProf($event)">
+          <ion-select-option *ngFor="let profe of Profesores" value={{profe.cedula}}><ion-text>{{profe.nombre}}</ion-text></ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
-        <ion-label>Salón: </ion-label>
-        <ion-input [(ngModel)]="salon" slot="end"></ion-input>
+        <ion-label position="floating">Salón:</ion-label>
+        <ion-input [(ngModel)]="salon" type="text" placeholder="Escriba el salón aquí"></ion-input>
       </ion-item>
       <h1>
         Horario
@@ -57,14 +57,14 @@
           </ion-row>
         </ion-grid>
         <ion-item>
-          <ion-label>Hora de inicio: </ion-label>
-          <ion-select [(ngModel)]="inicio">
+          <ion-label>Hora de inicio:</ion-label>
+          <ion-select (ionChange)="changeHour($event,'inicio')" [(ngModel)]="inicio">
             <ion-select-option *ngFor="let inicio of horasInicio" >{{inicio.hora}}</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item>
-          <ion-label>Hora de fin: </ion-label>
-          <ion-select [(ngModel)]="fin">
+          <ion-label>Hora de fin:</ion-label>
+          <ion-select (ionChange)="changeHour($event,'fin')" [(ngModel)]="fin">
             <ion-select-option *ngFor="let fin of horasFin" >{{fin.hora}}</ion-select-option>
           </ion-select>
         </ion-item>

@@ -15,7 +15,6 @@ router.use((request, response, next) => {
   next();
 });
  
- 
 router.route('/courses').post((request, response) => {
   Db.getCourses(request.body).then((data) => {
     response.json(data);
@@ -30,6 +29,12 @@ router.route('/schedule').post((request, response) => {
 
 router.route('/coursesAdmin').post((request, response) => {
   Db.getcoursesAdmin(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getScheduleTeacher').post((request, response) => {
+  Db.getScheduleTeacher(request.body).then((data) => {
     response.json(data);
   })
 })

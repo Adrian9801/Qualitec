@@ -59,6 +59,19 @@ async function getcoursesAdmin(req){
   }
 }
 
+async function getScheduleTeacher(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('cedula', sql.VarChar, req.cedula)
+      .query("EXEC getScheduleTeacher @cedula_profesor = @cedula");
+    let courseList = courses.recordsets;
+    return courseList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
 async function getCoursesAdd(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
@@ -120,20 +133,22 @@ async function getCoursesInclusion(req){
   }
 }
 
-async function createNewGroup(req){ //FALTA
+async function createNewGroup(req){
   try {
-    let userLogin = jwt.verify(req.token, 'secret-Key').user;
-    let isStudent = jwt.verify(req.token, 'secret-Key').student;
-    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
-                user: userLogin,
-                student: isStudent};
     let  pool = await  sql.connect(config);
     let  result = await  pool.request()
-      .input('carnet', sql.Int, userLogin)
-      .query("EXEC createNewGroup @numero , @sede , @cupos , @cedulaProf , @horario , @horaI , @horaF , @codCurso , @aula ");
+      .input('numI', sql.Int, req.num)
+      .input('sedeI', sql.VarChar, req.sede)
+      .input('cuposI', sql.Int, req.cupos)
+      .input('cedulaProfI', sql.VarChar, req.prof)
+      .input('horarioI', sql.VarChar, req.dias)
+      .input('horaII', sql.VarChar, req.inicio)
+      .input('horaFI', sql.VarChar, req.fin)
+      .input('codCursoI', sql.VarChar, req.codCurso)
+      .input('aulaI', sql.VarChar, req.salon)
+      .query("EXEC createNewGroup @numero = @numI, @sede = @sedeI, @cupos = @cuposI, @cedulaProf = @cedulaProfI, @horario = @horarioI, @horaI = @horaII, @horaF = @horaFI, @codCurso = @codCursoI, @aula = @aulaI");
     let resultList = result.recordsets;
-    resultList.push(info);
-    return resultList;
+    return resultList[0][0];
   } catch (error) {
     return [];
   }
@@ -579,5 +594,6 @@ module.exports = {
   getRequestStudent: getRequestStudent,
   getGroupMatriculado: getGroupMatriculado,
   createNewGroup: createNewGroup,
-  getTeachers: getTeachers
+  getTeachers: getTeachers,
+  getScheduleTeacher: getScheduleTeacher
 }
