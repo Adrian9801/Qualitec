@@ -38,7 +38,7 @@ export class AgregarGrupoAdminPage implements OnInit {
   constructor(private groupService: GroupService, private loginService: LoginService, private requestService: RequestService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router) { 
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url == '/agregar-grupo-admin') {
-        //this.checkIfLoggedIn();
+        this.checkIfLoggedIn();
         this.loadTeachers();
         this.loadCourse();
       }
