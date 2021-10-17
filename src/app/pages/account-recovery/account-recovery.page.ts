@@ -77,49 +77,53 @@ export class AccountRecoveryPage implements OnInit {
 
   onUpdatePassword(){
     if(this.step == 'first') {
-      this.presentLoading();
-      if(this.accountRecoverForm.valid) {
-        this.loginService.verifyMail(this.accountRecoverForm.value.correo)
-        .subscribe(res => {
-          console.log(res)
-          let list = res as JSON[];
-          if(list.length > 0){
-            const dateNow = new Date();
-            dateNow.setMinutes(dateNow.getMinutes() + 3);
-            this.cookieService.set('tokenRecovery', res[1].tokenRecovery, dateNow);
-            this.loginService.sendToken({Correo: this.accountRecoverForm.value.correo, Code: res[0].code}).subscribe(result =>{
+      this.presentLoading().then(value => {
+        if(this.accountRecoverForm.valid) {
+          this.loginService.verifyMail(this.accountRecoverForm.value.correo)
+          .subscribe(res => {
+            let list = res as JSON[];
+            if(list.length > 0){
+              const dateNow = new Date();
+              dateNow.setMinutes(dateNow.getMinutes() + 3);
+              this.cookieService.set('tokenRecovery', res[1].tokenRecovery, dateNow);
+              this.loginService.sendToken({Correo: this.accountRecoverForm.value.correo, Code: res[0].code}).subscribe(result =>{
+                this.loading.dismiss();
+                this.step = 'second';
+                this.textButton = 'Verificar código';
+                this.accountRecoverForm.reset();
+              });
+            }
+            else{
               this.loading.dismiss();
-              this.step = 'second';
-              this.textButton = 'Verificar código';
-              this.accountRecoverForm.reset();
-            });
-          }
-          else{
-            this.loading.dismiss();
-            this.presentAlert('Correo inválido', 'La dirección de correo electrónico ingresada no existe en nuestro sistema.');
-          }
-        });
-      }
+              this.presentAlert('Correo inválido', 'La dirección de correo electrónico ingresada no existe en nuestro sistema.');
+            }
+          });
+        }
+        else{
+          this.loading.dismiss();
+          this.presentAlert('Correo inválido', 'La dirección de no es válida.');
+        }
+      });
     }
     else if(this.step == 'second') {
-      this.presentLoading();
       if(this.accountRecoverForm.value.token != null && this.cookieService.check('tokenRecovery')) {
         this.loginService.checkCode({code: this.accountRecoverForm.value.token, token: this.cookieService.get('tokenRecovery')})
         .subscribe(res => {
           let list = res as JSON[];
+          this.presentLoading().then(value => {
           if(list.length > 0){
             const dateNow = new Date();
             dateNow.setMinutes(dateNow.getMinutes() + 3);
             this.cookieService.set('tokenRecovery', res[0].tokenRecovery, dateNow);
-            this.loading.dismiss();
             this.step = 'third';
             this.textButton = 'Cambiar contraseña';
             this.accountRecoverForm.reset();
           }
           else{
-            this.loading.dismiss();
             this.presentAlert('Código inválido', 'El código ingresado no es válido.');
           }
+          this.loading.dismiss();
+          });
         });
       }
       else {
@@ -128,19 +132,20 @@ export class AccountRecoveryPage implements OnInit {
     }
     else {
       if(this.changePasswordForm.valid && this.cookieService.check('tokenRecovery')) {
-        this.presentLoading();
-        this.loginService.updatePass({pass: this.changePasswordForm.value.newPass, token: this.cookieService.get('tokenRecovery')})
-        .subscribe(res => {
-          if(res){
-            this.cookieService.deleteAll();
-            this.loading.dismiss();
-            this.changePasswordForm.reset();
-            this.router.navigateByUrl('login');
-          }
-          else{
-            this.loading.dismiss();
-            this.presentAlert('Error de actualización', 'La contraseña no se actualizó correctamente. El tiempo de espera ya expiro.');
-          }
+        this.presentLoading().then(value => {
+          this.loginService.updatePass({pass: this.changePasswordForm.value.newPass, token: this.cookieService.get('tokenRecovery')})
+          .subscribe(res => {
+            if(res){
+              this.cookieService.deleteAll();
+              this.loading.dismiss();
+              this.changePasswordForm.reset();
+              this.router.navigateByUrl('login');
+            }
+            else{
+              this.loading.dismiss();
+              this.presentAlert('Error de actualización', 'La contraseña no se actualizó correctamente. El tiempo de espera ya expiro.');
+            }
+          });
         });
       }
     }
