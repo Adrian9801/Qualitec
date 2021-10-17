@@ -90,7 +90,6 @@ export class HomeAdminPage implements OnInit {
             if(this.estadoMatricula == 0){
               this.courseService.abrirMatricula({token: this.cookieService.get('tokenAuth')})
               .subscribe(res => {
-                console.log(res);
                 const dateNow = new Date();
                 dateNow.setMinutes(dateNow.getMinutes() + 15);
                 this.cookieService.set('tokenAuth', res[0].token, dateNow);
@@ -161,7 +160,6 @@ export class HomeAdminPage implements OnInit {
                 else {
                   this.groupService.aumentarCupos({codeGroup: group.codigo, cant: numCupos, token: this.cookieService.get('tokenAuth')})
                   .subscribe(res => {
-                    console.log(res);
                     let groupA: GroupAdmin = res[0][0];
                     const dateNow = new Date();
                     dateNow.setMinutes(dateNow.getMinutes() + 15);
@@ -190,7 +188,6 @@ export class HomeAdminPage implements OnInit {
       let list: Object[] = res as Object[];
       if(list.length > 0){
         this.estadoMatricula = res[0].estado;
-        console.log(this.estadoMatricula);
         if(res[0].estado == 1){
           this.textButton1 = "Cerrar periodo";
           this.textHeader = "Matrícula abierta";
