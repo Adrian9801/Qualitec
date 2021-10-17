@@ -2,14 +2,14 @@ const nodemailer = require('nodemailer');
 
 module.exports = (formulario) => {
     var transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'outlook',
         auth: {
-            user: 'qualitec.cr@gmail.com', 
-            pass: 'admin258369' 
+            user: 'estudiante1QualiTec@outlook.com', 
+            pass: 'estudiante258369' 
         }
     });
     const mailOptions = {
-        from: 'qualitec.cr@gmail.com',
+        from: 'estudiante1QualiTec@outlook.com',
         to: formulario.Correo, 
         subject: 'Recuperación de cuenta',
         html: `
