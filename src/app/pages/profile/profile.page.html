@@ -25,8 +25,7 @@
           <img [src]="previewImage" ><br>
         </ion-avatar>
 
-        <input style="display:none" type="file" accept="image/*" (change)="onProfilePictureSelected($event)" #fileInput>
-        <ion-button style="max-height: 20px;" mode="ios" fill="clear" (click)="fileInput.click()">Seleccionar</ion-button>
+        <input style="display:none" type="file" accept="image/*" #fileInput>
 
         <h2 style="color:black"><b>{{student.nombre}}</b></h2>
         <h2 style="color:black"><b>{{student.carnet}}</b></h2><br>
