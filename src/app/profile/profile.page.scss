@@ -1,0 +1,38 @@
+ion-avatar {
+    width: 30%;
+    height: auto;
+}
+
+ion-card {
+    max-width: 500px;
+    margin:auto;
+    margin-bottom: 20px;
+}
+
+ion-toolbar {
+    --background: #0C1433;
+}
+
+.color-white {
+    color: white;
+}
+
+ion-content {
+    --background: #f0f0f0; // Replace this with color of your choice
+}
+
+.logo-image {
+    width: 15%;
+    height: auto;
+    margin: auto;
+    padding-bottom: 20px;
+}
+// Para dispositivos pequeños, hice el logo un poco mas grande.
+@media (max-width: 479px) {
+    .logo-image {
+        width: 50%;
+        height: auto;
+        margin: auto;
+        padding-bottom: 20px;
+    }
+}

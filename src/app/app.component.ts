@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from  "@angular/router";
 import { LoginService } from 'src/app/services/login/login.service';
 import { MenuController } from '@ionic/angular';
-import { CookieService } from 'ngx-cookie-service'; 
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class AppComponent {
 
   public student = true;
-  constructor(private cookieService: CookieService, private router: Router, private loginService: LoginService, private menu: MenuController) { 
+  constructor(private cookieService: CookieService, private router: Router, private loginService: LoginService, private menu: MenuController) {
   }
 
   setStudent(valor:boolean){
@@ -28,9 +28,10 @@ export class AppComponent {
   setEnable(value: boolean){
     this.menu.enable(value);
   }
-  
+
   logout(){
     this.cookieService.delete('tokenAuth');
     this.changePage('login');
   }
 }
+6

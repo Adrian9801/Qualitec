@@ -82,7 +82,11 @@ const routes: Routes = [
   {
     path: 'solicitud-levantamiento-modal',
     loadChildren: () => import('./pages/solicitud-levantamiento-modal/solicitud-levantamiento-modal.module').then( m => m.SolicitudLevantamientoModalPageModule)
+  },  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   },
+
 
 
 
