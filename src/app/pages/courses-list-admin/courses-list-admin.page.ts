@@ -5,6 +5,9 @@ import { CookieService } from 'ngx-cookie-service';
 import { CourseService } from 'src/app/services/course/course.service';
 import { AppComponent } from '../../app.component'; 
 import { CourseAdd } from 'src/app/models/courseAdd';
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-courses-list-admin',
@@ -16,16 +19,21 @@ export class CoursesListAdminPage implements OnInit {
 
   private cursos: CourseAdd[] = [];
   private cursosAux: CourseAdd[] = [];
+  private _routerSub = Subscription.EMPTY;
 
   constructor(private loginService: LoginService, private courseService: CourseService, public menu:AppComponent, private cookieService: CookieService, private router: Router) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/courses-list-admin') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/courses-list-admin')
+      .subscribe((value) => {
         this.checkIfLoggedIn();
-      }
     });
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   async filterList(evt) {

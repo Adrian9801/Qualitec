@@ -6,6 +6,9 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '
 import { CookieService } from 'ngx-cookie-service'; 
 import { CourseService } from 'src/app/services/course/course.service';
 import {AppComponent} from '../../app.component'; 
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-schedule',
@@ -24,20 +27,25 @@ export class SchedulePage implements OnInit {
     "J" : "Jueves",
     "V" : "Viernes",
     "S" : "Sábado"
-};
+  };
+  private _routerSub = Subscription.EMPTY;
 
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(public menu:AppComponent, private cookieService: CookieService, private router: Router, private loginService: LoginService, private courseService: CourseService) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/schedule') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/schedule')
+      .subscribe((value) => {
         this.checkIfLoggedIn();
-      }
     });
    }
 
   ngOnInit() {
 
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   loadSchedule() {

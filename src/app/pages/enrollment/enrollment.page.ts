@@ -9,6 +9,9 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '
 import { Student } from 'src/app/models/student';
 import { CookieService } from 'ngx-cookie-service'; 
 import { AlertController } from '@ionic/angular';
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-enrollment',
@@ -30,17 +33,22 @@ export class EnrollmentPage implements OnInit {
   private register: boolean = true;
   private showSpinner: boolean = false;
   private textButton: string = "Matricular";
+  private _routerSub = Subscription.EMPTY;
 
   constructor(public alertController: AlertController, private cookieService: CookieService, public menu:AppComponent, private courseService: CourseService, private groupService: GroupService, private loginService: LoginService, private router: Router) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/enrollment') {
-        this.checkIfLoggedIn();
-        this.load();
-      }
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/enrollment')
+      .subscribe((value) => {
+          this.checkIfLoggedIn();
+          this.load();
     });
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   load(){

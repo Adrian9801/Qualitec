@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError, InitialNavigation } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { RequestCourse } from 'src/app/models/requestCourse';
 import { CookieService } from 'ngx-cookie-service'; 
@@ -9,6 +9,9 @@ import { AppComponent } from '../../app.component';
 import { Teacher } from 'src/app/models/teacher';
 import { Schedule } from 'src/app/models/schedule';
 import { GroupService } from 'src/app/services/group/group.service'
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-agregar-grupo-admin',
@@ -32,21 +35,26 @@ export class AgregarGrupoAdminPage implements OnInit {
   private inicio: string = null;
   private fin: string = null;
   private diasSelected: string[] = [];
+  private _routerSub = Subscription.EMPTY;
 
   private curso = {nombre : "", codigo: ""};
 
   constructor(private groupService: GroupService, private loginService: LoginService, private requestService: RequestService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/agregar-grupo-admin') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/agregar-grupo-admin')
+      .subscribe((value) => {
         this.checkIfLoggedIn();
         this.loadTeachers();
         this.loadCourse();
-      }
+        this.loadData();
     });
   }
 
   ngOnInit() {
-    this.loadData();
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   loadTeachers(){
@@ -173,8 +181,6 @@ export class AgregarGrupoAdminPage implements OnInit {
                   this.presentAlert('Choque de horario', 'Hay un coche de horario del profesor seleccionado.');
                   return;
                 }
-                else
-                  break;
               }
             }
           }
@@ -209,8 +215,9 @@ export class AgregarGrupoAdminPage implements OnInit {
   async confirmGroup(){
     let diasS: string = '';
     this.diasSelected.forEach(element => {
-      diasS += element;
+      diasS += element+',';
     });
+    diasS = diasS.substring(0,diasS.length-1);
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Agregar grupo',

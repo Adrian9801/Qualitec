@@ -6,6 +6,9 @@ import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from 'src/app/services/login/login.service';
 import { RequestService } from 'src/app/services/request/request.service'
 import { AppComponent } from '../../app.component';
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-resumen-levantamiento-admin',
@@ -21,16 +24,21 @@ export class ResumenLevantamientoAdminPage implements OnInit {
   public tamanoRechazadas = 0;
   public ver = false;
   public verRechazadas = false;
+  private _routerSub = Subscription.EMPTY;
 
   constructor(private loginService: LoginService, private requestService: RequestService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/resumen-levantamiento-admin') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/resumen-levantamiento-admin')
+      .subscribe((value) => {
         this.checkIfLoggedIn();
-      }
     });
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   load(){

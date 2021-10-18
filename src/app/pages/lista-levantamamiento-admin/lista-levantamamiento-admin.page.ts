@@ -7,6 +7,9 @@ import { LoginService } from 'src/app/services/login/login.service';
 import { RequestService } from 'src/app/services/request/request.service';
 import { CourseService } from 'src/app/services/course/course.service';
 import {AppComponent} from '../../app.component';
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter'; 
 
 @Component({
   selector: 'app-lista-levantamamiento-admin',
@@ -19,17 +22,23 @@ export class ListaLevantamamientoAdminPage implements OnInit {
   private solicitudes: RequestCourse[] = [];
   private solicitudesAux: RequestCourse[] = [];
   private estadoMatricula: boolean = true;
+  private firtsLoad: boolean = false;
+  private countLoads: number = 0;
+  private _routerSub = Subscription.EMPTY;
 
   constructor(private courseService: CourseService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private requestService: RequestService) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/lista-levantamamiento-admin') {
-        this.checkIfLoggedIn();
-      }
+    this._routerSub = this.router.events
+    .filter(event => event instanceof NavigationEnd && event.url == '/lista-levantamamiento-admin')
+    .subscribe((value) => {
+      this.checkIfLoggedIn();
     });
   }
 
   ngOnInit() {
+  }
 
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   compareFn(e1: number, e2: number): boolean {

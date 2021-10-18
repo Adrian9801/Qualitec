@@ -20,10 +20,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/about-us/about-us.module').then( m => m.AboutUsPageModule)
   },
   {
-    path: 'account-details',
-    loadChildren: () => import('./pages/account-details/account-details.module').then( m => m.AccountDetailsPageModule)
-  },
-  {
     path: 'schedule',
     loadChildren: () => import('./pages/schedule/schedule.module').then( m => m.SchedulePageModule)
   },
@@ -58,7 +54,8 @@ const routes: Routes = [
   {
     path: 'solicitud-levantamiento-modal',
     loadChildren: () => import('./pages/solicitud-levantamiento-modal/solicitud-levantamiento-modal.module').then( m => m.SolicitudLevantamientoModalPageModule)
-  },  {
+  },
+  {
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
   },
