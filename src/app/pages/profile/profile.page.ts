@@ -22,7 +22,7 @@ export class ProfilePage implements OnInit {
   previewImage: string = 'assets/avatar.svg';
   profilePicture: File = null;
 
-  private student: {nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera} = {nombre: '', cedula: '', correo: '', telefono: '', contacto_emergencia: '', sede: '', fecha_nacimiento: '', nombre_carrera: ''};
+  private student: {carnet, nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera} = {carnet: '',nombre: '', cedula: '', correo: '', telefono: '', contacto_emergencia: '', sede: '', fecha_nacimiento: '', nombre_carrera: ''};
 
   constructor(public alertController: AlertController, private groupService: GroupService, private fb: FormBuilder, private toastCtrl: ToastController, private cookieService: CookieService, public menu:AppComponent, private router: Router, private loginService: LoginService, ) {
     this.router.events.subscribe((event: Event) => {
@@ -43,24 +43,13 @@ export class ProfilePage implements OnInit {
   loadInfo(){
     this.groupService.getStudentInfo({token: this.cookieService.get('tokenAuth')})
       .subscribe(res => {
-        let info: {nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera} = res[0] as {nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera};
+        let info: {carnet, nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera} = res[0] as {carnet, nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera};
         info.fecha_nacimiento = info.fecha_nacimiento.substring(0, info.fecha_nacimiento.indexOf("T"));
         this.infoContacto.get('correo').setValue(info.correo);
         this.infoContacto.get('contactoEmergencia').setValue(info.contacto_emergencia);
         this.infoContacto.get('telefonoPersonal').setValue(info.telefono);
         this.student = info;
     });
-  }
-
-  onProfilePictureSelected(event){
-    if (event.target.files){
-      this.profilePicture = (event.target.files[0] as File);
-      const reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (e: any) => {
-        this.previewImage = e.target.result;
-      };
-    }
   }
 
   public async presentAlert(title: string, msg: string) {

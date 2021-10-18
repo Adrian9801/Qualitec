@@ -69,7 +69,7 @@ export class EnrollmentPage implements OnInit {
         this.cookieService.set('tokenAuth', res[1].token, dateNow);
         let coursesTemp: Course[] = res[0] as Course[];
         if(coursesTemp.length == 0)
-          this.presentAlertE('No hay cursos', 'No se a agregado ningún grupo que puedas matricular.');
+          this.presentAlertE('No hay cursos', 'No se ha agregado ningún grupo que puedas matricular.');
         let pos = 0;
         for (let course of coursesTemp){
           let courseAux: Course = new Course(course.codigo,course.nombre,course.creditos, pos);

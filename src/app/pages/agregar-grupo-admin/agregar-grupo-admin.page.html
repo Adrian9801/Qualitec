@@ -18,7 +18,7 @@
         Información general
       </h1>
       <ion-item>
-        <ion-text *ngIf='sede == null'>Seleccione una sede: </ion-text>
+        <ion-label *ngIf='sede == null'>Seleccione una sede: </ion-label>
         <ion-select (ionChange)="changeSelect($event)">
           <ion-select-option *ngFor="let sede of sedes">{{sede.sede}}</ion-select-option>
         </ion-select>
@@ -32,10 +32,10 @@
         <ion-input [(ngModel)]="cupos" type="number" placeholder="Cantidad de cupos aquí"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-text *ngIf='prof == null'>Seleccione un profesor: </ion-text>
+        <ion-label *ngIf='prof == null'>Seleccione un profesor:</ion-label>
         <ion-select (ionChange)="changeProf($event)">
-          <ion-select-option *ngFor="let profe of Profesores" value={{profe.cedula}}><ion-text>{{profe.nombre}}</ion-text></ion-select-option>
-        </ion-select>
+          <ion-select-option *ngFor="let profe of Profesores" value={{profe.cedula}}><ion-label>{{profe.nombre}}</ion-label></ion-select-option>
+        </ion-select><!---->
       </ion-item>
       <ion-item>
         <ion-label position="floating">Salón:</ion-label>
