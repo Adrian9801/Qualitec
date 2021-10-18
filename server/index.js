@@ -105,6 +105,18 @@ router.route('/groups/createNewGroup').post((request, response) => {
   })
 })
 
+router.route('/groups/getStudentInfo').post((request, response) => {
+  Db.getStudentInfo(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/updateStudentInfo').post((request, response) => {
+  Db.updateStudentInfo(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/groups/getTeachers').get((request, response) => {
   Db.getTeachers().then((data) => {
     response.json(data);

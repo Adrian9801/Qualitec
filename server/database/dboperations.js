@@ -104,6 +104,37 @@ async function getCoursesResumen(req){
   }
 }
 
+async function getStudentInfo(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  info = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC getStudentInfo @carnetE = @carnet");
+    let infoList = info.recordsets;
+    return infoList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function updateStudentInfo(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  info = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .input('correo', sql.VarChar, req.correo)
+      .input('telefono', sql.VarChar, req.telefono)
+      .input('contacto_emergencia', sql.VarChar, req.contacto_emergencia)
+      .query("EXEC updateStudentInfo @carnetE = @carnet, @correoNuevo = @correo, @telefonoNuevo = @telefono, @contacto_emergenciaNuevo = @contacto_emergencia");
+    let infoList = info.recordsets;
+    return infoList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
 async function getGroupMatriculado(req){
   try {
     let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
@@ -595,5 +626,7 @@ module.exports = {
   getGroupMatriculado: getGroupMatriculado,
   createNewGroup: createNewGroup,
   getTeachers: getTeachers,
-  getScheduleTeacher: getScheduleTeacher
+  getScheduleTeacher: getScheduleTeacher,
+  getStudentInfo: getStudentInfo,
+  updateStudentInfo: updateStudentInfo
 }

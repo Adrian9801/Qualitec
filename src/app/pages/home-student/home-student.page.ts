@@ -73,7 +73,6 @@ export class HomeStudentPage implements OnInit {
 
         this.groupService.getGroupMatriculado({courseId: course.codigo, token: this.cookieService.get('tokenAuth')})
           .subscribe(res2 => {
-            console.log(res2);
             let group = res2[0] as GroupStudent;
             courseAdd.group = new GroupStudent(group.codigo, group.nombre, group.sede, group.numero, group.aula);
           });
@@ -92,7 +91,6 @@ export class HomeStudentPage implements OnInit {
 
               this.groupService.getGroupMatriculado({courseId: course.codigo, token: this.cookieService.get('tokenAuth')})
               .subscribe(res2 => {
-                console.log(res2);
                 let group = res2[0] as GroupStudent;
                 courseAdd.group = new GroupStudent(group.codigo, group.nombre, group.sede, group.numero, group.aula);
               });
@@ -117,7 +115,6 @@ export class HomeStudentPage implements OnInit {
           this.aprobadas = 0;
           this.listaSolicitudes = [];
           this.requestService.getRequests({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
-            console.log(res)
             const dateNow = new Date();
             dateNow.setMinutes(dateNow.getMinutes() + 15);
             this.cookieService.set('tokenAuth', res[1].token, dateNow);

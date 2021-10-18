@@ -60,6 +60,14 @@ export class GroupService {
     return this.http.post(this.URL_API + '/createNewGroup', data);
   }
 
+  getStudentInfo(data){
+    return this.http.post(this.URL_API + '/getStudentInfo', data);
+  }
+
+  updateStudentInfo(data){
+    return this.http.post(this.URL_API + '/updateStudentInfo', data);
+  }
+
   getTeachers(){
     return this.http.get(this.URL_API + '/getTeachers');
   }
