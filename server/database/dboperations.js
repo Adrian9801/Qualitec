@@ -62,11 +62,24 @@ async function getcoursesAdmin(req){
 async function getScheduleTeacher(req){
   try {
     let  pool = await  sql.connect(config);
-    let  courses = await  pool.request()
+    let  schedule = await  pool.request()
       .input('cedula', sql.VarChar, req.cedula)
       .query("EXEC getScheduleTeacher @cedula_profesor = @cedula");
-    let courseList = courses.recordsets;
-    return courseList[0];
+    let scheduleList = schedule.recordsets;
+    return scheduleList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getScheduleClassroom(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  schedule = await  pool.request()
+      .input('aulaNew', sql.VarChar, req.salon)
+      .query("EXEC getScheduleClassroom @aula = @aulaNew");
+    let scheduleList = schedule.recordsets;
+    return scheduleList[0];
   } catch (error) {
     return [];
   }
@@ -628,5 +641,6 @@ module.exports = {
   getTeachers: getTeachers,
   getScheduleTeacher: getScheduleTeacher,
   getStudentInfo: getStudentInfo,
-  updateStudentInfo: updateStudentInfo
+  updateStudentInfo: updateStudentInfo,
+  getScheduleClassroom: getScheduleClassroom
 }

@@ -36,6 +36,7 @@ export class AgregarGrupoAdminPage implements OnInit {
   private fin: string = null;
   private diasSelected: string[] = [];
   private _routerSub = Subscription.EMPTY;
+  private classroomExceptions: string[] = ["virtual", "online", "linea", "asincronic", "asincrónic", "definir"];
 
   private curso = {nombre : "", codigo: ""};
 
@@ -185,7 +186,30 @@ export class AgregarGrupoAdminPage implements OnInit {
             }
           }
         }
-        this.confirmGroup();
+        for (let salonTemp of this.classroomExceptions) {
+          if((this.salon.toLowerCase().includes(salonTemp))) {
+            this.confirmGroup();
+            return;
+          }
+        }
+        this.groupService.getScheduleClassroom({salon: this.salon})
+        .subscribe(res2 => {
+          listScheduleTeacher = res2 as Schedule[];
+          for (let scheduleTeacher of listScheduleTeacher) {
+            let listSchedule: string[] = scheduleTeacher.dias.split(",");
+            for (let indexElement = 0; indexElement < listSchedule.length; indexElement++) {
+              for (let indexDias = 0; indexDias < this.diasSelected.length; indexDias++) {
+                if(listSchedule[indexElement] == this.diasSelected[indexDias]){
+                  if(this.checkHours(scheduleTeacher.horaInicio, scheduleTeacher.horaFin)){
+                    this.presentAlert('Choque de horario', 'Hay un coche de horario en el salón ingresado.');
+                    return;
+                  }
+                }
+              }
+            }
+          }
+          this.confirmGroup();
+        });
     });
   }
 

@@ -56,6 +56,10 @@ export class GroupService {
     return this.http.post(this.URL_API + '/getScheduleTeacher', data);
   }
 
+  getScheduleClassroom(data){
+    return this.http.post(this.URL_API + '/getScheduleClassroom', data);
+  }
+  
   createNewGroup(data){
     return this.http.post(this.URL_API + '/createNewGroup', data);
   }
