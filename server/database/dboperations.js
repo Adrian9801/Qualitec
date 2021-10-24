@@ -335,7 +335,8 @@ async function getrequestCourse(req){
                 student: isStudent};
     let  pool = await  sql.connect(config);
     let  request = await  pool.request()
-      .query("EXEC getRequirementLiftRequestsH");
+      .input('carnetStudent', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getRequirementLiftRequestsH @carnet = @carnetStudent");
     let requestList = (request.recordsets);
     requestList.push(info);
     return requestList;

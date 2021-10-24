@@ -28,7 +28,7 @@ export class HomeStudentPage implements OnInit {
   private totalPagarInclusion: number = 0;
 
   private listaCursosInclusion: CourseAdmin[] = [];
-  private verInclusion = false;
+  private verCursos = false;
   private creditosMatriculadosInclusion: number = 0;
   private estadoMatricula: boolean = false;
 
@@ -151,8 +151,8 @@ export class HomeStudentPage implements OnInit {
     return this.totalPagarInclusion.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  showCoursesInclusion(){
-    this.verInclusion = !this.verInclusion;
+  showCoursesStudent(){
+    this.verCursos = !this.verCursos;
   }
 
   showGroup(course: CourseAdmin){
