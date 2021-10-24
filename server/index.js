@@ -39,6 +39,12 @@ router.route('/groups/getScheduleTeacher').post((request, response) => {
   })
 })
 
+router.route('/groups/getScheduleClassroom').post((request, response) => {
+  Db.getScheduleClassroom(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/courses/:id').get((request, response) => {
   Db.getCourse(request.params.id).then((data) => {
     response.json(data[0]);

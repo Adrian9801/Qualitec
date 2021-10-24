@@ -9,6 +9,9 @@ import { CourseService } from 'src/app/services/course/course.service';
 import { RequestService } from 'src/app/services/request/request.service';
 import { CourseAdd } from 'src/app/models/courseAdd';
 import { AppComponent } from '../../app.component'; 
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-solicitud-levantamiento-modal',
@@ -20,17 +23,22 @@ export class SolicitudLevantamientoModalPage implements OnInit {
 
   cursos: CourseAdd[] = [];
   private estadoMatricula: number;
+  private _routerSub = Subscription.EMPTY;
 
   constructor(public menu:AppComponent, private requestService: RequestService, private cookieService: CookieService, private router: Router, private loginService: LoginService, private courseService: CourseService, private alertCtrl: AlertController) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/solicitud-levantamiento-modal') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/solicitud-levantamiento-modal')
+      .subscribe((value) => {
         this.checkIfLoggedIn();
-      }
     });
   }
 
   ngOnInit() {
 
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   onSubmit(codigo: string, nombre: string) {

@@ -5,6 +5,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service'; 
 import {AppComponent} from '../../app.component'; 
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-login',
@@ -17,29 +20,28 @@ export class LoginPage implements OnInit {
   validUser: boolean = true;
   loading: HTMLIonLoadingElement;
   private checkL: boolean = false;
+  private _routerSub = Subscription.EMPTY;
 
   constructor(public menu:AppComponent, private cookieService: CookieService, private router: Router, private loginService: LoginService, private fb: FormBuilder, public loadingController: LoadingController) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/login' && !this.checkL) {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/login')
+      .subscribe((value) => {
         this.checkL = true;
         this.checkIfLoggedIn();
         this.cookieService.delete('tokenRecovery');
         this.menu.setEnable(false);
-      }
-    });
-    this.loginForm = this.fb.group({
-      correo: [null, [Validators.required, Validators.email]],
-      pass: [null, [Validators.required, Validators.minLength(8)]]
+        this.loginForm = this.fb.group({
+          correo: [null, [Validators.required, Validators.email]],
+          pass: [null, [Validators.required, Validators.minLength(8)]]
+        });
     });
   }
 
   ngOnInit() {
-    if(!this.checkL){
-      this.checkL = true;
-      this.checkIfLoggedIn();
-      this.cookieService.delete('tokenRecovery');
-      this.menu.setEnable(false);
-    }
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   async presentLoading() {

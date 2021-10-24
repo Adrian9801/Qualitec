@@ -1,5 +1,3 @@
-import { User } from './../../models/user';
-import { Student } from './../../models/student';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
@@ -9,6 +7,9 @@ import { CookieService } from 'ngx-cookie-service';
 import {AppComponent} from '../../app.component';
 import { GroupService } from 'src/app/services/group/group.service';
 import { AlertController } from '@ionic/angular';
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-profile',
@@ -21,23 +22,28 @@ export class ProfilePage implements OnInit {
 
   previewImage: string = 'assets/avatar.svg';
   profilePicture: File = null;
+  private _routerSub = Subscription.EMPTY;
 
   private student: {carnet, nombre, cedula, correo, telefono, contacto_emergencia, sede, fecha_nacimiento, nombre_carrera} = {carnet: '',nombre: '', cedula: '', correo: '', telefono: '', contacto_emergencia: '', sede: '', fecha_nacimiento: '', nombre_carrera: ''};
 
   constructor(public alertController: AlertController, private groupService: GroupService, private fb: FormBuilder, private toastCtrl: ToastController, private cookieService: CookieService, public menu:AppComponent, private router: Router, private loginService: LoginService, ) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/profile') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/profile')
+      .subscribe((value) => {
         this.checkIfLoggedIn(true);
-      }
+        this.infoContacto = this.fb.group({
+          contactoEmergencia: [null, [Validators.minLength(6), Validators.maxLength(15)]],
+          telefonoPersonal: [null, [Validators.minLength(6), Validators.maxLength(15)]],
+          correo: [null, Validators.email]
+        });
     });
   }
 
   ngOnInit() {
-    this.infoContacto = this.fb.group({
-      contactoEmergencia: [null, [Validators.minLength(6), Validators.maxLength(15)]],
-      telefonoPersonal: [null, [Validators.minLength(6), Validators.maxLength(15)]],
-      correo: [null, Validators.email]
-    });
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   loadInfo(){

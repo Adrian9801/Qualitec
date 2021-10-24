@@ -10,6 +10,9 @@ import { CourseAdmin } from 'src/app/models/courseAdmin';
 import { GroupStudent } from 'src/app/models/groupStudent';
 import { RequestCourse } from 'src/app/models/requestCourse';
 import { RequestService } from 'src/app/services/request/request.service';
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-home-student',
@@ -31,16 +34,21 @@ export class HomeStudentPage implements OnInit {
 
   private listaSolicitudes: RequestCourse[] = [];
   private aprobadas: number = 0;
+  private _routerSub = Subscription.EMPTY;
 
   constructor(private requestService: RequestService, private groupService: GroupService, private cookieService: CookieService, public menu:AppComponent, public alertController: AlertController, private router: Router, private loginService: LoginService, private courseService: CourseService) { 
   }
 
   ngOnInit() {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/home-student') {
+    this._routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd && event.url == '/home-student')
+      .subscribe((value) => {
         this.checkIfLoggedIn();
-      }
     });
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   public async presentAlert() {
