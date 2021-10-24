@@ -74,12 +74,12 @@
     <ion-card *ngIf="this.listaCursosInclusion.length > 0">
       <ion-card-header (click)="showCoursesStudent()">
         <ion-card-title>Resumen inclusiones</ion-card-title>
-        <ion-card-subtitle>Cursos matriculados: {{this.listaCursosInclusion.length}} <ion-icon *ngIf="!verInclusion" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="verInclusion" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
+        <ion-card-subtitle>Cursos matriculados: {{this.listaCursosInclusion.length}} <ion-icon *ngIf="!verCursos" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="verCursos" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
         <ion-card-subtitle>Créditos matriculados: {{this.creditosMatriculadosInclusion}}</ion-card-subtitle>
       </ion-card-header>
     
       <ion-card-content>
-        <ion-list *ngIf="verInclusion">
+        <ion-list *ngIf="verCursos">
           <ion-item *ngFor="let entry of listaCursosInclusion">
             <div class ="enlista">
               <ion-card-content (click)="showGroup(entry)">
@@ -139,12 +139,12 @@
     <ion-card *ngIf="!estadoMatricula">
       <ion-card-header (click)="showCoursesStudent()">
         <ion-card-title>Levantamiento de requisitos</ion-card-title>
-        <ion-card-subtitle>Total de solicitudes: {{this.listaSolicitudes.length}} <ion-icon *ngIf="!verInclusion" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="verInclusion" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
+        <ion-card-subtitle>Total de solicitudes: {{this.listaSolicitudes.length}} <ion-icon *ngIf="!verCursos" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="verCursos" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
         <ion-card-subtitle>Solicitudes aprobadas: {{this.aprobadas}}</ion-card-subtitle>
       </ion-card-header>
     
       <ion-card-content>
-        <ion-list style="width: 100%!important;" *ngIf="verInclusion">
+        <ion-list style="width: 100%!important;" *ngIf="verCursos">
           <ion-item style="width: 100%!important;" *ngFor="let entry of listaSolicitudes">
             <div style="width: 100%!important;" class ="enlista">
               <ion-card-content style="width: 100%!important;" (click)="showGroup(entry)">
