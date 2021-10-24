@@ -30,10 +30,10 @@ export class LoginPage implements OnInit {
         this.checkIfLoggedIn();
         this.cookieService.delete('tokenRecovery');
         this.menu.setEnable(false);
-        this.loginForm = this.fb.group({
-          correo: [null, [Validators.required, Validators.email]],
-          pass: [null, [Validators.required, Validators.minLength(8)]]
-        });
+    });
+    this.loginForm = this.fb.group({
+      correo: [null, [Validators.required, Validators.email]],
+      pass: [null, [Validators.required, Validators.minLength(8)]]
     });
   }
 
