@@ -69,6 +69,12 @@ router.route('/obtenerMatricula').get((request, response) => {
   })
 })
 
+router.route('/requestCourse').post((request, response) => {
+  Db.getrequestCourse(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
 router.route('/requestCourseAdmin').post((request, response) => {
   Db.getrequestCourseAdmin(request.body).then((data) => {
     response.json(data);
