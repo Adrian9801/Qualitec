@@ -108,48 +108,9 @@ export class EnrollmentPage implements OnInit {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
-  async detectClick(){
-    if(this.openRegister < 2 && !this.waitOne){
-      this.waitOne = true;
-      if(!this.isClick){
-        let index = 0;
-        let size = this.courses.length;
-        for(;index < size; index++){
-          let course = this.courses[index];
-          this.courses.splice(course.pos,1);
-          await this.delay(0);
-          this.courses.splice(course.pos, 0, course);
-          course.showGroups = false;
-        }
-      }
-      this.isClick = false;
-      this.waitOne = false;
-    }
-  }
-
   async showGroups(course: Course){
     if(!this.waitTwo){
       this.waitTwo = true;
-      if(this.openRegister < 2){
-        this.isClick = true;
-        if(!course.showGroups){
-          for(let courseTemp of this.courses){
-            courseTemp.showGroups = false;
-          }
-          if(course.state != 'Sin matricular'){
-            course.groups = course.groupsAux;
-            this.courses.splice(course.pos,1);
-            await this.delay(0);
-            this.courses.splice(course.pos, 0, course);
-          }
-        }
-        else if(course.state != 'Sin matricular'){
-          course.groups = [];
-          this.courses.splice(course.pos,1);
-          await this.delay(0);
-          this.courses.splice(course.pos, 0, course);
-        }
-      }
       course.showGroups = !course.showGroups;
       this.waitTwo = false;
     }
@@ -288,16 +249,6 @@ export class EnrollmentPage implements OnInit {
       let list: Object[] = res as Object[];
       if(list.length > 0){
         if(res[0].estado == 1){
-          if(this.openRegister <= 1){
-            this.openRegister = 1;
-            this.subTitle = "Matrícula abierta";
-            this.colorSubtitle = "success"
-            this.register = true;
-            this.title = "Lista de cursos";
-            this.textButton = "Matricular";
-            this.menu.setEnable(true);
-          }
-          else{
             this.subTitle = "Matrícula abierta";
             this.colorSubtitle = "success"
             this.menu.setEnable(true);
@@ -305,7 +256,6 @@ export class EnrollmentPage implements OnInit {
             this.title = "Mi matrícula";
             this.register = false;
             this.textButton = "Ver Resumen";
-          }
         }
         else{
           this.menu.setEnable(true);
@@ -329,11 +279,6 @@ export class EnrollmentPage implements OnInit {
     }
     else
       this.router.navigateByUrl('login');
-  }
-
-  enroll(){
-    this.openRegister = 2;
-    this.verificarMatricula();
   }
 
   goHome(){
