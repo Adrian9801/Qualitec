@@ -31,11 +31,11 @@ export class ProfilePage implements OnInit {
       .filter(event => event instanceof NavigationEnd && event.url == '/profile')
       .subscribe((value) => {
         this.checkIfLoggedIn(true);
-        this.infoContacto = this.fb.group({
-          contactoEmergencia: [null, [Validators.minLength(6), Validators.maxLength(15)]],
-          telefonoPersonal: [null, [Validators.minLength(6), Validators.maxLength(15)]],
-          correo: [null, Validators.email]
-        });
+    });
+    this.infoContacto = this.fb.group({
+      contactoEmergencia: [null, [Validators.minLength(6), Validators.maxLength(15)]],
+      telefonoPersonal: [null, [Validators.minLength(6), Validators.maxLength(15)]],
+      correo: [null, Validators.email]
     });
   }
 
