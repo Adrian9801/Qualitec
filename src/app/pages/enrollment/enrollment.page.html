@@ -93,19 +93,19 @@
                             </ion-col>
                             <ion-col>
                               <ion-text class="text iconList cupoItem">
-                                Cupo: {{group.cupos}}
+                                Cupos: {{group.cupos}}
                               </ion-text><br>
                               <ion-checkbox *ngIf="openRegister == 2" class="radio" value="group.codigo" [(ngModel)]="group.registered" (click)="registeredGroup(group, course, true)" color="goldenColor"></ion-checkbox>
-                              <ion-text class="text stateRegitered" *ngIf="group.cupos > 0 && !group.registered">
+                              <ion-text class="text stateRegitered" *ngIf="group.cupos > 0 && !group.registered && openRegister == 2">
                                 Matricular
                               </ion-text>
-                              <ion-text class="text stateRegitered" *ngIf="group.cupos == 0  && !group.registered">
+                              <ion-text class="text stateRegitered" *ngIf="group.cupos == 0  && !group.registered && openRegister == 2">
                                 Pedir inclusión
                               </ion-text>
-                              <ion-text class="text stateRegitered" *ngIf="group.registered && !group.inclusion">
+                              <ion-text class="text stateRegitered" *ngIf="group.registered && !group.inclusion && openRegister == 2">
                                 Matriculado
                               </ion-text>
-                              <ion-text class="text stateRegitered" *ngIf="group.inclusion">
+                              <ion-text class="text stateRegitered" *ngIf="group.inclusion && openRegister == 2">
                                 Inclusión
                               </ion-text>
                             </ion-col>
