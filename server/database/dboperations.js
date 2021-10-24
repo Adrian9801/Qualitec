@@ -345,6 +345,24 @@ async function getrequestCourse(req){
   }
 }
 
+async function getrequestCourseAdmin(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  request = await  pool.request()
+      .query("EXEC getRequirementLiftRequests");
+    let requestList = (request.recordsets);
+    requestList.push(info);
+    return requestList;
+  } catch (error) {
+    return [];
+  }
+}
+
 async function updateRequestCourse(req){
   try {
     let  pool = await  sql.connect(config);
@@ -643,5 +661,6 @@ module.exports = {
   getScheduleTeacher: getScheduleTeacher,
   getStudentInfo: getStudentInfo,
   updateStudentInfo: updateStudentInfo,
-  getScheduleClassroom: getScheduleClassroom
+  getScheduleClassroom: getScheduleClassroom,
+  getrequestCourseAdmin: getrequestCourseAdmin
 }

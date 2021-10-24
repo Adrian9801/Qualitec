@@ -58,7 +58,7 @@ export class ListaLevantamamientoAdminPage implements OnInit {
   loadRequest(){
     this.verificarMatricula();
     this.solicitudesAux = this.solicitudes = [];
-    this.requestService.getRequests({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
+    this.requestService.getRequestsAdmin({token: this.cookieService.get('tokenAuth')}).subscribe(res => {
       const dateNow = new Date();
       dateNow.setMinutes(dateNow.getMinutes() + 15);
         this.cookieService.set('tokenAuth', res[1].token, dateNow);

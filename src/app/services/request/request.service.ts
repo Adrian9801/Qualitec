@@ -14,6 +14,10 @@ export class RequestService {
     return this.http.post(this.URL_API+'/requestCourse', data);
   }
 
+  getRequestsAdmin(data){
+    return this.http.post(this.URL_API+'/requestCourseAdmin', data);
+  }
+
   updateRequests(data){
     return this.http.post(this.URL_API+'/updateRequestCourse', data);
   }
