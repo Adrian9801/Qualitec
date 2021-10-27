@@ -35,7 +35,7 @@
               </ion-card-content>
 
               <ion-list *ngIf="entry.ver">
-                <ion-item class='estiloCourse' *ngFor="let groupItem of entry.groups">
+                <ion-item *ngFor="let groupItem of entry.groups">
                   <div class ="enlista">
                     <ion-card-content>
                       <h5> Sede: {{groupItem.sede}}</h5>

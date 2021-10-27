@@ -32,16 +32,16 @@ export class AccountRecoveryPage implements OnInit {
       .subscribe((value) => {
         this.load();
         this.menu.setEnable(false);
-        this.accountRecoverForm = this.fb.group({
-          correo: [null, [Validators.required, Validators.email]],
-          token: [null, []]});
-    
-        this.changePasswordForm = this.fb.group({
-          newPass: [null, [Validators.required, Validators.minLength(8)]],
-          confirmPass: [null, [Validators.required, Validators.minLength(8)]]
-        },
-        {validator: this.matchPassword('newPass', 'confirmPass')});
     });
+    this.accountRecoverForm = this.fb.group({
+      correo: [null, [Validators.required, Validators.email]],
+      token: [null, []]});
+
+    this.changePasswordForm = this.fb.group({
+      newPass: [null, [Validators.required, Validators.minLength(8)]],
+      confirmPass: [null, [Validators.required, Validators.minLength(8)]]
+    },
+    {validator: this.matchPassword('newPass', 'confirmPass')});
   }
 
   ngOnInit() {
