@@ -179,7 +179,7 @@ export class AgregarGrupoAdminPage implements OnInit {
             for (let indexDias = 0; indexDias < this.diasSelected.length; indexDias++) {
               if(listSchedule[indexElement] == this.diasSelected[indexDias]){
                 if(this.checkHours(scheduleTeacher.horaInicio, scheduleTeacher.horaFin)){
-                  this.presentAlert('Choque de horario', 'Hay un coche de horario del profesor seleccionado.');
+                  this.presentAlert('Choque de horario', 'Hay un choque de horario del profesor seleccionado.');
                   return;
                 }
               }
@@ -201,7 +201,7 @@ export class AgregarGrupoAdminPage implements OnInit {
               for (let indexDias = 0; indexDias < this.diasSelected.length; indexDias++) {
                 if(listSchedule[indexElement] == this.diasSelected[indexDias]){
                   if(this.checkHours(scheduleTeacher.horaInicio, scheduleTeacher.horaFin)){
-                    this.presentAlert('Choque de horario', 'Hay un coche de horario en el salón ingresado.');
+                    this.presentAlert('Choque de horario', 'Hay un choque de horario en el salón ingresado.');
                     return;
                   }
                 }

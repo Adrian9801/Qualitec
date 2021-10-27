@@ -142,7 +142,7 @@ export class HomeAdminPage implements OnInit {
         message: 'Total de cupos: ' + (group.cupos+group.cantidad_matriculados)+ '<br>Cupos restantes: '+ group.cupos,
         inputs: [
           {
-            placeholder: "Número de cupos ha aumentar.",
+            placeholder: "Número de cupos a aumentar.",
             name: 'cupos',
             type: 'number'
           }], 
