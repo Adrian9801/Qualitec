@@ -218,7 +218,7 @@ async function aumentarCupos(req){
   }
 }
 
-async function addRequestStudent(req){//falta NELSON
+async function addRequestStudent(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
@@ -493,14 +493,24 @@ async function getGroupsCourse(CourseId) {
 
 async function loginUser(userData) {
   try {
-    //console.log(await bcryptjs.hashSync(userData.pass,8));
     let  pool = await  sql.connect(config);
     let  userLogin = (await  pool.request()
       .input('correo', sql.VarChar, userData.correo)
       .query("SELECT * from administrador where administrador.correo = @correo")).recordsets;
-    if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
-      userLogin[0].push({student:false});
-      userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: false}, 'secret-Key', { expiresIn: '16m' })});
+    if(userLogin[0].length != 0){
+      if(userLogin[0][0].estado == 0){
+        userLogin[0][0].contrasena = await bcryptjs.hashSync(userLogin[0][0].contrasena,8);
+        let  pool2 = await  sql.connect(config);
+        await  pool2.request()
+          .input('userIdent', sql.VarChar, userLogin[0][0].cedula+'')
+          .input('pass', sql.VarChar, userLogin[0][0].contrasena)
+          .input('typeUser', sql.VarChar, 0)
+          .query("EXEC updatePasswordSP @user = @userIdent, @newPassword = @pass, @type = @typeUser");
+      }
+      if((await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))) {
+        userLogin[0].push({student:false});
+        userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: false}, 'secret-Key', { expiresIn: '16m' })});
+      }
     }
     else{
       userLogin = (await  pool.request()
@@ -530,8 +540,6 @@ async function loginUser(userData) {
     console.log(error);
   }
 }
-
-
 
 async function checkLogIn(req) {
   try {
