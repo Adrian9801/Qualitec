@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button class="color-white"></ion-menu-button>
+    </ion-buttons>
+    <ion-label class = "color-white">Solicitudes de levantamiento de requisitos</ion-label>
+    <ion-button slot="end" color="warning" shape="round" (click)="siguiente()">Siguiente</ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="filterList($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let entry of solicitudes">
+      <div class ="enlista">
+        <ion-card-content>
+          <ion-card-subtitle>Sede: {{entry.sede}} </ion-card-subtitle>
+          <ion-card-title>Solicitud # {{entry.numero_solicitud}}</ion-card-title>
+          <h2> Curso: {{entry.codigo_curso}} {{entry.nombre_curso}} </h2>
+          <ion-card-subtitle>Nombre: {{entry.nombre_estudiante}} </ion-card-subtitle>
+          <ion-card-subtitle>Carnet: {{entry.carnet_estudiante}} </ion-card-subtitle>
+        </ion-card-content>
+      </div>
+      <div class="select-estado">
+        <ion-item>
+          <ion-select *ngIf="!estadoMatricula" [compareWith]="compareFn" [ngStyle]="entry.styleSelect" [(ngModel)]="entry.estado" (ionChange)="SetBackground($event, entry)">
+            <ion-select-option value=1>Pendiente</ion-select-option>
+            <ion-select-option value=2>Aceptar</ion-select-option>
+            <ion-select-option value=0>Rechazar</ion-select-option>
+          </ion-select>
+          <ion-card-subtitle *ngIf="estadoMatricula">Pendiente</ion-card-subtitle>
+        </ion-item>
+      </div>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

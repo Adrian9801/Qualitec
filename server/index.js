@@ -15,9 +15,32 @@ router.use((request, response, next) => {
   next();
 });
  
- 
 router.route('/courses').post((request, response) => {
   Db.getCourses(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/schedule').post((request, response) => {
+  Db.getSchedule(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/coursesAdmin').post((request, response) => {
+  Db.getcoursesAdmin(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getScheduleTeacher').post((request, response) => {
+  Db.getScheduleTeacher(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getScheduleClassroom').post((request, response) => {
+  Db.getScheduleClassroom(request.body).then((data) => {
     response.json(data);
   })
 })
@@ -40,14 +63,116 @@ router.route('/groups/:idCourse/:id').get((request, response) => {
   })
 })
 
-/*router.route('/groups/:idCourse').get((request, response) => {
-  Db.getGroupsCourse(request.params.idCourse).then((data) => {
+router.route('/obtenerMatricula').get((request, response) => {
+  Db.obtenerMatricula().then((data) => {
     response.json(data[0]);
   })
-})*/
+})
+
+router.route('/requestCourse').post((request, response) => {
+  Db.getrequestCourse(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/requestCourseAdmin').post((request, response) => {
+  Db.getrequestCourseAdmin(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/abrirMatricula').post((request, response) => {
+  Db.abrirMatricula(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/cerrarMatricula').post((request, response) => {
+  Db.cerrarMatricula(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/addRequestStudent').post((request, response) => {
+  Db.addRequestStudent(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getRequestStudent').post((request, response) => {
+  Db.getRequestStudent(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getCoursesResumen').post((request, response) => {
+  Db.getCoursesResumen(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/createNewGroup').post((request, response) => {
+  Db.createNewGroup(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getStudentInfo').post((request, response) => {
+  Db.getStudentInfo(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/updateStudentInfo').post((request, response) => {
+  Db.updateStudentInfo(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getTeachers').get((request, response) => {
+  Db.getTeachers().then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/getGroupMatriculado').post((request, response) => {
+  Db.getGroupMatriculado(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getCoursesInclusion').post((request, response) => {
+  Db.getCoursesInclusion(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/getCoursesAdd').post((request, response) => {
+  Db.getCoursesAdd(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/groups/aumentarCupos').post((request, response) => {
+  Db.aumentarCupos(request.body).then((data) => {
+    response.json(data);
+  })
+})
+
+router.route('/updateRequestCourse').post((request, response) => {
+  Db.updateRequestCourse(request.body).then((data) => {
+    response.json(data[0]);
+  })
+})
 
 router.route('/groups/course').post((request, response) => {
   Db.getGroupsCourseSP(request.body).then((data) => {
+    response.json(data[0]);
+  })
+})
+
+router.route('/groups/courseAdmin').post((request, response) => {
+  Db.getGroupsCourseAdmin(request.body).then((data) => {
     response.json(data[0]);
   })
 })

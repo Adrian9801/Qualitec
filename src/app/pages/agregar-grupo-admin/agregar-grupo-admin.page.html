@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="courses-list-admin" class = "color-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class = "color-white">Formulario de grupo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title> {{ curso.codigo}} {{curso.nombre}}</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <h1>
+        Información general
+      </h1>
+      <ion-item>
+        <ion-label *ngIf='sede == null'>Seleccione una sede: </ion-label>
+        <ion-select (ionChange)="changeSelect($event)">
+          <ion-select-option *ngFor="let sede of sedes">{{sede.sede}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Número de grupo:</ion-label>
+        <ion-input [(ngModel)]="numero" type="number" placeholder="Número de grupo aquí"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Cantidad de cupos:</ion-label>
+        <ion-input [(ngModel)]="cupos" type="number" placeholder="Cantidad de cupos aquí"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label *ngIf='prof == null'>Seleccione un profesor:</ion-label>
+        <ion-select (ionChange)="changeProf($event)">
+          <ion-select-option *ngFor="let profe of Profesores" value={{profe.cedula}}><ion-label>{{profe.nombre}}</ion-label></ion-select-option>
+        </ion-select><!---->
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Salón:</ion-label>
+        <ion-input [(ngModel)]="salon" type="text" placeholder="Escriba el salón aquí"></ion-input>
+      </ion-item>
+      <h1>
+        Horario
+      </h1>
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let dia of dias">
+              <ion-checkbox [(ngModel)]="dia.checked"></ion-checkbox>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col *ngFor="let dia of dias">
+              <ion-label>{{dia.dia}} </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item>
+          <ion-label>Hora de inicio:</ion-label>
+          <ion-select (ionChange)="changeHour($event,'inicio')" [(ngModel)]="inicio">
+            <ion-select-option *ngFor="let inicio of horasInicio" >{{inicio.hora}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Hora de fin:</ion-label>
+          <ion-select (ionChange)="changeHour($event,'fin')" [(ngModel)]="fin">
+            <ion-select-option *ngFor="let fin of horasFin" >{{fin.hora}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-button expand="block" (click)="enviar()">Agregar grupo </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

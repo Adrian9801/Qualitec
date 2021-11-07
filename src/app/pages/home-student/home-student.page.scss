@@ -9,3 +9,30 @@
   ion-toolbar {
     --background: #0C1433;
   }
+
+  .badgePendiente{
+    float: right;
+  }
+
+  .despla{
+    float: right;
+    font-size: 25px;
+  }
+
+  .desplaza{
+    float: right;
+    font-size: 18px;
+  }
+
+  .desplaz{
+    float: right;
+    color: rgb(105, 105, 105);
+    font-size: 20px;
+  }
+
+  .enlista{
+    display: flex;
+    flex-direction: column;
+    width: 80% !important;
+    margin: 0 !important;
+  }

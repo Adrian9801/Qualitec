@@ -1,0 +1,35 @@
+.enlista{
+  display: flex;
+  flex-direction: column;
+  width: calc(90%) !important;
+  margin: 0 !important;
+}
+
+ion-toolbar {
+  --background: #0C1433;
+}
+
+.color-white {
+  color : rgb(255, 254, 254);
+  white-space: normal;
+  font-family: 'Roboto', sans-serif;
+  font-style: 'Regular';
+  font-size: 20px;
+  fill: solid;
+}
+
+ion-select {
+  /* Set a different placeholder color */
+  --placeholder-color: #0C1433;
+  
+  /* Set full opacity on the placeholder */
+  --placeholder-opacity: 1;
+}
+
+
+.select-estado{
+  display: flex;
+  flex-direction: column;
+  width: 125px !important;
+  margin-left: calc(100%-125px);
+}

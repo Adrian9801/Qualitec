@@ -24,10 +24,13 @@ export class AppComponent {
     this.menu.close('custom');
     this.router.navigateByUrl(page);
   }
+
+  setEnable(value: boolean){
+    this.menu.enable(value);
+  }
   
   logout(){
-    this.menu.close('custom');
     this.cookieService.delete('tokenAuth');
-    window.location.reload();
+    this.changePage('login');
   }
 }

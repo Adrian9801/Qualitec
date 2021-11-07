@@ -7,27 +7,60 @@
       <ion-title class="color-white">Control de Matrícula</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-toolbar color="danger" class="flag">
+  <ion-toolbar color={{colorSubtitle}} class="flag">
     <ion-text color="dark" class="text-flag">
-      <h5>Matrícula cerrada</h5>
+      <h5>{{textHeader}}</h5>
     </ion-text>
   </ion-toolbar>
   <ion-content class="ion-padding">
-    <ion-button expand="block" color="warning" (click)="presentAlert()">Iniciar periodo de matrícula</ion-button>
+    <ion-button expand="block" class='buttonGroup' (click)="modificarEstadoMatricula()"><ion-text color="redColor">{{textButton1}} <br class='button-text'> de matrícula</ion-text></ion-button>
     <ion-card>
-      <ion-card-header>
-        <ion-card-title>Lista de cursos</ion-card-title>
+      <ion-card-header (click)="showCourses()">
+        <ion-card-title>Lista de cursos <ion-icon *ngIf="!ver && this.listaCursos.length > 0" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="ver && this.listaCursos.length > 0" name="chevron-up-outline"></ion-icon></ion-card-title>
+        <ion-card-subtitle>Cursos disponibles: {{this.listaCursos.length}} </ion-card-subtitle>
       </ion-card-header>
     
       <ion-card-content>
-        <ion-item>
+        <ion-item *ngIf="this.listaCursos.length == 0">
           <ion-icon name="warning" class="color-red" slot="start"></ion-icon>
-          <ion-label>No hay cursos matriculados</ion-label>
+          <h2>No hay cursos matriculados</h2>
         </ion-item>
+
+        <ion-list *ngIf="ver && this.listaCursos.length > 0">
+          <ion-item *ngFor="let entry of listaCursos">
+            <div class ="enlista">
+              <ion-card-content (click)="showGroup(entry)">
+                <h2> Curso: {{entry.codigo}} {{entry.nombre}} <ion-icon *ngIf="!entry.ver" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="entry.ver" name="chevron-up-outline"></ion-icon></h2>
+                <ion-card-subtitle>Grupos: {{entry.groups.length}} </ion-card-subtitle>
+              </ion-card-content>
+
+              <ion-list *ngIf="entry.ver">
+                <ion-item *ngFor="let groupItem of entry.groups">
+                  <div class ="enlista">
+                    <ion-card-content>
+                      <h5> Sede: {{groupItem.sede}}</h5>
+                      <h2> Prof. {{groupItem.nombre}} </h2>
+                      <ion-card-subtitle>Grupo: {{groupItem.numero}} </ion-card-subtitle>
+                    </ion-card-content>
+                  </div>
+                  <div class="senListaCupos">
+                      <h5>Total cupos: {{groupItem.cupos + groupItem.cantidad_matriculados}} </h5>
+                      <h5>Cupos restantes: {{groupItem.cupos}} </h5>
+                      <ion-button (click)='presentAlertCupos(groupItem)' class="buttonGroup">
+                        <ion-text color="redColor">
+                          Agregar <br class='button-text'>cupos
+                        </ion-text>
+                      </ion-button>
+                  </div>
+                </ion-item>
+              </ion-list>
+            </div>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
       <ion-item-divider></ion-item-divider>
       <ion-card-header>
-        <ion-card-title style="text-align:center" color="primary">Agregar curso </ion-card-title>
+        <ion-card-title (click)='addCourse()' style="text-align:center" color="primary">Agregar curso </ion-card-title>
       </ion-card-header>
     </ion-card>
   </ion-content>

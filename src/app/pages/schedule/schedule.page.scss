@@ -1,0 +1,167 @@
+.color-white {
+  color : rgb(255, 254, 254);
+}
+
+ion-toolbar {
+  --background: #0C1433;
+}
+
+/*************************
+ * GRID SCHEDULE LAYOUT When screen > 520px
+ *************************/
+ @media screen and (min-width:520px) {
+  .schedule {
+    display: grid;
+    grid-gap: 1em;
+    overflow-x: scroll;
+    grid-template-rows:
+      [days] auto
+      [time-0700] auto
+      [time-0730] auto
+      [time-0800] auto
+      [time-0830] auto
+      [time-0900] auto
+      [time-0930] auto
+      [time-1000] auto
+      [time-1030] auto
+      [time-1100] auto
+      [time-1130] auto
+      [time-1200] auto
+      [time-1230] auto
+      [time-1300] auto
+      [time-1330] auto
+      [time-1400] auto
+      [time-1430] auto
+      [time-1500] auto
+      [time-1530] auto
+      [time-1600] auto
+      [time-1630] auto
+      [time-1700] auto
+      [time-1730] auto
+      [time-1800] auto
+      [time-1830] auto
+      [time-1900] auto
+      [time-1930] auto
+      [time-2000] auto
+      [time-2030] auto
+      [time-2100] auto
+      [time-2130] auto
+      [time-2200] auto;
+      /* Note 1:
+      Use 24hr time for gridline names for simplicity
+
+      Note 2: Use "auto" instead of "1fr" for a more compact schedule where height of a slot is not proportional to the course length. Implementing a "compact" shortcode attribute might make sense for this!
+      Try 0.5fr for more compact equal rows. I don't quite understand how that works :)
+      */
+
+    grid-template-columns:
+      [times] 4em
+      [Lunes-start] 1fr
+      [Lunes-end Martes-start] 1fr
+      [Martes-end Miércoles-start] 1fr
+      [Miércoles-end Jueves-start] 1fr
+      [Jueves-end Viernes-start] 1fr
+      [Viernes-end Sábado-start] 1fr
+      [Sábado-end];
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .time-slot { display: none; }
+}
+
+.time-slot {
+  grid-column: times;
+}
+
+.day-slot {
+  display: none; /* hidden on small screens and browsers without grid support */
+  margin: auto;
+}
+
+/* When screen > 520px --> Show days on top row and not in the course cards*/
+@supports( display:grid ) {
+  @media screen and (min-width:520px) {
+    .day-slot {
+      display: block;
+      padding: 10px 0px 5px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: rgba(255,255,255,.9);
+    }
+
+    .course-day { display: none; }
+  }
+}
+
+@supports( display:grid ) {
+  @media screen and (max-width:520px) {
+    .course-day { display: block; }
+  }
+}
+
+/* Small-screen & fallback styles */
+.course {
+  margin:  1em;
+  min-width: 150px;
+}
+
+/*************************
+ * VISUAL STYLES
+ * Design-y stuff ot particularly important to the demo
+ *************************/
+body {
+  padding: 50px;
+  max-width: 1100px;
+  margin: 0 auto;
+  line-height: 1.5;
+  justify-content: center;
+}
+
+.course {
+  padding: .5em;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: rgba(255, 255, 255, 0.6) 1px 1px 0, rgba(161, 87, 3, 0.925) 4px 4px 0;
+  color: #610000;
+  background-color: #ffb81c;
+}
+
+.course-title,
+.course-time,
+.course-presenter {
+  display: block;
+}
+
+.course-center {
+  text-align: center;
+}
+
+.course-title,
+.time-slot {
+  margin: 0;
+  font-size: 1em;
+}
+
+.course-title {
+  font-weight: bold;
+  text-decoration-style: solid;
+}
+
+.day-slot,
+.time-slot {
+  font-weight: bold;
+  font-size:.75em;
+  background: rgb(255, 255, 255, .9);
+}
+
+.text {
+  max-width: 750px;
+  font-size: 18px;
+  margin: 0 auto 50px;
+}
+
+hr {
+  margin: 40px 0;
+}

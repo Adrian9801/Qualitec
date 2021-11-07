@@ -3,18 +3,375 @@ const  sql = require('mssql');
 var jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 
-async  function  getCourses(req){
+async function getCourses(req){
   try {
     let userLogin = jwt.verify(req.token, 'secret-Key').user;
     let isStudent = jwt.verify(req.token, 'secret-Key').student;
-    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '15m' }),
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
                 user: userLogin,
                 student: isStudent};
     let  pool = await  sql.connect(config);
-    let  courses = await  pool.request().query("SELECT * from curso ORDER by nombre ASC");
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getStudentCourses @carnetE = @carnet");
     let courseList = courses.recordsets;
     courseList.push(info);
     return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getSchedule(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getSchedule @carnet_estudiante = @carnet");
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getcoursesAdmin(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .query("EXEC getCoursesTotal");
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getScheduleTeacher(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  schedule = await  pool.request()
+      .input('cedula', sql.VarChar, req.cedula)
+      .query("EXEC getScheduleTeacher @cedula_profesor = @cedula");
+    let scheduleList = schedule.recordsets;
+    return scheduleList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getScheduleClassroom(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  schedule = await  pool.request()
+      .input('aulaNew', sql.VarChar, req.salon)
+      .query("EXEC getScheduleClassroom @aula = @aulaNew");
+    let scheduleList = schedule.recordsets;
+    return scheduleList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getCoursesAdd(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .query("SELECT * from curso");
+    let courseList = courses.recordsets;
+    courseList.push(info);
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getCoursesResumen(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC getCoursesMatriculados @carnet_estudiante = @carnet");
+    let courseList = courses.recordsets;
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getStudentInfo(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  info = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC getStudentInfo @carnetE = @carnet");
+    let infoList = info.recordsets;
+    return infoList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function updateStudentInfo(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  info = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .input('correo', sql.VarChar, req.correo)
+      .input('telefono', sql.VarChar, req.telefono)
+      .input('contacto_emergencia', sql.VarChar, req.contacto_emergencia)
+      .query("EXEC updateStudentInfo @carnetE = @carnet, @correoNuevo = @correo, @telefonoNuevo = @telefono, @contacto_emergenciaNuevo = @contacto_emergencia");
+    let infoList = info.recordsets;
+    return infoList[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getGroupMatriculado(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  group = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .input('codCourse', sql.VarChar, req.courseId)
+      .query("EXEC getGroupMatriculado @carnet_estudiante = @carnet, @codigo_curso = @codCourse");
+    let groupL = group.recordsets;
+    return groupL[0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getCoursesInclusion(req){
+  try {
+    let userLogin = parseInt(jwt.verify(req.token, 'secret-Key').user.carnet);
+    let  pool = await  sql.connect(config);
+    let  courses = await  pool.request()
+      .input('carnet', sql.Int, userLogin)
+      .query("EXEC getCoursesInclusion @carnet_estudiante = @carnet");
+    let courseList = courses.recordsets;
+    return courseList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function createNewGroup(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('numI', sql.Int, req.num)
+      .input('sedeI', sql.VarChar, req.sede)
+      .input('cuposI', sql.Int, req.cupos)
+      .input('cedulaProfI', sql.VarChar, req.prof)
+      .input('horarioI', sql.VarChar, req.dias)
+      .input('horaII', sql.VarChar, req.inicio)
+      .input('horaFI', sql.VarChar, req.fin)
+      .input('codCursoI', sql.VarChar, req.codCurso)
+      .input('aulaI', sql.VarChar, req.salon)
+      .query("EXEC createNewGroup @numero = @numI, @sede = @sedeI, @cupos = @cuposI, @cedulaProf = @cedulaProfI, @horario = @horarioI, @horaI = @horaII, @horaF = @horaFI, @codCurso = @codCursoI, @aula = @aulaI");
+    let resultList = result.recordsets;
+    return resultList[0][0];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function aumentarCupos(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('idG', sql.VarChar, req.codeGroup)
+      .input('cant', sql.VarChar, req.cant)
+      .query("EXEC increasePlaces @codigo_grupo = @idG, @cantidad = @cant");
+    let resultList = result.recordsets;
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function addRequestStudent(req){//falta NELSON
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .input('idC', sql.VarChar, req.codCurso)
+      .query("EXEC addSolicitudes @carnet_estudiante = @carnet, @codigo_curso = @idC");
+    let resultList = result.recordsets;
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getRequestStudent(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .input('carnet', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getStudentRequirementCourses @carnetE = @carnet");
+    let resultList = result.recordsets;
+    resultList.push(info);
+    return resultList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function abrirMatricula(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .query("EXEC abrirMatricula");
+    return [info];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function cerrarMatricula(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  result = await  pool.request()
+      .query("EXEC cerrarMatricula");
+    return [info];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getGroupsCourseAdmin(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let  groups = await  pool.request()
+      .input('idC', sql.VarChar, req.courseId)
+      .query("EXEC getGroupsCourseAdmin  @codigo_curso = @idC");
+    let groupsList = groups.recordsets;
+    return groupsList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getTeachers(){
+  try {
+    let  pool = await  sql.connect(config);
+    let  teachers = await  pool.request()
+      .query("SELECT * from profesor");
+    let teachersList = teachers.recordsets;
+    return teachersList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function obtenerMatricula(){
+  try {
+    let  pool = await  sql.connect(config);
+    let  matricula = await  pool.request()
+      .query("EXEC obtenerEstadoMatricula");
+    let codigo = matricula.recordsets;
+    return codigo;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getrequestCourse(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  request = await  pool.request()
+      .input('carnetStudent', sql.Int, parseInt(userLogin.carnet))
+      .query("EXEC getRequirementLiftRequestsH @carnet = @carnetStudent");
+    let requestList = (request.recordsets);
+    requestList.push(info);
+    return requestList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function getrequestCourseAdmin(req){
+  try {
+    let userLogin = jwt.verify(req.token, 'secret-Key').user;
+    let isStudent = jwt.verify(req.token, 'secret-Key').student;
+    let info = {token: jwt.sign({user:  userLogin, student: isStudent}, 'secret-Key', { expiresIn: '16m' }),
+                user: userLogin,
+                student: isStudent};
+    let  pool = await  sql.connect(config);
+    let  request = await  pool.request()
+      .query("EXEC getRequirementLiftRequests");
+    let requestList = (request.recordsets);
+    requestList.push(info);
+    return requestList;
+  } catch (error) {
+    return [];
+  }
+}
+
+async function updateRequestCourse(req){
+  try {
+    let  pool = await  sql.connect(config);
+    let request = await pool.request()
+      .input('carnet', sql.Int, parseInt(req.carnet))
+      .input('codC', sql.VarChar, req.codCurso)
+      .input('estadoSoli', sql.Int, req.estado)
+      .query("EXEC updateSolicitudes @carnet_estudiante = @carnet, @codigo_curso = @codC, @estado = @estadoSoli");
+    return [];
   } catch (error) {
     return [];
   }
@@ -149,12 +506,22 @@ async function loginUser(userData) {
       userLogin = (await  pool.request()
       .input('correo', sql.VarChar, userData.correo)
       .query("SELECT * from estudiante where estudiante.correo = @correo")).recordsets;
-      if(userLogin[0].length != 0 && (await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
-        userLogin[0].push({student:true});
-        userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: true}, 'secret-Key', { expiresIn: '16m' })});
-      }
-      else{
-        userLogin = [[]];
+      if(userLogin[0].length != 0){
+        if(userLogin[0][0].estado == 0){
+          userLogin[0][0].contrasena = await bcryptjs.hashSync(userLogin[0][0].contrasena,8);
+          let  pool2 = await  sql.connect(config);
+          await  pool2.request()
+            .input('userIdent', sql.VarChar, userLogin[0][0].carnet+'')
+            .input('pass', sql.VarChar, userLogin[0][0].contrasena)
+            .input('typeUser', sql.VarChar, 1)
+            .query("EXEC updatePasswordSP @user = @userIdent, @newPassword = @pass, @type = @typeUser");
+        }
+        if((await bcryptjs.compare(userData.pass,userLogin[0][0].contrasena))){
+          userLogin[0].push({student:true});
+          userLogin[0].push({tokenAuth: jwt.sign({user: userLogin[0][0], student: true}, 'secret-Key', { expiresIn: '16m' })});
+        }
+        else
+          userLogin = [[]];
       }
     }
     return userLogin[0];
@@ -163,6 +530,8 @@ async function loginUser(userData) {
     console.log(error);
   }
 }
+
+
 
 async function checkLogIn(req) {
   try {
@@ -258,12 +627,12 @@ async function updatePasswordSP(req) {
 }
   
 module.exports = {
-  getCourses:  getCourses,
-  getCourse:  getCourse,
-  addCourse:  addCourse,
-  getGroups:  getGroups,
-  getGroup:  getGroup,
-  addGroup:  addGroup,
+  getCourses: getCourses,
+  getCourse: getCourse,
+  addCourse: addCourse,
+  getGroups: getGroups,
+  getGroup: getGroup,
+  addGroup: addGroup,
   getGroupsCourse: getGroupsCourse,
   loginUser: loginUser,
   checkLogIn: checkLogIn,
@@ -271,5 +640,27 @@ module.exports = {
   checkCode: checkCode,
   updatePasswordSP: updatePasswordSP,
   getGroupsCourseSP: getGroupsCourseSP,
-  updateGroup: updateGroup
+  updateGroup: updateGroup,
+  getSchedule: getSchedule,
+  getrequestCourse: getrequestCourse,
+  getcoursesAdmin: getcoursesAdmin,
+  getGroupsCourseAdmin: getGroupsCourseAdmin,
+  obtenerMatricula: obtenerMatricula,
+  cerrarMatricula: cerrarMatricula,
+  abrirMatricula: abrirMatricula,
+  getCoursesAdd: getCoursesAdd,
+  aumentarCupos: aumentarCupos,
+  updateRequestCourse: updateRequestCourse,
+  getCoursesResumen: getCoursesResumen,
+  getCoursesInclusion: getCoursesInclusion,
+  addRequestStudent: addRequestStudent,
+  getRequestStudent: getRequestStudent,
+  getGroupMatriculado: getGroupMatriculado,
+  createNewGroup: createNewGroup,
+  getTeachers: getTeachers,
+  getScheduleTeacher: getScheduleTeacher,
+  getStudentInfo: getStudentInfo,
+  updateStudentInfo: updateStudentInfo,
+  getScheduleClassroom: getScheduleClassroom,
+  getrequestCourseAdmin: getrequestCourseAdmin
 }

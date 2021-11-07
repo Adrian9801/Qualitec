@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="atras()" class = "color-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class = "color-white">Resumen</ion-title>
+    <ion-button slot="end" color="warning" (click)="presentAlert()">Aceptar</ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header (click)="acordion()">
+      <ion-card-title>Solicitudes aceptadas: {{tamano}}</ion-card-title>
+      <ion-card-subtitle>Click para ver detalles </ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <ion-list *ngIf="ver">
+        <ion-item *ngFor="let entry of aceptadas">
+          <div class ="enlista">
+            <ion-card-content>
+              <ion-card-subtitle>Sede: {{entry.sede}} </ion-card-subtitle>
+              <ion-card-title>Solicitud # {{entry.numero_solicitud}}</ion-card-title>
+              <h2> Curso: {{entry.codigo_curso}} {{entry.nombre_curso}} </h2>
+              <ion-card-subtitle>Nombre: {{entry.nombre_estudiante}} </ion-card-subtitle>
+              <ion-card-subtitle>Carnet: {{entry.carnet_estudiante}} </ion-card-subtitle>
+            </ion-card-content>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header (click)="acordionRechazadas()">
+      <ion-card-title>Solicitudes rechazadas: {{tamanoRechazadas}}</ion-card-title>
+      <ion-card-subtitle>Click para ver detalles </ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <ion-list *ngIf="verRechazadas">
+        <ion-item *ngFor="let entry of rechazadas">
+          <div class ="enlista">
+            <ion-card-content>
+              <ion-card-subtitle>Sede: {{entry.sede}} </ion-card-subtitle>
+              <ion-card-title>Solicitud # {{entry.numero_solicitud}}</ion-card-title>
+              <h2> Curso: {{entry.codigo_curso}} {{entry.nombre_curso}} </h2>
+              <ion-card-subtitle>Nombre: {{entry.nombre_estudiante}} </ion-card-subtitle>
+              <ion-card-subtitle>Carnet: {{entry.carnet_estudiante}} </ion-card-subtitle>
+            </ion-card-content>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

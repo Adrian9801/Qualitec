@@ -24,6 +24,10 @@ export class GroupService {
     return this.http.post(this.URL_API + '/course', data);
   }
 
+  getGroupsCourseAdmin(data){
+    return this.http.post(this.URL_API + '/courseAdmin', data);
+  }
+
   UpdateGroupCourse(data){
     return this.http.post(this.URL_API + '/update', data);
   }
@@ -38,5 +42,37 @@ export class GroupService {
 
   deleteGroup(_id: string){
     return this.http.delete(this.URL_API + `/${_id}`);
+  }
+
+  aumentarCupos(data){
+    return this.http.post(this.URL_API + '/aumentarCupos', data);
+  }
+
+  getGroupMatriculado(data){
+    return this.http.post(this.URL_API + '/getGroupMatriculado', data);
+  }
+
+  getScheduleTeacher(data){
+    return this.http.post(this.URL_API + '/getScheduleTeacher', data);
+  }
+
+  getScheduleClassroom(data){
+    return this.http.post(this.URL_API + '/getScheduleClassroom', data);
+  }
+  
+  createNewGroup(data){
+    return this.http.post(this.URL_API + '/createNewGroup', data);
+  }
+
+  getStudentInfo(data){
+    return this.http.post(this.URL_API + '/getStudentInfo', data);
+  }
+
+  updateStudentInfo(data){
+    return this.http.post(this.URL_API + '/updateStudentInfo', data);
+  }
+
+  getTeachers(){
+    return this.http.get(this.URL_API + '/getTeachers');
   }
 }

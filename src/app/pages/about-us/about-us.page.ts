@@ -3,6 +3,9 @@ import {AppComponent} from '../../app.component';
 import { LoginService } from 'src/app/services/login/login.service';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service'; 
+import { Subscription } from 'rxjs-compat/Subscription';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-about-us',
@@ -13,16 +16,21 @@ import { CookieService } from 'ngx-cookie-service';
 export class AboutUsPage implements OnInit {
   private title: string = "Acerca de nosotros";
   private opened: boolean = false;
+  private _routerSub = Subscription.EMPTY;
 
   constructor(private cookieService: CookieService, public menu:AppComponent, private router: Router, private loginService: LoginService) { 
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && event.url == '/about-us') {
+    this._routerSub = this.router.events
+    .filter(event => event instanceof NavigationEnd && event.url == '/about-us')
+    .subscribe((value) => {
         this.checkIfLoggedIn();
-      }
     });
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(){
+    this._routerSub.unsubscribe();
   }
 
   checkIfLoggedIn(){
@@ -40,6 +48,7 @@ export class AboutUsPage implements OnInit {
             this.menu.setStudent(true);
           else
             this.menu.setStudent(false);
+          this.menu.setEnable(true);
         }
         else
           this.router.navigateByUrl('login');

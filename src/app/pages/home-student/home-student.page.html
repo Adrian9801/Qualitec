@@ -9,20 +9,152 @@
   </ion-header>
   <ion-content class="ion-padding">
     <ion-card>
-      <ion-card-header>
-        <ion-card-title>Resumen</ion-card-title>
+      <ion-card-header (click)="showCourses()">
+        <h1 *ngIf="this.listaCursos.length == 0">Resumen</h1>
+        <h1 *ngIf="this.listaCursos.length > 0">Resumen cursos matriculados</h1>
+        <ion-card-subtitle *ngIf="this.listaCursos.length > 0">Cursos matriculados: {{this.listaCursos.length}} <ion-icon *ngIf="!ver" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="ver" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
+        <ion-card-subtitle *ngIf="this.listaCursos.length > 0">Créditos matriculados: {{this.creditosMatriculados}}</ion-card-subtitle>
       </ion-card-header>
     
       <ion-card-content>
-        <ion-item>
+        <ion-item *ngIf="this.listaCursos.length == 0">
           <ion-icon name="warning" class="color-red" slot="start"></ion-icon>
-          <ion-label>Matrícula pendiente</ion-label>
+          <h3 *ngIf="estadoMatricula">Matrícula pendiente</h3>
+          <h3 *ngIf="!estadoMatricula">Matrícula cerrada</h3>
         </ion-item>
+
+        <ion-list *ngIf="ver && this.listaCursos.length > 0">
+          <ion-item *ngFor="let entry of listaCursos">
+            <div class ="enlista">
+              <ion-card-content (click)="showGroup(entry)">
+                <h2>{{entry.codigo}} {{entry.nombre}} <ion-icon *ngIf="!entry.ver" class='desplaz' name="chevron-down-outline"></ion-icon> <ion-icon class='desplaz' *ngIf="entry.ver" name="chevron-up-outline"></ion-icon></h2>
+                <ion-card-subtitle>Créditos: {{entry.creditos}} </ion-card-subtitle>
+              </ion-card-content>
+
+              <ion-list *ngIf="entry.ver">
+                <ion-item class='estiloCourse'>
+                  <div class ="enlista">
+                    <ion-card-content>
+                      <h5> Sede: {{entry.group.sede}}</h5>
+                      <h2> Prof. {{entry.group.nombre}} </h2>
+                      <ion-card-subtitle>Grupo: {{entry.group.numero}} </ion-card-subtitle>
+                      <ion-card-subtitle>Salón: {{entry.group.aula}} </ion-card-subtitle>
+                    </ion-card-content>
+                  </div>
+                </ion-item>
+              </ion-list>
+            </div>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
       <ion-item-divider></ion-item-divider>
-      <ion-card-header>
-        <ion-card-title style="text-align:center" color="primary" (click)="presentAlert()">Ver detalles </ion-card-title>
+      <ion-footer>
+        <ion-button *ngIf="this.listaCursos.length == 0" (click)="go('enrollment')" expand="full" fill="clear" mode='ios'>
+          <ion-text>Mi matrícula</ion-text>
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-row *ngIf="this.listaCursos.length > 0">
+          <ion-col size="6">
+            <ion-button (click)="go('enrollment')" expand="full" fill="clear" mode='ios'>
+              <ion-text>Mi matrícula</ion-text>
+              <ion-icon name="create"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="6">
+            <ion-button (click)="go('schedule')" expand="full" fill="clear" mode='ios'>
+              <ion-text>Ver horario</ion-text>
+              <ion-icon name="arrow-forward-circle"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-footer>
+    </ion-card>
+
+
+    <ion-card *ngIf="this.listaCursosInclusion.length > 0">
+      <ion-card-header (click)="showCoursesStudent()">
+        <ion-card-title>Resumen inclusiones</ion-card-title>
+        <ion-card-subtitle>Cursos matriculados: {{this.listaCursosInclusion.length}} <ion-icon *ngIf="!verCursos" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="verCursos" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
+        <ion-card-subtitle>Créditos matriculados: {{this.creditosMatriculadosInclusion}}</ion-card-subtitle>
       </ion-card-header>
+    
+      <ion-card-content>
+        <ion-list *ngIf="verCursos">
+          <ion-item *ngFor="let entry of listaCursosInclusion">
+            <div class ="enlista">
+              <ion-card-content (click)="showGroup(entry)">
+                <h2>{{entry.codigo}} {{entry.nombre}} <ion-icon *ngIf="!entry.ver" class='desplaz' name="chevron-down-outline"></ion-icon> <ion-icon class='desplaz' *ngIf="entry.ver" name="chevron-up-outline"></ion-icon></h2>
+                <ion-card-subtitle>Créditos: {{entry.creditos}} </ion-card-subtitle>
+              </ion-card-content>
+
+              <ion-list *ngIf="entry.ver">
+                <ion-item class='estiloCourse'>
+                  <div class ="enlista">
+                    <ion-card-content>
+                      <h5> Sede: {{entry.group.sede}}</h5>
+                      <h2> Prof. {{entry.group.nombre}} </h2>
+                      <ion-card-subtitle>Grupo: {{entry.group.numero}} </ion-card-subtitle>
+                      <ion-card-subtitle>Salón: {{entry.group.aula}} </ion-card-subtitle>
+                    </ion-card-content>
+                  </div>
+                </ion-item>
+              </ion-list>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="this.listaCursos.length > 0">
+      <ion-card-header>
+        <ion-list>
+          <ion-item>
+            <ion-card-subtitle><ion-icon name="card-outline"></ion-icon> Total a pagar</ion-card-subtitle>
+          </ion-item>
+          <ion-item>
+            <div class ="enlista">
+              <ion-card-title>₡{{verPrecio()}},00</ion-card-title>
+            </div>
+            <ion-badge class='badgePendiente' color="danger">Pendiente</ion-badge>
+          </ion-item>
+        </ion-list>
+      </ion-card-header>
+    </ion-card>
+
+    <ion-card *ngIf="this.totalPagarInclusion > 0">
+      <ion-card-header>
+        <ion-list>
+          <ion-item>
+            <ion-card-subtitle><ion-icon name="card-outline"></ion-icon> Monto adicional si se aceptan las inclusiones</ion-card-subtitle>
+          </ion-item>
+          <ion-item>
+            <div class ="enlista">
+              <ion-card-title>₡{{verPrecioI()}},00</ion-card-title>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-card-header>
+    </ion-card>
+
+    <ion-card *ngIf="!estadoMatricula">
+      <ion-card-header (click)="showCoursesStudent()">
+        <ion-card-title>Levantamiento de requisitos</ion-card-title>
+        <ion-card-subtitle>Total de solicitudes: {{this.listaSolicitudes.length}} <ion-icon *ngIf="!verCursos" class='despla' name="chevron-down-outline"></ion-icon> <ion-icon class='despla' *ngIf="verCursos" name="chevron-up-outline"></ion-icon></ion-card-subtitle>
+        <ion-card-subtitle>Solicitudes aprobadas: {{this.aprobadas}}</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <ion-list style="width: 100%!important;" *ngIf="verCursos">
+          <ion-item style="width: 100%!important;" *ngFor="let entry of listaSolicitudes">
+            <div style="width: 100%!important;" class ="enlista">
+              <ion-card-content style="width: 100%!important;" (click)="showGroup(entry)">
+                <h2>Solicitud #{{entry.numero_solicitud}} <span class='desplaza' [ngStyle]="entry.styleSelect"> {{entry.estado_solitud_Student}} </span></h2>
+                <ion-card-subtitle>Curso: {{entry.codigo_curso}} {{entry.nombre_curso}}</ion-card-subtitle>
+              </ion-card-content>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
     </ion-card>
   </ion-content>
 </div>

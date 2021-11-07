@@ -18,7 +18,11 @@
           <ion-icon name="list" slot="start"></ion-icon>
           <ion-label>Lista de cursos</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="changePage('solicitud-levantamiento-modal')">
+          <ion-icon name="ribbon" slot="start"></ion-icon>
+          <ion-label>Levantar requisitos</ion-label>
+        </ion-item>
+        <ion-item (click)="changePage('profile')">
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>Mi perfil</ion-label>
         </ion-item>
@@ -38,7 +42,7 @@
           <ion-icon name="school" slot="start"></ion-icon>
           <ion-label>Control de matricula</ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item (click)="changePage('lista-levantamamiento-admin')">
           <ion-icon name="ribbon" slot="start"></ion-icon>
           <ion-label>Levantamiento de requisitos</ion-label>
         </ion-item>
